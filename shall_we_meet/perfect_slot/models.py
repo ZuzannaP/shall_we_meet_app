@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import CASCADE, PROTECT
@@ -32,7 +33,7 @@ from django.db.models import CASCADE, PROTECT
 #         return self.title
 
 
-class User(models.Model):
+class CustomUser(AbstractUser):
     street = models.CharField(max_length=128)
     house_nr = models.CharField(max_length=10)
     zip_code = models.CharField(max_length=6)
@@ -40,7 +41,7 @@ class User(models.Model):
     # geographical_coordinates = models.PointField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.username
 
 
 # class DateTimeSlots(models.Model):
