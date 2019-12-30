@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import CASCADE, PROTECT
+from django.db.models import CASCADE, SET_NULL
+
 
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
 # modelu w Event oraz User     geographical_coordinates = models.PointField() na\
@@ -11,26 +12,6 @@ from django.db.models import CASCADE, PROTECT
 # this caused my some headache! X is longitude, Y is latitude.
 
 # from django.contrib.gis.db import models
-
-
-# class Event(models.Model):
-#     title = models.CharField(max_length=128)
-#     description = models.TextField()
-#     meeting_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
-#     proposed_datetime_slots = models.ManyToManyField(DateTimeSlots)
-#     final_datetime_slot = models.ForeignKey(DateTimeSlots, null=True, blank=True, on_delete=PROTECT)
-#     #pamiętaj by zmienić User na coś innego, jak się okaże, że korzystamy z innego usera
-#     participants = models.ManyToManyField(User)
-#     #pamiętaj by zmienić User na coś innego, jak się okaże, że korzystamy z innego usera
-#     owner = models.ForeignKey(User, on_delete=CASCADE)
-#     # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
-#     common_geographical_coordinates = models.PointField(blank=True, null=True)
-#     # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
-#     proposed_location = models.PointField(blank=True, null=True)
-#     final_location = models.PointField(blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.title
 
 
 class CustomUser(AbstractUser):
@@ -44,10 +25,35 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-# class DateTimeSlots(models.Model):
-#     date = models.DateField()
-#     start_time = models.TimeField()
-#     end_time = models.TimeField()
-#
-#     def __str__(self):
-#         return f"{self.date} {self.start_time}-{self.end_time}"
+class Event(models.Model):
+    title = models.CharField(max_length=128)
+    description = models.TextField()
+    creation_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
+    approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
+    participants = models.ManyToManyField(CustomUser)
+    owner = models.ForeignKey(CustomUser, on_delete=CASCADE)
+    is_active = models.BooleanField(default=False)
+
+    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
+    # common_geographical_coordinates = models.PointField(blank=True, null=True)
+    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
+    # proposed_location = models.PointField(blank=True, null=True)
+    # final_location = models.PointField(blank=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class DateTimeSlots(models.Model):
+    date_time_from = models.DateTimeField()
+    date_time_to = models.DateTimeField()
+    event = models.ForeignKey(Event, on_delete=CASCADE)
+    participant = models.ManyToManyField(CustomUser)
+    winning = models.BooleanField(default=False)
+    # votes_yes = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
+    # votes_no = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
+    # votes_if_need_be = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
+
+    def __str__(self):
+        return f"{self.date_time_from}-{self.date_time_to}"
