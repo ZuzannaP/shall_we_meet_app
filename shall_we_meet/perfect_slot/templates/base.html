@@ -25,7 +25,7 @@
                   <a class="nav-item nav-link" href="{% url "homepage" %}">Invite friends to join</a>
                   {% if not request.user.is_authenticated %}
                         <a class="btn btn-info" href="{% url "homepage" %}">Create account </a>
-                        <a class="btn btn-info" href="{% url "homepage" %}">Log in </a>
+                        <a class="btn btn-info" href="{% url "login" %}">Log in </a>
                    {% endif %}
             </ul>
             {% if request.user.is_authenticated %}
@@ -35,7 +35,7 @@
                          </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" >
                             <a class="dropdown-item"  href="{% url "homepage" %}">Account settings</a>
-                            <a class="dropdown-item" href="{% url "homepage" %}">Log out</a>
+                            <a class="dropdown-item" href="{% url "logout" %}">Log out</a>
                         </div>
                 </div>
             {% endif %}

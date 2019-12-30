@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <h1>Logging out</h1>
+
+{% if my_verdict %}
+    {{ my_verdict }}
+{% else %}
+        <div class="container-fluid col-md-6">
+          <form action="#" method="post">
+            {% csrf_token %}
+               Do you want to log out?
+            <input type="submit" value="Yes" class="btn btn-dark addButton"/>
+            <button onclick="location.href='{% url "homepage" %}'" type="button" class="btn btn-dark addButton">No</button>
+        </form>
+    </div>
+{%  endif %}
+
+
+{% endblock %}
