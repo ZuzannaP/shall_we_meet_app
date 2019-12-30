@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import CASCADE, SET_NULL
+from django.db.models import CASCADE, SET_NULL, DO_NOTHING
 
 
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
@@ -49,11 +49,18 @@ class DateTimeSlots(models.Model):
     date_time_from = models.DateTimeField()
     date_time_to = models.DateTimeField()
     event = models.ForeignKey(Event, on_delete=CASCADE)
-    participant = models.ManyToManyField(CustomUser)
+    participant = models.ManyToManyField(CustomUser, through='ParticipantSlotVote')
     winning = models.BooleanField(default=False)
+    ## to do usunięcia, bo mam model pośredni ParticipantSlotVote
     # votes_yes = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
     # votes_no = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
     # votes_if_need_be = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f"{self.date_time_from}-{self.date_time_to}"
+
+
+class ParticipantSlotVote(models.Model):
+    participant = models.ForeignKey(CustomUser, on_delete=DO_NOTHING)
+    slot = models.ForeignKey(DateTimeSlots, on_delete=CASCADE)
+    vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
