@@ -1,1 +1,4 @@
 superuser: zuzanna zaqxswcde
+
+users:  ala morawiecki
+        ela Alleluja

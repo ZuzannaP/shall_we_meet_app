@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Logging in</h1>
+
     <form action="{% url 'login' %}" method="post">
         {{ form | crispy }}
         {% csrf_token %}

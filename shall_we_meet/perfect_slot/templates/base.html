@@ -24,7 +24,7 @@
                   <a class="nav-item nav-link" href="{% url "homepage" %}">Manage meetings</a>
                   <a class="nav-item nav-link" href="{% url "homepage" %}">Invite friends to join</a>
                   {% if not request.user.is_authenticated %}
-                        <a class="btn btn-info" href="{% url "homepage" %}">Create account </a>
+                        <a class="btn btn-info" href="{% url "signup" %}">Create account </a>
                         <a class="btn btn-info" href="{% url "login" %}">Log in </a>
                    {% endif %}
             </ul>
