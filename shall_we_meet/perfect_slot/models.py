@@ -58,6 +58,7 @@ class DateTimeSlot(models.Model):
 
 
 class ParticipantSlotVote(models.Model):
+    # tu może być potencjalny problem z ForeignKey restriction error
     participant = models.ForeignKey(CustomUser, on_delete=DO_NOTHING, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
     vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
