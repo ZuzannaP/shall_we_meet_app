@@ -40,13 +40,13 @@ a.nav-item.nav-link{
 }
 
 /* NAV LEFT */
-#sidebar-wrapper > div > li{
+#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li{
     background-color: #008B84;
     color: #fffcff;
 }
 
 
-#sidebar-wrapper > div > a{
+#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a{
   background-color:  #E2E8F7;
     color: #4F4350;
 }
@@ -57,14 +57,17 @@ h1 {
     font-size: x-large;
     padding: 10px 0 40px 0;
     margin: 0;
+}
 
+h2 {
+    color: #4F4350;
+    font-size: large;
 }
 
 body{
     background: #fffcff;
     font-family: 'Nunito Sans', sans-serif;
     color: #4F4350;
-
 }
 
 .container-fluid{
@@ -72,6 +75,13 @@ body{
     text-align: center;
 }
 
+.myButton{
+    background-color: #008B84;
+    color: #ffffff;
+}
 
-
-
+#youSure{
+    color: #a12291;
+    font-size: large;
+    font-weight: 700;
+}

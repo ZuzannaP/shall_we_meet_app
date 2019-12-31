@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView
+from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView
 
 
 urlpatterns = [
@@ -24,5 +24,7 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path('create_account/', SignUpView.as_view(), name='signup'),
+    path('edit_account/<int:pk>/', EditPersonalInfoView.as_view(), name="edit_personal_info"),
+    path('delete_account/<int:pk>/', DeleteAccountView.as_view(), name="delete_account")
 
 ]

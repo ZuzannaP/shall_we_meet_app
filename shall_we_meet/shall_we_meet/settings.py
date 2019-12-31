@@ -130,6 +130,6 @@ STATIC_URL = '/static/'
 
 
 # dodałam to
-LOGIN_REDIRECT_URL = 'homepage'
-LOGOUT_REDIRECT_URL = 'homepage'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
