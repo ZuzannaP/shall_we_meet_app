@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import CASCADE, SET_NULL, DO_NOTHING
+from django.db.models import CASCADE, DO_NOTHING
 
 
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
@@ -28,11 +28,12 @@ class CustomUser(AbstractUser):
 class Event(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
+    location = models.CharField(max_length=256) # do usunięcia ,jak będzie druga aplikacja
     creation_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
-    participants = models.ManyToManyField(CustomUser)
-    owner = models.ForeignKey(CustomUser, on_delete=CASCADE)
+    participants = models.ManyToManyField(CustomUser, related_name='their_events')
+    owner = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_events')
     is_active = models.BooleanField(default=False)
 
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
@@ -45,22 +46,21 @@ class Event(models.Model):
         return self.title
 
 
-class DateTimeSlots(models.Model):
+class DateTimeSlot(models.Model):
     date_time_from = models.DateTimeField()
     date_time_to = models.DateTimeField()
     event = models.ForeignKey(Event, on_delete=CASCADE)
-    participant = models.ManyToManyField(CustomUser, through='ParticipantSlotVote')
+    participants = models.ManyToManyField(CustomUser, through='ParticipantSlotVote')
     winning = models.BooleanField(default=False)
-    ## to do usunięcia, bo mam model pośredni ParticipantSlotVote
-    # votes_yes = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
-    # votes_no = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
-    # votes_if_need_be = models.IntegerField(blank=True, default=0, validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f"{self.date_time_from}-{self.date_time_to}"
+        return f"{self.date_time_from} - {self.date_time_to}"
 
 
 class ParticipantSlotVote(models.Model):
-    participant = models.ForeignKey(CustomUser, on_delete=DO_NOTHING)
-    slot = models.ForeignKey(DateTimeSlots, on_delete=CASCADE)
+    participant = models.ForeignKey(CustomUser, on_delete=DO_NOTHING, related_name='his_slots_votes')
+    slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
     vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
+
+    def __str__(self):
+        return f"{self.participant}-{self.slot}: {self.vote}"
