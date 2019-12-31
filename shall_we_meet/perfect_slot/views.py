@@ -59,8 +59,14 @@ class EditPersonalInfoView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('homepage')
     template_name = 'edit_personal_info.html'
 
+    def get_object(self):
+        return self.request.user
+
 #dodaj message , że konto zostało skasowane
 class DeleteAccountView(LoginRequiredMixin, DeleteView):
     template_name = 'account_confirm_delete.html'
     model = CustomUser
     success_url = reverse_lazy("homepage")
+
+    def get_object(self):
+        return self.request.user
