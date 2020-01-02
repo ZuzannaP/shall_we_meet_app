@@ -39,6 +39,12 @@ a.nav-item.nav-link{
     margin: 4px;
 }
 
+#shall_we_meet_logo{
+    color: #e4ddb5;
+    font-weight: 900;
+    font-size: x-large;
+}
+
 /* NAV LEFT */
 #sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li{
     background-color: #008B84;

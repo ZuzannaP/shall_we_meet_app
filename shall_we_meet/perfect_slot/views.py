@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 
 from .models import CustomUser
-from .forms import LoginForm, CustomUserCreationForm
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm
 
 
 def homepage(request):
@@ -45,24 +45,24 @@ class LogoutView(View):
             ctx["my_verdict"] = "You have been logged out"
         return render(request, "logout.html", ctx)
 
+
 # dodaj powitalny message
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
 
-#trzeba być zalogowanym, by móc to zrobić i tylko można się do swojego numerka dostać!
-#dodaj message, że zmiany zostały zapisane
+
 class EditPersonalInfoView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
-    fields = ( 'first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city')
+    form_class = CustomUserChangeForm
     success_url = reverse_lazy('homepage')
     template_name = 'edit_personal_info.html'
 
     def get_object(self):
         return self.request.user
 
-#dodaj message , że konto zostało skasowane
+
+# dodaj message , że konto zostało skasowane
 class DeleteAccountView(LoginRequiredMixin, DeleteView):
     template_name = 'account_confirm_delete.html'
     model = CustomUser
