@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import CASCADE, DO_NOTHING
+from django.db.models import CASCADE, SET_DEFAULT, DO_NOTHING
 
 
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
@@ -38,6 +38,7 @@ class Event(models.Model):
 
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
     # common_geographical_coordinates = models.PointField(blank=True, null=True)
+
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
     # proposed_location = models.PointField(blank=True, null=True)
     # final_location = models.PointField(blank=True, null=True)
@@ -58,8 +59,7 @@ class DateTimeSlot(models.Model):
 
 
 class ParticipantSlotVote(models.Model):
-    # tu może być potencjalny problem z ForeignKey restriction error
-    participant = models.ForeignKey(CustomUser, on_delete=DO_NOTHING, related_name='his_slots_votes')
+    participant = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
     vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
 

@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -70,3 +71,11 @@ class DeleteAccountView(LoginRequiredMixin, DeleteView):
 
     def get_object(self):
         return self.request.user
+
+
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'password_change.html'
+
+
+class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
+    template_name = 'password_change_done.html'
