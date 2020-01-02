@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
@@ -14,6 +16,7 @@ def homepage(request):
     return render(request, "homepage.html")
 
 ### USER ADMINISTRATION ###
+
 
 class LoginView(FormView):
     form_class = LoginForm
@@ -48,15 +51,17 @@ class LogoutView(View):
 
 
 # dodaj powitalny message
-class SignUpView(CreateView):
+class SignUpView(SuccessMessageMixin, CreateView,):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
+    success_message = 'Your account has been created. Welcome on board!'
     template_name = 'signup.html'
 
 
-class EditPersonalInfoView(LoginRequiredMixin, UpdateView):
+class EditPersonalInfoView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = CustomUserChangeForm
     success_url = reverse_lazy('homepage')
+    success_message = "Your personal data has been succesfully changed!"
     template_name = 'edit_personal_info.html'
 
     def get_object(self):
@@ -64,10 +69,11 @@ class EditPersonalInfoView(LoginRequiredMixin, UpdateView):
 
 
 # dodaj message , że konto zostało skasowane
-class DeleteAccountView(LoginRequiredMixin, DeleteView):
+class DeleteAccountView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'account_confirm_delete.html'
     model = CustomUser
     success_url = reverse_lazy("homepage")
+    success_message = "Your account has been deleted"
 
     def get_object(self):
         return self.request.user

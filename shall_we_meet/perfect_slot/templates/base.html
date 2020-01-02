@@ -11,7 +11,6 @@
   <link rel="stylesheet" href={% static "css/style.css"%} />
 </head>
 <body>
-
      <nav class="navbar navbar-expand-lg navbar-dark navbar-right">
         <a class="navbar-brand" id="shall_we_meet_logo" href="{% url "homepage" %}">
             SHALL WE MEET?
@@ -21,27 +20,36 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="nav navbar-nav ml-auto"  >
-                  <a class="nav-item nav-link"  href="{% url "homepage" %}">Create new meeting</a>
-                  <a class="nav-item nav-link" href="{% url "homepage" %}">Manage meetings</a>
-                  <a class="nav-item nav-link" href="{% url "homepage" %}">Invite friends to join</a>
-                  {% if not request.user.is_authenticated %}
-                        <a class="btn btn-info" href="{% url "signup" %}">Create account </a>
-                        <a class="btn btn-info" href="{% url "login" %}">Log in </a>
-                   {% endif %}
-            </ul>
-            {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated %}
+                <a class="nav-item nav-link"  href="{% url "homepage" %}">Create new meeting</a>
+                <a class="nav-item nav-link" href="{% url "homepage" %}">Manage meetings</a>
+                <a class="nav-item nav-link" href="{% url "homepage" %}">Invite friends to join</a>
                 <div class="nav-item dropdown navbar-dark navbar-nav navbar-brand:hover">
-                         <a class="btn btn-info nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{ request.user.username }}
-                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" >
-                            <a class="dropdown-item"  href="{% url "edit_personal_info" %}">Account settings</a>
-                            <a class="dropdown-item" href="{% url "logout" %}">Log out</a>
-                        </div>
-                </div>
-            {% endif %}
+                    <a class="btn btn-info nav-link dropdown-toggle nav_button" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ request.user.username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" >
+                        <a class="dropdown-item"  href="{% url "edit_personal_info" %}">Account settings</a>
+                        <a class="dropdown-item" href="{% url "logout" %}">Log out</a>
+                    </div>
+                {% elif not request.user.is_authenticated %}
+                    <a class="btn btn-info nav_button" href="{% url "signup" %}">Create account </a>
+                    <a class="btn btn-info nav_button" href="{% url "login" %}">Log in </a>
+                 {% endif %}
+            </ul>
       </div>
     </nav>
+
+<div class="container-fluid col-md-8">
+    {% for message in messages %}
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
 
         {% block content %} {% endblock %}
 

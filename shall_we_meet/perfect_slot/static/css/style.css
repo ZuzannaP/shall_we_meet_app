@@ -20,7 +20,7 @@
     margin-left: 50px;
 }
 
-#navbarNavAltMarkup > div > div > a:nth-child(1):active, #navbarNavAltMarkup > div > div > a:nth-child(2):active{
+#navbarNavAltMarkup > ul > div > div > a:nth-child(1):active, #navbarNavAltMarkup > ul > div > div > a:nth-child(2):active{
     background-color: #883896 ;
 }
 
@@ -33,7 +33,7 @@ a.nav-item.nav-link{
 
 }
 
-#navbarNavAltMarkup > ul > a:nth-child(4), #navbarNavAltMarkup > ul > a:nth-child(5), #navbarDropdown{
+.nav_button{
     background-color: #008B84;
     color: #ffffff;
     margin: 4px;
