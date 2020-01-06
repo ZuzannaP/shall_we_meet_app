@@ -1,18 +1,22 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 
 from .models import CustomUser
-from .forms import LoginForm, CustomUserCreationForm
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm
 
 
 def homepage(request):
     return render(request, "homepage.html")
 
 ### USER ADMINISTRATION ###
+
 
 class LoginView(FormView):
     form_class = LoginForm
@@ -45,28 +49,39 @@ class LogoutView(View):
             ctx["my_verdict"] = "You have been logged out"
         return render(request, "logout.html", ctx)
 
+
 # dodaj powitalny message
-class SignUpView(CreateView):
+class SignUpView(SuccessMessageMixin, CreateView,):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
+    success_message = 'Your account has been created. Welcome on board!'
     template_name = 'signup.html'
 
-#trzeba być zalogowanym, by móc to zrobić i tylko można się do swojego numerka dostać!
-#dodaj message, że zmiany zostały zapisane
-class EditPersonalInfoView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
-    fields = ( 'first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city')
+
+class EditPersonalInfoView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    form_class = CustomUserChangeForm
     success_url = reverse_lazy('homepage')
+    success_message = "Your personal data has been succesfully changed!"
     template_name = 'edit_personal_info.html'
 
     def get_object(self):
         return self.request.user
 
-#dodaj message , że konto zostało skasowane
-class DeleteAccountView(LoginRequiredMixin, DeleteView):
+
+# dodaj message , że konto zostało skasowane
+class DeleteAccountView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'account_confirm_delete.html'
     model = CustomUser
     success_url = reverse_lazy("homepage")
+    success_message = "Your account has been deleted"
 
     def get_object(self):
         return self.request.user
+
+
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'password_change.html'
+
+
+class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
+    template_name = 'password_change_done.html'
