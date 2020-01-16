@@ -16,17 +16,19 @@ Including another URLconf
 from django.contrib import admin, auth
 from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
-    CustomPasswordChangeView, CustomPasswordChangeDoneView
+    CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", homepage, name="homepage"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path('create_account/', SignUpView.as_view(), name='signup'),
-    path('edit_account/', EditPersonalInfoView.as_view(), name="edit_personal_info"),
-    path('delete_account/', DeleteAccountView.as_view(), name="delete_account"),
-    path('password_change/', CustomPasswordChangeView.as_view(),  name='password_change'),
-    path('password_change/done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done')
-
+    path('account/settings', AccountSettingsView.as_view(), name='account_settings'),
+    path('account/create', SignUpView.as_view(), name='signup'),
+    path('account/edit', EditPersonalInfoView.as_view(), name="edit_personal_info"),
+    path('account/delete/', DeleteAccountView.as_view(), name="delete_account"),
+    path('password/change/', CustomPasswordChangeView.as_view(),  name='password_change'),
+    path('password/change_done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
+    path("event/create", CreateEventView.as_view(), name="create_event")
 ]
+

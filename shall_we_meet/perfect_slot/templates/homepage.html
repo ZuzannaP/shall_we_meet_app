@@ -3,36 +3,38 @@
 {% block content %}
 
     {% if not request.user.is_authenticated %}
-    <div class="container col-md-6">
-        </br></br><h1> <i><b>Shall we meet?</b></i> is a web application that helps to finally figure out perfect time and place for
+        <div class="container col-md-5">
+            </br></br><h1><i><b>Shall we meet?</b></i> is a web application that helps to finally figure out perfect
+            time and place for
             all friends to meet. </h1>
-        <p>Create account right now, so that you can easily create meetings for groups of friends. </br>App will
-            help you all to figure out most convinient time, date and location!</p>
-    </div>
+            <p>Create account right now, so that you can easily create meetings for groups of friends. </br>App will
+                help you all to figure out most convinient time, date and location!</p>
+        </div>
     {% else %}
+        <!-- Page wrapper -->
+        <div class="d-flex">
+            <!-- Sidebar -->
+            <div class="list-group border-right" id="sidebar-wrapper">
+                <div class="list-group list-group-flush">
+                    <li class="list-group-item  ">Meetings organized by me</li>
+                    <a href="#" class="list-group-item list-group-item-dark list-group-item-action ">In progress</a>
+                    <a href="#" class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
+                    <a href="#" class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
+                    <li class="list-group-item ">Meetings I have been invited to</li>
+                    <a href="#" class="list-group-item list-group-item-dark list-group-item-action">In progress</a>
+                    <a href="#" class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
+                    <a href="#" class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
+                </div>
+            </div>
 
-<!-- Page wrapper -->
- <div class="d-flex">
-    <!-- Sidebar -->
-    <div class="list-group border-right" id="sidebar-wrapper">
-      <div class="list-group list-group-flush">
-          <li class="list-group-item  ">Meetings organized by me</li>
-        <a href="#" class="list-group-item list-group-item-dark list-group-item-action ">In progress</a>
-        <a href="#" class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
-        <a href="#" class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
-          <li class="list-group-item ">Meetings I have been invited to</li>
-        <a href="#" class="list-group-item list-group-item-dark list-group-item-action">In progress</a>
-        <a href="#" class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
-        <a href="#" class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
-      </div>
-    </div>
+            <!-- Page Content -->
+            <div class="container-fluid col-md-5">
+                <h1>Your upcoming meetings:</h1>
+                <p> You have no upcoming meetings</p>
+            </div>
 
-    <!-- Page Content -->
-      <div class="container-fluid col-md-10">
-        <h1 >Your upcoming meetings:</h1>
-        <p> You have no upcoming meetings</p>
-      </div>
- </div>
+
+        </div>
 
     {% endif %}
 

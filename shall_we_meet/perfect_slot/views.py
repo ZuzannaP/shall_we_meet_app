@@ -50,7 +50,10 @@ class LogoutView(View):
         return render(request, "logout.html", ctx)
 
 
-# dodaj powitalny message
+class AccountSettingsView(View):
+    def get(self, request):
+        return render(request, "account_settings_tmp.html")
+
 class SignUpView(SuccessMessageMixin, CreateView,):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
@@ -85,3 +88,19 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
 
 class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = 'password_change_done.html'
+
+
+## EVENT ADMINISTRATION ##
+
+
+class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, View):
+    def get(self, request):
+        return render(request, "create_event_tmp.html")
+
+
+class EditEventView(LoginRequiredMixin, SuccessMessageMixin, View):
+    pass
+
+
+class DeleteEventView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    pass
