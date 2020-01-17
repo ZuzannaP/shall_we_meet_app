@@ -12,14 +12,21 @@
         <p>Organizer: {{ object.owner }} </p>
         <p>Location: {{ object.location }} </p>
         <p>Duration: {{ object.approx_duration }} </p>
-        <p>Participants: {% for participant in object.participants.all %}
+        Participants: {% for participant in object.participants.all %}
             <li>{{ participant }}</li>
         {% endfor %}
-        </p>
 
-        <p>{{ object.is_active }}</p>
-        <p> {{ object.creation_time }}</p>
-        <p>{{ objects.update_time }}</p>
+
+        <p>In progress? {{ object.is_in_progress }}</p>
+        <p> Creation time: {{ object.creation_time }}</p>
+        <p>Update time: {{ object.update_time }}</p>
+
+        Proposed time slots:
+        {% for slot in object.event_datetimeslot.all %}
+            <li> {{ slot.date_time_from }} - {{ slot.date_time_to }}</li>
+        {% endfor %}
+
+
 
     </div>
 

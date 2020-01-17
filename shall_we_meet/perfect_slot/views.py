@@ -9,8 +9,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
-from .models import CustomUser, Event
-from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm
+from .models import CustomUser, Event, DateTimeSlot
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm
 
 
 def homepage(request):
@@ -95,7 +95,7 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 ## EVENT ADMINISTRATION ##
 
 
-class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, View):
     def get(self, request):
         form = CreateEventForm()
         ctx = {"form": form}
@@ -113,10 +113,36 @@ class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
                                          approx_duration=approx_duration, owner=request.user)
             for participant in participants:
                 event.participants.add(participant)
-            messages.success(request, 'Event has been created!')
-            return redirect(f'/event/view/{event.id}/')
+            return redirect(f'/event/create/timeslots/{event.id}/')
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
+
+
+class ProposeTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        timeslots_nr = event.event_datetimeslot.count()
+        print(timeslots_nr)
+        form = ProposeTimeslotsForm(instance=event)
+        ctx = {"form": form, "event": event, "timeslots_nr":timeslots_nr}
+        return render(request, "propose_time_slots_tmp.html", ctx)
+
+    def post(self, request, event_id):
+        form = ProposeTimeslotsForm(request.POST)
+        if form.is_valid():
+            date_time_from = form.cleaned_data["date_time_from"]
+            date_time_to = form.cleaned_data["date_time_to"]
+            event = Event.objects.get(pk=event_id)
+            datetimeslot = DateTimeSlot.objects.create(date_time_from=date_time_from, date_time_to=date_time_to, event=event)
+            event_participants = event.participants.all()
+            for participant in event_participants:
+                datetimeslot.participants.add(participant)
+            #TODO: nie chce, zęby wyświetlało z sekundami, tak jak poniżej!
+            messages.success(request, f'Timeslot {datetimeslot} has been added!')
+            # return render(request, "propose_time_slots_tmp.html", ctx)
+            return redirect(f'/event/create/timeslots/{event.id}/')
+        ctx = {"form": form}
+        return render(request, "propose_time_slots_tmp.html", ctx)
 
 
 class EventView(LoginRequiredMixin, DetailView):
@@ -151,3 +177,13 @@ class OrganizerArchiveView(LoginRequiredMixin, ListView):
         return render(request, "owner_archive_tmp.html", {"events": events})
 
 
+class AsGuestInProgressView(LoginRequiredMixin, View):
+    pass
+
+
+class AsGuestUpcomingView(LoginRequiredMixin, ListView):
+    pass
+
+
+class AsGuestArchiveView(LoginRequiredMixin, ListView):
+    pass

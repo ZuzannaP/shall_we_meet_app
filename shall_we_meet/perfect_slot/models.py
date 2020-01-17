@@ -52,7 +52,7 @@ class Event(models.Model):
 class DateTimeSlot(models.Model):
     date_time_from = models.DateTimeField()
     date_time_to = models.DateTimeField()
-    event = models.ForeignKey(Event, on_delete=CASCADE)
+    event = models.ForeignKey(Event, on_delete=CASCADE, related_name="event_datetimeslot")
     participants = models.ManyToManyField(CustomUser, through='ParticipantSlotVote')
     winning = models.BooleanField(default=False)
 
@@ -63,7 +63,7 @@ class DateTimeSlot(models.Model):
 class ParticipantSlotVote(models.Model):
     participant = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
-    vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
+    vote = models.SmallIntegerField(default=-2, choices=[(-2, "Did not vote"), (-1, "No"), (0, "If need be"), (1, "Yes")])
 
     def __str__(self):
         return f"{self.participant}-{self.slot}: {self.vote}"

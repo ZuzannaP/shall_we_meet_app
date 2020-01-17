@@ -9,7 +9,7 @@
     <h1>My meetings in preparation stage</h1>
     <ul>
     {% for event in events %}
-        <li> {{ event.title}}</li>
+        <ol><a href="{% url "event_view" event.id %}">{{ event.title}}</a></ol>
     {% empty %}
         <p>No meetings here.</p>
     {% endfor %}

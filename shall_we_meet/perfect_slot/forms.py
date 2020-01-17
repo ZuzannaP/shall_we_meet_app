@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, Event
+from .models import CustomUser, Event, DateTimeSlot
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -47,3 +47,7 @@ class CreateEventForm(forms.ModelForm):
         fields = ["title", "description", "location", "approx_duration", "participants"]
 
 
+class ProposeTimeslotsForm(forms.ModelForm):
+    class Meta:
+        model = DateTimeSlot
+        fields = ["date_time_from", "date_time_to"]

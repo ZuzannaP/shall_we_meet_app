@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 
     {% if not request.user.is_authenticated %}
@@ -32,9 +32,10 @@
             <div class="container-fluid col-md-5">
                 <h1>Your upcoming meetings:</h1>
                 <p> You have no upcoming meetings</p>
+            </br> </br> </br>
+            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
             </div>
   {% endblock %}
-
         </div>
 
     {% endif %}

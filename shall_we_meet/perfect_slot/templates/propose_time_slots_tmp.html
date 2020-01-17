@@ -1,0 +1,23 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+{% block event %}
+
+<div class="container-fluid col-md-5">
+
+    <h1>Propose time slots</h1>
+    <h2>Choose at least 3 timeslots for the meeting. <h2></br>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-info myButton">Add another timeslot</button>
+        {% if timeslots_nr >= 3 %}
+            <a href="{% url "event_view" event.id %}" class="btn btn-info myButton">Finish </a>
+        {% endif %}
+    </form>
+
+</div>
+
+{% endblock %}
+
