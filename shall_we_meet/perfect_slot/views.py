@@ -10,7 +10,8 @@ from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from .models import CustomUser, Event, DateTimeSlot
-from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm, \
+    EditEventForm
 
 
 def homepage(request):
@@ -144,14 +145,41 @@ class ProposeTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
 
-
+#TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
 class EventView(LoginRequiredMixin, DetailView):
     model = Event
     template_name = "view_event_tmp.html"
 
 
-class EditEventView(LoginRequiredMixin, SuccessMessageMixin, View):
-    pass
+class EditEventView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Event
+    form_class = EditEventForm
+    template_name = "edit_event_tmp.html"
+
+    def get_success_url(self):
+        event_id = self.kwargs['pk']
+        return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
+
+
+class EditTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+    def get(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        timeslots = event.event_datetimeslot.all()
+        return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event":event})
+
+
+
+class EditOneTimeslotView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = DateTimeSlot
+    fields = ["date_time_from", "date_time_to"]
+    template_name = "edit_one_time_slot_tmp.html"
+
+    def get_success_url(self):
+        datetime_id = self.kwargs['pk']
+        datetime = DateTimeSlot.objects.get(pk=datetime_id)
+        event_id = datetime.event.pk
+        return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
+
 
 
 class DeleteEventView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):

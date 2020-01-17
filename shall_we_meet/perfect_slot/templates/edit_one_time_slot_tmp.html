@@ -5,12 +5,12 @@
 
 <div class="container-fluid col-md-5">
 
-    <h1>Step 1- Creating meeting</h1>
+    <h1>Edit time slot</h1>
 
     <form method="post">
         {% csrf_token %}
         {{ form | crispy }}
-        <button type="submit" class="btn btn-info myButton">Next step</button>
+        <button type="submit" class="btn btn-info myButton">Submit</button>
     </form>
 </div>
 

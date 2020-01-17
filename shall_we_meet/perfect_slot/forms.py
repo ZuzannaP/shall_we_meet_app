@@ -45,9 +45,22 @@ class CreateEventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["title", "description", "location", "approx_duration", "participants"]
+    #TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
+        widgets = {
+            'participants': forms.CheckboxSelectMultiple,
+        }
 
 
 class ProposeTimeslotsForm(forms.ModelForm):
     class Meta:
         model = DateTimeSlot
         fields = ["date_time_from", "date_time_to"]
+
+
+class EditEventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', "description", 'location', 'approx_duration', 'participants']
+        widgets = {
+            'participants': forms.CheckboxSelectMultiple,
+        }

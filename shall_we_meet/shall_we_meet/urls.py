@@ -18,7 +18,7 @@ from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
     CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView, EventView, \
     OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, ProposeTimeslotsView, EditEventView, \
-    DeleteEventView
+    DeleteEventView, EditOneTimeslotView, EditTimeslotsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,7 +33,9 @@ urlpatterns = [
     path('password/change_done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
     path("event/create", CreateEventView.as_view(), name="create_event"),
     path("event/create/timeslots/<int:event_id>/", ProposeTimeslotsView.as_view(), name="propose_timeslots"),
-    path("event/edit/" , EditEventView.as_view(), name="edit_event"),
+    path("event/edit/<int:pk>/" , EditEventView.as_view(), name="edit_event"),
+    path("event/edit/timeslots/<int:pk>/", EditTimeslotsView.as_view(), name="edit_timeslots"),
+    path("event/edit/timeslot/<int:pk>/", EditOneTimeslotView.as_view(), name="edit_one_timeslot"),
     path("event/delete/", DeleteEventView.as_view(), name="delete_event"),
     path("event/view/<int:pk>/", EventView.as_view(), name="event_view"),
     path("event/organizer/in_progress", OrganizerInProgressView.as_view(), name="organizer_in_progress"),
