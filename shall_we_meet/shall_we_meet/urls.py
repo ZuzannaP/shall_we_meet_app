@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin, auth
 from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
-    CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView
+    CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView, EventView, \
+    OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,11 @@ urlpatterns = [
     path('account/delete/', DeleteAccountView.as_view(), name="delete_account"),
     path('password/change/', CustomPasswordChangeView.as_view(),  name='password_change'),
     path('password/change_done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
-    path("event/create", CreateEventView.as_view(), name="create_event")
+    path("event/create", CreateEventView.as_view(), name="create_event"),
+    path("event/view/<int:pk>/", EventView.as_view(), name="event_view"),
+    path("event/organizer/in_progress", OrganizerInProgressView.as_view(), name="organizer_in_progress"),
+    path("event/organizer/upcoming", OrganizerUpcomingView.as_view(), name="organizer_upcoming"),
+    path("event/organizer/archive", OrganizerArchiveView.as_view(), name="organizer_archive")
+
 ]
 

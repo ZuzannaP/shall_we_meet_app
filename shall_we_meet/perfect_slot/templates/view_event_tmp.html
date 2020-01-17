@@ -1,0 +1,27 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+{% block event %}
+
+    <div class="container-fluid col-md-5">
+
+        <h1>Meeting details</h1>
+
+        <p>Title: {{ object.title }}</p>
+        <p>Description: {{ object.description }} </p>
+        <p>Organizer: {{ object.owner }} </p>
+        <p>Location: {{ object.location }} </p>
+        <p>Duration: {{ object.approx_duration }} </p>
+        <p>Participants: {% for participant in object.participants.all %}
+            <li>{{ participant }}</li>
+        {% endfor %}
+        </p>
+
+        <p>{{ object.is_active }}</p>
+        <p> {{ object.creation_time }}</p>
+        <p>{{ objects.update_time }}</p>
+
+    </div>
+
+{% endblock %}
+

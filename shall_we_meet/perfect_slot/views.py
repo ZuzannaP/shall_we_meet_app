@@ -1,15 +1,16 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
-
-from .models import CustomUser
-from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser, Event
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm
 
 
 def homepage(request):
@@ -54,16 +55,17 @@ class AccountSettingsView(View):
     def get(self, request):
         return render(request, "account_settings_tmp.html")
 
-class SignUpView(SuccessMessageMixin, CreateView,):
+
+class SignUpView(SuccessMessageMixin, CreateView):
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy("login")
     success_message = 'Your account has been created. Welcome on board!'
     template_name = 'signup.html'
 
 
 class EditPersonalInfoView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = CustomUserChangeForm
-    success_url = reverse_lazy('homepage')
+    success_url = reverse_lazy("homepage")
     success_message = "Your personal data has been succesfully changed!"
     template_name = 'edit_personal_info.html'
 
@@ -93,9 +95,33 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 ## EVENT ADMINISTRATION ##
 
 
-class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, View):
+class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def get(self, request):
-        return render(request, "create_event_tmp.html")
+        form = CreateEventForm()
+        ctx = {"form": form}
+        return render(request, "create_event_tmp.html", ctx)
+
+    def post(self, request):
+        form = CreateEventForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            location = form.cleaned_data["location"]
+            approx_duration = form.cleaned_data["approx_duration"]
+            participants = form.cleaned_data["participants"]
+            event = Event.objects.create(title=title, description=description, location=location,
+                                         approx_duration=approx_duration, owner=request.user)
+            for participant in participants:
+                event.participants.add(participant)
+            messages.success(request, 'Event has been created!')
+            return redirect(f'/event/view/{event.id}/')
+        ctx = {"form": form}
+        return render(request, "create_event_tmp.html", ctx)
+
+
+class EventView(LoginRequiredMixin, DetailView):
+    model = Event
+    template_name = "view_event_tmp.html"
 
 
 class EditEventView(LoginRequiredMixin, SuccessMessageMixin, View):
@@ -104,3 +130,24 @@ class EditEventView(LoginRequiredMixin, SuccessMessageMixin, View):
 
 class DeleteEventView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     pass
+
+
+class OrganizerInProgressView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        events = Event.objects.all().filter(owner=self.request.user).filter(is_in_progress=True)
+        return render(request, "owner_in_progress_tmp.html",{"events":events})
+
+
+class OrganizerUpcomingView(LoginRequiredMixin, ListView):
+    def get(self, request):
+        events = Event.objects.all().filter(owner=self.request.user).filter(is_upcoming=True)
+        return render(request, "owner_upcoming_tmp.html", {"events": events})
+
+
+class OrganizerArchiveView(LoginRequiredMixin, ListView):
+    def get(self, request):
+        events = Event.objects.all().filter(owner=self.request.user).filter(is_archive=True)
+        return render(request, "owner_archive_tmp.html", {"events": events})
+
+

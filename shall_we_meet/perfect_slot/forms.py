@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser
+from .models import CustomUser, Event
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -39,3 +39,11 @@ class CustomUserChangeForm(UserChangeForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=255)
     password = forms.CharField(widget=forms.PasswordInput, max_length=255)
+
+
+class CreateEventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ["title", "description", "location", "approx_duration", "participants"]
+
+

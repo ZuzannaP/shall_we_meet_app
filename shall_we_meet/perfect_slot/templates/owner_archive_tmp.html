@@ -1,0 +1,19 @@
+{% extends 'homepage.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block event %}
+
+<div class="container-fluid col-md-5">
+    <h1>My archive meetings</h1>
+    <ul>
+    {% for event in events %}
+        <li> {{ event.title}}</li>
+    {% empty %}
+        <p>No meetings here.</p>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
+

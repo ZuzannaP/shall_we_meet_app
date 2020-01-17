@@ -1,21 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+{% block event %}
 
-{% block content %}
-    <div class="d-flex">
+<div class="container-fluid col-md-5">
 
-        <div class="container-fluid col-md-5">
-            <h1>Creating event</h1>
+    <h1>Creating meeting</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-info myButton">Submit</button>
+    </form>
+</div>
 
-
-{##}
-{#            <form method="post">#}
-{#                {% csrf_token %}#}
-{#                {{ form | crispy }}#}
-{#                <button type="submit" class="btn btn-info myButton">Submit</button>#}
-{#            </form>#}
-        </div>
-        <div class="container-fluid col-md-2"></div>
-    </div>
 {% endblock %}
+

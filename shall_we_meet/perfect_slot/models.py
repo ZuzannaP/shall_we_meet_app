@@ -34,7 +34,9 @@ class Event(models.Model):
     approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
     participants = models.ManyToManyField(CustomUser, related_name='their_events')
     owner = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_events')
-    is_active = models.BooleanField(default=False)
+    is_in_progress = models.BooleanField(default=True)
+    is_upcoming = models.BooleanField(default=False)
+    is_archive = models.BooleanField(default=False)
 
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
     # common_geographical_coordinates = models.PointField(blank=True, null=True)
