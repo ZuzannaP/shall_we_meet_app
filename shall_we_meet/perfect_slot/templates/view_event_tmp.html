@@ -8,7 +8,8 @@
         <h1>Meeting details</h1>
 
     <a type="button" class="btn btn-info myButton" href="{% url "edit_event" object.pk %}">Edit</a>
-    <button class="btn btn-info myButton">Delete</button>
+        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" object.pk %}">Delete</a>
+
 
         <p>Title: {{ object.title }}</p>
         <p>Description: {{ object.description }} </p>

@@ -96,7 +96,7 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 ## EVENT ADMINISTRATION ##
 
 
-class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, View):
+class CreateEventView(LoginRequiredMixin, View):
     def get(self, request):
         form = CreateEventForm()
         ctx = {"form": form}
@@ -119,7 +119,7 @@ class CreateEventView(LoginRequiredMixin, SuccessMessageMixin, View):
         return render(request, "create_event_tmp.html", ctx)
 
 
-class ProposeTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
+class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
         timeslots_nr = event.event_datetimeslot.count()
@@ -140,7 +140,6 @@ class ProposeTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
                 datetimeslot.participants.add(participant)
             #TODO: nie chce, zęby wyświetlało z sekundami, tak jak poniżej!
             messages.success(request, f'Timeslot {datetimeslot} has been added!')
-            # return render(request, "propose_time_slots_tmp.html", ctx)
             return redirect(f'/event/create/timeslots/{event.id}/')
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
@@ -151,7 +150,7 @@ class EventView(LoginRequiredMixin, DetailView):
     template_name = "view_event_tmp.html"
 
 
-class EditEventView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class EditEventView(LoginRequiredMixin,  UpdateView):
     model = Event
     form_class = EditEventForm
     template_name = "edit_event_tmp.html"
@@ -161,15 +160,15 @@ class EditEventView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
 
 
-class EditTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, ListView):
+#TODO: dodaj opcję edycji oraz opcję usunięcia pojedynczego datetimeslotu (do  pierwszego wystarczy zmienić link na guzik, do drugiego trzeba stworzyć nowy deleteview
+class EditTimeslotsView(LoginRequiredMixin,  ListView):
     def get(self, request, pk):
         event = Event.objects.get(pk=pk)
         timeslots = event.event_datetimeslot.all()
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event":event})
 
 
-
-class EditOneTimeslotView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class EditOneTimeslotView(LoginRequiredMixin,  UpdateView):
     model = DateTimeSlot
     fields = ["date_time_from", "date_time_to"]
     template_name = "edit_one_time_slot_tmp.html"
@@ -181,13 +180,23 @@ class EditOneTimeslotView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
 
 
+class DeleteEventView(LoginRequiredMixin, View):
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        return render(request, "delete_event_tmp.html", {"event": event})
 
-class DeleteEventView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
-    pass
+    def post(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        try:
+            event.delete()
+            messages.success(request, 'Event has been succesfully deleted')
+            return render(request, "homepage.html")
+        except Exception as e:
+            messages.ERROR(request, "There was a problem while deleting. Try again.")
+            return render(request, "delete_event_tmp.html", {"event": event})
 
 
 class OrganizerInProgressView(LoginRequiredMixin, View):
-
     def get(self, request):
         events = Event.objects.all().filter(owner=self.request.user).filter(is_in_progress=True)
         return render(request, "owner_in_progress_tmp.html",{"events":events})
