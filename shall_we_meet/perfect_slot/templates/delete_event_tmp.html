@@ -1,11 +1,9 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+{% block mytitle %}<h1>Delete event</h1>{% endblock %}
+
 {% block event %}
-
-<div class="container-fluid col-md-5">
-
-    <h1>Delete event</h1>
 
       <p id="youSure">{{ user.first_name }}, are you sure you want to delete this event? </p></br></br>
             <form action="" method="post">
@@ -15,7 +13,6 @@
                 <a href="{% url 'homepage' %}" class="btn btn-info myButton ">No</a>
                 <input type="submit" value="Yes" class="btn btn-info myButton"/> </input>
             </form>
-</div>
 
 {% endblock %}
 

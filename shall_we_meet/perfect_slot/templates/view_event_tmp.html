@@ -1,38 +1,84 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+
+{% block mytitle %}<h1>Meeting details</h1>{% endblock %}
+
 {% block event %}
 
-    <div class="container-fluid col-md-5">
-
-        <h1>Meeting details</h1>
-
-    <a type="button" class="btn btn-info myButton" href="{% url "edit_event" object.pk %}">Edit</a>
-        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" object.pk %}">Delete</a>
-
-
-        <p>Title: {{ object.title }}</p>
-        <p>Description: {{ object.description }} </p>
-        <p>Organizer: {{ object.owner }} </p>
-        <p>Location: {{ object.location }} </p>
-        <p>Duration: {{ object.approx_duration }} </p>
-        Participants: {% for participant in object.participants.all %}
-            <li>{{ participant }}</li>
-        {% endfor %}
+    {% if object.owner == request.user %}
+        <a type="button" class="btn btn-info myButton" href="{% url "edit_event" object.pk %}">Edit</a>
+        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" object.pk %}">Delete</a></br>
+        </br>
+    {% endif %}
 
 
-        <p>In progress? {{ object.is_in_progress }}</p>
-        <p> Creation time: {{ object.creation_time }}</p>
-        <p>Update time: {{ object.update_time }}</p>
-
-        Proposed time slots:
+    <table class="table table-striped table-sm">
+        <tbody>
+        <tr>
+            <th scope="row">Title</th>
+            <td>{{ object.title }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Description</th>
+            <td>{{ object.description }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Organizer</th>
+            <td>{{ object.owner }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Location</th>
+            <td>{{ object.location }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Duration</th>
+            <td>{{ object.approx_duration }}</td>
+        </tr>
+         <tr>
+            <th scope="row">Proposed time slots</th>
+            <td>
+                {% if object.owner != request.user %}
+                <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" object.id %}">Vote for time slots!</a>
+                {%  endif %}
+            </td>
+        </tr>
         {% for slot in object.event_datetimeslot.all %}
-            <li> {{ slot.date_time_from }} - {{ slot.date_time_to }}</li>
+            <tr>
+                <th scope="row"></th>
+                <td>{{ slot.date_time_from }} - {{ slot.date_time_to }}</td>
+            </tr>
         {% endfor %}
+        <tr>
+            <th scope="row" >Participants</th>
+            <td></td>
+        </tr>
+        {% for participant in object.participants.all %}
+            <tr>
+                <th scope="row"></th>
+                <td>{{ participant }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th scope="row">Status</th>
+            <td>
+                {% if object.is_in_progress %}
+                    In progress
+                {% elif object_is_upcoming %}
+                    Upcoming
+                {% elif object_is_archive %}
+                    Archived
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Created on</th>
+            <td>{{ object.creation_time }}</td>
+        </tr>
+        </tbody>
+    </table>
 
-
-
-    </div>
 
 {% endblock %}
 
+</div>

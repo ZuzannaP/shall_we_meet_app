@@ -18,7 +18,8 @@ from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
     CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView, EventView, \
     OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, ProposeTimeslotsView, EditEventView, \
-    DeleteEventView, EditOneTimeslotView, EditTimeslotsView
+    DeleteEventView, EditOneTimeslotView, EditTimeslotsView, AsGuestInProgressView, AsGuestUpcomingView,  \
+    AsGuestArchiveView, VoteForTimeslotsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,7 +41,10 @@ urlpatterns = [
     path("event/view/<int:pk>/", EventView.as_view(), name="event_view"),
     path("event/organizer/in_progress", OrganizerInProgressView.as_view(), name="organizer_in_progress"),
     path("event/organizer/upcoming", OrganizerUpcomingView.as_view(), name="organizer_upcoming"),
-    path("event/organizer/archive", OrganizerArchiveView.as_view(), name="organizer_archive")
-
+    path("event/organizer/archive", OrganizerArchiveView.as_view(), name="organizer_is_archive"),
+    path("event/guest/in_progres", AsGuestInProgressView.as_view(), name="guest_in_progress"),
+    path("event/guest/upcoming", AsGuestUpcomingView.as_view(), name="guest_upcoming"),
+    path("event/guest/archive", AsGuestArchiveView.as_view(), name="guest_is_archive"),
+    path("event/vote/timeslots/<int:event_id>", VoteForTimeslotsView.as_view(), name="vote_for_timeslots")
 ]
 

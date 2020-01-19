@@ -1,0 +1,25 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block mytitle %} <h1>Vote for time slots</h1> {% endblock %}
+
+{% block event %}
+
+
+      <ul class="list-group>">
+        {% for timeslot in timeslots %}
+            <ol class="list-group-item" id="votingSlots">{{ timeslot.date_time_from }}
+                - {{ timeslot.date_time_to }}
+            <button type="submit" class="btn btn-info myButton btn-sm">Yes</button>
+            <button type="submit" class="btn btn-info myButton btn-sm">No</button>
+            <button type="submit" class="btn btn-info myButton btn-sm">If need be</button></ol>
+            {% empty %}
+            <p>No time slots to vote for</p>
+        {% endfor %}
+    </ul>
+    <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Finish</a>
+
+
+{% endblock %}
+

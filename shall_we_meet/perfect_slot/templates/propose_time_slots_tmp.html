@@ -1,20 +1,17 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+{% block mytitle %} <h1>Step 2 - Propose time slots</h1> {% endblock %}
+
 {% block event %}
 
-<div class="container-fluid col-md-5">
-
-    <h1>Step 2 - Propose time slots</h1>
-
-  {% if timeslots_nr %}
-          <h2>Add another slot</h2></br>
+    {% if timeslots_nr %}
+        <h2>Add another slot</h2></br>
     {% endif %}
 
-    <h2>Choose at least 2 times slots for the meeting.
-        <br>
-        The more you choose, the biggest choice your guests will have. <h2></br>
-
+    <h2>Choose at least 2 times slots for the meeting.<br>
+    The more you choose, the biggest choice your guests will have.
+    <h2></br>
 
     <form method="post">
         {% csrf_token %}
@@ -25,7 +22,6 @@
         {% endif %}
     </form>
 
-</div>
 
 {% endblock %}
 

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -15,7 +16,15 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 
 
 def homepage(request):
-    return render(request, "homepage.html")
+    ctx = {}
+    if request.user.is_authenticated:
+        ctx["events"] = Event.objects.all().filter(owner=request.user).filter(is_upcoming=True)
+        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(is_in_progress=True).distinct()
+        return render(request, "homepage.html", ctx)
+    else:
+        ctx["events"] = "n/a"
+        return render(request, "homepage.html", ctx)
+
 
 ### USER ADMINISTRATION ###
 
@@ -98,12 +107,12 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 
 class CreateEventView(LoginRequiredMixin, View):
     def get(self, request):
-        form = CreateEventForm()
+        form = CreateEventForm(excluding_owner=request.user)
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
 
     def post(self, request):
-        form = CreateEventForm(request.POST)
+        form = CreateEventForm(request.POST, excluding_owner=request.user)
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
@@ -199,29 +208,52 @@ class DeleteEventView(LoginRequiredMixin, View):
 
 class OrganizerInProgressView(LoginRequiredMixin, View):
     def get(self, request):
-        events = Event.objects.all().filter(owner=self.request.user).filter(is_in_progress=True)
+        events = Event.objects.filter(owner=self.request.user).filter(is_in_progress=True)
         return render(request, "owner_in_progress_tmp.html",{"events":events})
 
 
 class OrganizerUpcomingView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.all().filter(owner=self.request.user).filter(is_upcoming=True)
+        events = Event.objects.filter(owner=self.request.user).filter(is_upcoming=True)
         return render(request, "owner_upcoming_tmp.html", {"events": events})
 
 
 class OrganizerArchiveView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.all().filter(owner=self.request.user).filter(is_archive=True)
+        events = Event.objects.filter(owner=self.request.user).filter(is_archive=True)
         return render(request, "owner_archive_tmp.html", {"events": events})
 
 
+#chyba do tych 3 muszęje jeszcze dodać, że tylko te, gdzie jestem jako guest!
 class AsGuestInProgressView(LoginRequiredMixin, View):
-    pass
+    def get(self, request):
+        events = Event.objects.filter(participants=request.user).filter(is_in_progress=True)
+        return render(request, "guest_in_progress_tmp.html", {"events": events})
 
 
 class AsGuestUpcomingView(LoginRequiredMixin, ListView):
-    pass
+    def get(self, request):
+        events = Event.objects.filter(participants=request.user).filter(is_upcoming=True)
+        return render(request, "guest_upcoming_tmp.html", {"events": events})
 
 
 class AsGuestArchiveView(LoginRequiredMixin, ListView):
-    pass
+    def get(self, request):
+        events = Event.objects.filter(participants=request.user).filter(is_archive=True)
+        return render(request, "guest_archive_tmp.html", {"events": events})
+
+
+class VoteForTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        timeslots = event.event_datetimeslot.all()
+        ctx = {"timeslots": timeslots, "event": event}
+        return render(request, "vote_for_timeslots_tmp.html", ctx)
+
+#
+# slots = event.event_datetimeslot.all() <-- wyszukuje wszystkie sloty dla danego eventu
+#
+#   ala's slots = slots.participants(username="ala")
+#
+#    for slot in slots:
+#     slot.participants_votes.all().filter(participant=request.user)           <-- wyszukuje wszystkie opcje głosow dla danej osoby

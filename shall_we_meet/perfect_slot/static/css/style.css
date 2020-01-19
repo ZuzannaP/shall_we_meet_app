@@ -56,6 +56,12 @@ a.nav-item.nav-link{
   background-color:  #E2E8F7;
     color: #4F4350;
 }
+
+/*BADGE PILLS*/
+.badge{
+    background-color: #883896;
+}
+
 /*BODY*/
 
 h1 {
@@ -90,4 +96,18 @@ body{
     color: #a12291;
     font-size: large;
     font-weight: 700;
+}
+
+#myMeetings, #votingSlots{
+      background-color:  #E2E8F7;
+        color: #4F4350;
+}
+
+#myMeetings:hover{
+      background-color:  #008B84;
+        color: #ffffff;
+}
+
+tr{
+    text-align: left;
 }

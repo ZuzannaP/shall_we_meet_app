@@ -2,19 +2,9 @@
 
 {% load crispy_forms_tags %}
 
-{% block event %}
 
-<div class="container-fluid col-md-5">
 
-    <h1>My meetings in preparation stage</h1>
-    <ul>
-    {% for event in events %}
-        <ol><a href="{% url "event_view" event.id %}">{{ event.title}}</a></ol>
-    {% empty %}
-        <p>No meetings here.</p>
-    {% endfor %}
-    </ul>
-</div>
 
-{% endblock %}
+    {% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
+
 

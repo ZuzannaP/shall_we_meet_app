@@ -1,27 +1,23 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+
+{% block mytitle %} <h1>Step 2 - Edit time slots</h1> {% endblock %}
+
 {% block event %}
 
-    <div class="container-fluid col-md-5">
+    <h2>Click on timeslot to edit or go back to event by clicking "Edition done"</h2></br></br>
 
-        <h1>Step 2 - Edit time slots</h1>
+      <ul class="list-group>">
+        {% for timeslot in timeslots %}
+            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item">{{ timeslot.date_time_from }}
+                - {{ timeslot.date_time_to }}</a>
+            {% empty %}
+            <p>No time slots here.</p>
+        {% endfor %}
+    </ul>
+    <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Edition done</a>
 
-        <h2>Click on timeslot to edit or go back to event by clicking "Edition done"</h2>
-
-        <ul>
-            {% for timeslot in timeslots %}
-                <li><a href="{% url "edit_one_timeslot" timeslot.pk %}">{{ timeslot.date_time_from }}
-                    - {{ timeslot.date_time_to }}</a></li>
-                {% empty %}
-                <p>No time slots here.</p>
-            {% endfor %}
-        </ul>
-
-        <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Edition done</a>
-
-
-    </div>
 
 {% endblock %}
 

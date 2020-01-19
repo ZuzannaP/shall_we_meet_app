@@ -2,18 +2,7 @@
 
 {% load crispy_forms_tags %}
 
-{% block event %}
 
-<div class="container-fluid col-md-5">
-    <h1>My archive meetings</h1>
-    <ul>
-    {% for event in events %}
-             <ol><a href="{% url "event_view" event.id %}">{{ event.title}}</a></ol>
-    {% empty %}
-        <p>No meetings here.</p>
-    {% endfor %}
-    </ul>
-</div>
+   {% block mytitle %} <h1>Archive meetings I have organized</h1> {% endblock %}
 
-{% endblock %}
 
