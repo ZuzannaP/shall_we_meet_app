@@ -144,6 +144,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
 
+
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
 class EventView(LoginRequiredMixin, DetailView):
     model = Event
@@ -160,7 +161,7 @@ class EditEventView(LoginRequiredMixin,  UpdateView):
         return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
 
 
-#TODO: dodaj opcję edycji oraz opcję usunięcia pojedynczego datetimeslotu (do  pierwszego wystarczy zmienić link na guzik, do drugiego trzeba stworzyć nowy deleteview
+#TODO: dodaj opcję edycji oraz opcję usunięcia pojedynczego datetimeslotu i dodania timeslotu (do  pierwszego wystarczy zmienić link na guzik, do drugiego trzeba stworzyć nowy deleteview
 class EditTimeslotsView(LoginRequiredMixin,  ListView):
     def get(self, request, pk):
         event = Event.objects.get(pk=pk)
