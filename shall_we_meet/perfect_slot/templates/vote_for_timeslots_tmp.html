@@ -7,13 +7,17 @@
 {% block event %}
 
 
-      <ul class="list-group>">
+    <ul class="list-group>">
         {% for timeslot in timeslots %}
-            <ol class="list-group-item" id="votingSlots">{{ timeslot.date_time_from }}
-                - {{ timeslot.date_time_to }}
-            <button type="submit" class="btn btn-info myButton btn-sm">Yes</button>
-            <button type="submit" class="btn btn-info myButton btn-sm">No</button>
-            <button type="submit" class="btn btn-info myButton btn-sm">If need be</button></ol>
+            <ol class="list-group-item" id="votingSlots">
+            {% if verdict.timeslot.pk == -2 %}
+                <span class="badge badge-dark badge-pill">Vote!</span>
+            {% endif %}
+                {{ timeslot.date_time_from }} - {{ timeslot.date_time_to }}
+                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "yes" %}">Yes</a>
+                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "no" %}">No</a>
+                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "ifneedbe" %}">If need be</a>
+            </ol>
             {% empty %}
             <p>No time slots to vote for</p>
         {% endfor %}

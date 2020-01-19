@@ -63,7 +63,7 @@ class DateTimeSlot(models.Model):
 class ParticipantSlotVote(models.Model):
     participant = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
-    vote = models.SmallIntegerField(default=-2, choices=[(-2, "Did not vote"), (0, "No"), (0.5, "If need be"), (1, "Yes")])
+    vote = models.SmallIntegerField(default=-2, choices=[(-2, "Did not vote"), (1, "No"), (3, "If need be"), (2, "Yes")])
 
     def __str__(self):
         return f"{self.participant}-{self.slot}: {self.vote}"

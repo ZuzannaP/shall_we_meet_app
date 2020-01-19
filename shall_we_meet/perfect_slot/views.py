@@ -4,13 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
-from .models import CustomUser, Event, DateTimeSlot
+from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm, \
     EditEventForm
 
@@ -18,8 +19,7 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
-        ctx["events"] = Event.objects.all().filter(owner=request.user).filter(is_upcoming=True)
-        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(is_in_progress=True).distinct()
+        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(Q(is_in_progress=True) & Q(is_upcoming=True)).distinct()
         return render(request, "homepage.html", ctx)
     else:
         ctx["events"] = "n/a"
@@ -243,17 +243,57 @@ class AsGuestArchiveView(LoginRequiredMixin, ListView):
         return render(request, "guest_archive_tmp.html", {"events": events})
 
 
-class VoteForTimeslotsView(LoginRequiredMixin, SuccessMessageMixin, View):
+#TODO: co tu nie działa - czemu nie wyświetla niezagłosowanych miejsc?????
+class VoteForTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
         timeslots = event.event_datetimeslot.all()
-        ctx = {"timeslots": timeslots, "event": event}
-        return render(request, "vote_for_timeslots_tmp.html", ctx)
+        vote_list = {}
+        if request.user in event.participants.all():
+            for slot in timeslots:
+                my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
+                vote_list[slot.pk] = my_vote.vote
+            print(vote_list)
+            ctx = {"verdict": vote_list, "timeslots": timeslots, "event": event}
+            return render(request, "vote_for_timeslots_tmp.html", ctx)
+        else:
+            raise PermissionDenied("You are not authorized!")
 
 #
-# slots = event.event_datetimeslot.all() <-- wyszukuje wszystkie sloty dla danego eventu
-#
-#   ala's slots = slots.participants(username="ala")
-#
-#    for slot in slots:
-#     slot.participants_votes.all().filter(participant=request.user)           <-- wyszukuje wszystkie opcje głosow dla danej osoby
+# class VoteForTimeslotsView(LoginRequiredMixin, View):
+#     def get(self, request, event_id):
+#         event = Event.objects.get(pk=event_id)
+#         timeslots = event.event_datetimeslot.all()
+#         vote_list = {}
+#         if request.user in event.participants.all():
+#             for slot in timeslots:
+#                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
+#                 vote_list.append(my_vote.vote)
+#             if -2 in vote_list:
+#                 ctx = {"verdict": "Vote!", "timeslots": timeslots, "event": event}
+#                 return render(request, "vote_for_timeslots_tmp.html", ctx)
+#             ctx = {"timeslots": timeslots, "event": event}
+#             return render(request, "vote_for_timeslots_tmp.html", ctx)
+#         else:
+#             raise PermissionDenied("You are not authorized!")
+
+
+class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
+    def get(self, request, timeslot_id, vote):
+        timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
+        thevote = None
+        print(vote)
+        if vote == "yes":
+            thevote = 2
+        elif vote == "no":
+            thevote = 1
+        elif vote == "ifneedbe":
+            thevote = 3
+        event = timeslot.event
+        participantslotvote = ParticipantSlotVote.objects.filter(participant=request.user, slot=timeslot)[0]
+        participantslotvote.vote = thevote
+        participantslotvote.save()
+        return redirect(f'/event/vote/timeslots/{event.id}')
+
+
+

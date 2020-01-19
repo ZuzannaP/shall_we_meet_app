@@ -19,8 +19,8 @@
                     <li class="list-group-item  ">Meetings organized by me</li>
                     <a href="{% url "organizer_in_progress" %}"
                        class="list-group-item list-group-item-dark list-group-item-action ">In progress
-                        {% if owner_in_progress %}
-                         <span class="badge badge-dark badge-pill">Pending actions: {{ owner_in_progress.count }}</span></a>
+                        {% if owner_pending_actions %}
+                         <span class="badge badge-dark badge-pill">Pending actions: {{ owner_pending_actions.count }}</span></a>
                         {% endif %}
                     <a href="{% url "organizer_upcoming" %}"
                        class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
@@ -29,8 +29,8 @@
                     <li class="list-group-item ">Meetings I have been invited to</li>
                     <a href="{% url "guest_in_progress" %}"
                        class="list-group-item list-group-item-dark list-group-item-action">In progress
-                          {% if guest_in_progress %}
-                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_in_progress.count }}</span></a>
+                          {% if guest_pending_actions %}
+                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions.count }}</span></a>
                           {% endif %}
                     <a href="{% url "guest_upcoming" %}"
                        class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
@@ -47,6 +47,11 @@
                         {% for event in events %}
                             <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
                                 {{ event.title }}: {{ event.location }}
+                               {% if event.is_in_progress %}
+                                    (In progress)
+                                {% elif event_is_upcoming %}
+                                    (Upcoming)
+                                {% endif %}
                             </a>
                             {% empty %}
                             <p>No meetings in here.</p>
