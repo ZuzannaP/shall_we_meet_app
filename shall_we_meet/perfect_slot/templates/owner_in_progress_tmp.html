@@ -1,5 +1,5 @@
 {% extends 'homepage.html' %}
-
+{% load static %}
 {% load crispy_forms_tags %}
 
 
@@ -8,3 +8,17 @@
     {% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
 
 
+              {% block event %}
+                    <ul class="list-group>">
+                        {% for event in events %}
+                            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                                {{ event.title }}: {{ event.location }}
+                                   <span class="badge badge-dark badge-pill">Creation not finished yet</span>
+                            </a>
+                            {% empty %}
+                            <p>No meetings in here.</p>
+                            </br> </br> </br>
+                            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
+                        {% endfor %}
+                    </ul>
+                {% endblock %}

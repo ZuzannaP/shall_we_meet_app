@@ -30,7 +30,7 @@
                     <a href="{% url "guest_in_progress" %}"
                        class="list-group-item list-group-item-dark list-group-item-action">In progress
                           {% if guest_pending_actions %}
-                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions.count }}</span></a>
+                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions }}</span></a>
                           {% endif %}
                     <a href="{% url "guest_upcoming" %}"
                        class="list-group-item list-group-item-dark list-group-item-action">Upcoming</a>
