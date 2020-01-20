@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser
+from .models import CustomUser, Event, DateTimeSlot
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -39,3 +39,36 @@ class CustomUserChangeForm(UserChangeForm):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=255)
     password = forms.CharField(widget=forms.PasswordInput, max_length=255)
+
+
+class CreateEventForm(forms.ModelForm):
+
+    def __init__(self, excluding_owner, *args, **kwargs):
+        '''overriding default method , which allows to exclude current user from queryset
+        For it to work you have to add in views
+        form = CreateEventForm(excluding_owner=request.user)'''
+        super(CreateEventForm, self).__init__(*args, **kwargs)
+        self.fields['participants'].queryset = self.fields['participants'].queryset.exclude(id=excluding_owner.pk)
+
+    class Meta:
+        model = Event
+        fields = ["title", "description", "location", "approx_duration", "participants"]
+    #TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
+        widgets = {
+            'participants': forms.CheckboxSelectMultiple,
+        }
+
+
+class ProposeTimeslotsForm(forms.ModelForm):
+    class Meta:
+        model = DateTimeSlot
+        fields = ["date_time_from", "date_time_to"]
+
+
+class EditEventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', "description", 'location', 'approx_duration', 'participants']
+        widgets = {
+            'participants': forms.CheckboxSelectMultiple,
+        }

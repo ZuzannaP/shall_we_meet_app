@@ -5,7 +5,8 @@
 {% block content %}
     <div class="d-flex">
 
-        <div class="list-group list-group-flush">
+
+        <div class="list-group list-group-flush col-md-3">
                <li class="list-group-item  ">Navigation</li>
             <a href="{% url 'homepage' %}"
                class="list-group-item list-group-item-dark list-group-item-action ">Homepage</a>
@@ -16,7 +17,7 @@
         </div>
 
 
-        <div class="container-fluid col-md-6">
+        <div class="container-fluid col-md-5">
             <h1>Edit your personal information</h1>
 
             <form method="post">
@@ -25,6 +26,6 @@
                 <button type="submit" class="btn btn-info myButton">Submit</button>
             </form>
         </div>
-
+        <div class="container-fluid col-md-2"></div>
     </div>
 {% endblock %}

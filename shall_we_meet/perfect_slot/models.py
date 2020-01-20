@@ -34,7 +34,9 @@ class Event(models.Model):
     approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
     participants = models.ManyToManyField(CustomUser, related_name='their_events')
     owner = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_events')
-    is_active = models.BooleanField(default=False)
+    is_in_progress = models.BooleanField(default=True)
+    is_upcoming = models.BooleanField(default=False)
+    is_archive = models.BooleanField(default=False)
 
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
     # common_geographical_coordinates = models.PointField(blank=True, null=True)
@@ -50,7 +52,7 @@ class Event(models.Model):
 class DateTimeSlot(models.Model):
     date_time_from = models.DateTimeField()
     date_time_to = models.DateTimeField()
-    event = models.ForeignKey(Event, on_delete=CASCADE)
+    event = models.ForeignKey(Event, on_delete=CASCADE, related_name="event_datetimeslot")
     participants = models.ManyToManyField(CustomUser, through='ParticipantSlotVote')
     winning = models.BooleanField(default=False)
 
@@ -61,7 +63,7 @@ class DateTimeSlot(models.Model):
 class ParticipantSlotVote(models.Model):
     participant = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
-    vote = models.SmallIntegerField(choices=[(-1, "No"), (0, "If need be"), (1, "Yes")])
+    vote = models.SmallIntegerField(default=-2, choices=[(-2, "Did not vote"), (1, "No"), (3, "If need be"), (2, "Yes")])
 
     def __str__(self):
         return f"{self.participant}-{self.slot}: {self.vote}"

@@ -1,0 +1,16 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+
+ {% block mytitle %} <h1>Edit timeslot</h1> {% endblock %}
+
+{% block event %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-info myButton">Submit</button>
+    </form>
+
+{% endblock %}
+

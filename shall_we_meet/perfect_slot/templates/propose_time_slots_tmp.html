@@ -1,0 +1,27 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+{% block mytitle %} <h1>Step 2 - Propose time slots</h1> {% endblock %}
+
+{% block event %}
+
+    {% if timeslots_nr %}
+        <h2>Add another slot</h2></br>
+    {% endif %}
+
+    <h2>Choose at least 2 times slots for the meeting.<br>
+    The more you choose, the biggest choice your guests will have.
+    <h2></br>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-info myButton">Save time slot</button>
+        {% if timeslots_nr >= 2 %}
+            <a href="{% url "event_view" event.id %}" class="btn btn-info myButton">Finish</a>
+        {% endif %}
+    </form>
+
+
+{% endblock %}
+

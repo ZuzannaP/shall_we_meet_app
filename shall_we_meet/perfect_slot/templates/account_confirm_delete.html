@@ -5,17 +5,17 @@
 
 
     <div class="d-flex">
-
-        <div class="list-group list-group-flush">
-               <li class="list-group-item  ">Navigation</li>
+        <div class="list-group list-group-flush col-md-3">
+            <li class="list-group-item  ">Navigation</li>
             <a href="{% url 'homepage' %}"
                class="list-group-item list-group-item-dark list-group-item-action ">Homepage</a>
             <a href="{% url 'edit_personal_info' %}"
-               class="list-group-item list-group-item-dark list-group-item-action ">Edit you account</a>
+               class="list-group-item list-group-item-dark list-group-item-action ">Edit profile</a>
+            <a href="{% url 'password_change' %}"
+               class="list-group-item list-group-item-dark list-group-item-action ">Change password</a>
         </div>
 
-
-        <div class="container-fluid col-md-6">
+        <div class="container-fluid col-md-5">
             <h1>Delete account</h1></br></br>
             <p id="youSure">{{ user.first_name }}, are you sure? Think twice! If you delete your account, it will vanish
                 forever!</p></br></br>
@@ -25,9 +25,10 @@
                 {{ form | crispy }}
                 <a href="{% url 'homepage' %}" class="btn btn-info myButton ">No</a>
                 <input type="submit" value="Yes" class="btn btn-info myButton"/> </input>
-
             </form>
         </div>
+        <div class="container-fluid col-md-2"></div>
+
     </div>
 {% endblock %}
 
