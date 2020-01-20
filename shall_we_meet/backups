@@ -15,5 +15,5 @@ Zapis:
 	pg_dump -U postgres -W -h localhost shall_we_meet_db > backup_shall_we_meet_db.sql
 
 odczyt:
-	psql shall_we_meet_db < backup_shall_we_meet_db
+	psql -U postgres -h localhost shall_we_meet_db < backup_shall_we_meet_db.sql
 
