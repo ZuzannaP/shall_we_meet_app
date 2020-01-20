@@ -19,7 +19,7 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
-        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(Q(is_in_progress=True) & Q(is_upcoming=True)).distinct()
+        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(Q(is_in_progress=True) | Q(is_upcoming=True)).distinct()
         return render(request, "homepage.html", ctx)
     else:
         ctx["events"] = "n/a"
@@ -236,7 +236,7 @@ class AsGuestInProgressView(LoginRequiredMixin, View):
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
                 if my_vote.vote == -2:
                     event_votes[event] = "missing"
-        return render(request, "guest_in_progress_tmp.html", {"events": events, "event_votes": event_votes})
+        return render(request, "guest_in_progress_tmp.html", { "event_votes": event_votes})
 
 
 class AsGuestUpcomingView(LoginRequiredMixin, ListView):

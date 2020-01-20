@@ -46,7 +46,7 @@
         {% for slot in object.event_datetimeslot.all %}
             <tr>
                 <th scope="row"></th>
-                <td>{{ slot.date_time_from }} - {{ slot.date_time_to }}</td>
+                <td>{{ slot.date_time_from|date:'Y-m-d H:i D' }} - {{ slot.date_time_to|date:'Y-m-d H:i D' }}</td>
             </tr>
         {% endfor %}
         <tr>

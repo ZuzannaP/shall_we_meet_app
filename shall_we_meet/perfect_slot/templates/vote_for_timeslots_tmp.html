@@ -26,7 +26,7 @@
                         <span class="badge badge-dark badge-pill">Vote!</span>
                     {% endif %}</th>
                 <td>
-                    {{ timeslot.date_time_from }} - {{ timeslot.date_time_to }}
+                    {{ timeslot.date_time_from|date:'Y-m-d H:i D' }} - {{ timeslot.date_time_to|date:'Y-m-d H:i D' }}
 
                 </td>
                 <td>
