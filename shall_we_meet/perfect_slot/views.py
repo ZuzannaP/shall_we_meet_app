@@ -228,7 +228,15 @@ class OrganizerArchiveView(LoginRequiredMixin, ListView):
 class AsGuestInProgressView(LoginRequiredMixin, View):
     def get(self, request):
         events = Event.objects.filter(participants=request.user).filter(is_in_progress=True)
-        return render(request, "guest_in_progress_tmp.html", {"events": events})
+        event_votes = {}
+        for event in events:
+            timeslots = event.event_datetimeslot.all()
+            event_votes[event] = "ok"
+            for slot in timeslots:
+                my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
+                if my_vote.vote == -2:
+                    event_votes[event] = "missing"
+        return render(request, "guest_in_progress_tmp.html", {"events": events, "event_votes": event_votes})
 
 
 class AsGuestUpcomingView(LoginRequiredMixin, ListView):
@@ -243,7 +251,6 @@ class AsGuestArchiveView(LoginRequiredMixin, ListView):
         return render(request, "guest_archive_tmp.html", {"events": events})
 
 
-#TODO: co tu nie działa - czemu nie wyświetla niezagłosowanych miejsc?????
 class VoteForTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
@@ -252,30 +259,11 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
         if request.user in event.participants.all():
             for slot in timeslots:
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
-                vote_list[slot.pk] = my_vote.vote
-            print(vote_list)
-            ctx = {"verdict": vote_list, "timeslots": timeslots, "event": event}
+                vote_list[slot] = my_vote.vote
+            ctx = {"timeslots": timeslots, "event": event, 'vote_list':vote_list}
             return render(request, "vote_for_timeslots_tmp.html", ctx)
         else:
             raise PermissionDenied("You are not authorized!")
-
-#
-# class VoteForTimeslotsView(LoginRequiredMixin, View):
-#     def get(self, request, event_id):
-#         event = Event.objects.get(pk=event_id)
-#         timeslots = event.event_datetimeslot.all()
-#         vote_list = {}
-#         if request.user in event.participants.all():
-#             for slot in timeslots:
-#                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
-#                 vote_list.append(my_vote.vote)
-#             if -2 in vote_list:
-#                 ctx = {"verdict": "Vote!", "timeslots": timeslots, "event": event}
-#                 return render(request, "vote_for_timeslots_tmp.html", ctx)
-#             ctx = {"timeslots": timeslots, "event": event}
-#             return render(request, "vote_for_timeslots_tmp.html", ctx)
-#         else:
-#             raise PermissionDenied("You are not authorized!")
 
 
 class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):

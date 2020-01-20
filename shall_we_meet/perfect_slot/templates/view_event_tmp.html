@@ -39,7 +39,7 @@
             <th scope="row">Proposed time slots</th>
             <td>
                 {% if object.owner != request.user %}
-                <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" object.id %}">Vote for time slots!</a>
+                <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" object.id %}">Vote for time slots</a>
                 {%  endif %}
             </td>
         </tr>

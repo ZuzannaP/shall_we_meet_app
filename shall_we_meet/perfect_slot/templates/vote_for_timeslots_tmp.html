@@ -6,23 +6,44 @@
 
 {% block event %}
 
+    <table class="table table-striped table-sm">
+      <tbody>
+            <tr>
+                <th class="table_header">Your decision</th>
+                <th class="table_header">Timeslots</th>
+                <th class="table_header">Choice</th>
+            </tr>
+        {% for timeslot, value in vote_list.items %}
+            <tr>
+                <th scope="row">
+                    {% if value == 1 %}
+                        NO
+                    {% elif value == 2 %}
+                        YES
+                    {% elif value == 3 %}
+                        IF NEED BE
+                    {% elif value == -2 %}
+                        <span class="badge badge-dark badge-pill">Vote!</span>
+                    {% endif %}</th>
+                <td>
+                    {{ timeslot.date_time_from }} - {{ timeslot.date_time_to }}
 
-    <ul class="list-group>">
-        {% for timeslot in timeslots %}
-            <ol class="list-group-item" id="votingSlots">
-            {% if verdict.timeslot.pk == -2 %}
-                <span class="badge badge-dark badge-pill">Vote!</span>
-            {% endif %}
-                {{ timeslot.date_time_from }} - {{ timeslot.date_time_to }}
-                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "yes" %}">Yes</a>
-                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "no" %}">No</a>
-                <a type="button" class="btn btn-info myButton btn-sm" href="{% url "vote" timeslot.pk "ifneedbe" %}">If need be</a>
-            </ol>
-            {% empty %}
-            <p>No time slots to vote for</p>
+                </td>
+                <td>
+                    <a type="button" class="btn btn-info myButton btn-sm"
+                       href="{% url "vote" timeslot.pk "yes" %}">Yes</a>
+                    <a type="button" class="btn btn-info myButton btn-sm"
+                       href="{% url "vote" timeslot.pk "no" %}">No</a>
+                    <a type="button" class="btn btn-info myButton btn-sm"
+                       href="{% url "vote" timeslot.pk "ifneedbe" %}">If
+                        need be</a>
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
-    <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Finish</a>
+        </tbody>
+    </table>
+    <div><a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Finish</a></div>
+
 
 
 {% endblock %}

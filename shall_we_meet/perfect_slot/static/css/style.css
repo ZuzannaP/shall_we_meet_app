@@ -111,3 +111,9 @@ body{
 tr{
     text-align: left;
 }
+
+
+.table_header{
+    color:#883896;
+    font-size: larger;
+}
