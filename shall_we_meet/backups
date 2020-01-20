@@ -1,0 +1,19 @@
+requirements:
+
+First have your venv active!
+Zapis:
+ 	pip freeze > requirements.txt
+
+
+First have your venv active!
+Odczyt:
+	pip install -r requirements.txt
+
+database:
+
+Zapis:
+	pg_dump -U postgres -W -h localhost shall_we_meet_db > backup_shall_we_meet_db.sql
+
+odczyt:
+	psql shall_we_meet_db < backup_shall_we_meet_db
+
