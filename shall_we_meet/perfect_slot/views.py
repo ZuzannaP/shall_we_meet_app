@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -9,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm, \
@@ -156,9 +155,16 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
 
 class EventView(LoginRequiredMixin, View):
 
+#TODO: jak to podzielić na 2 funkcje, bo za dużo tu kontentu na jedna?
+
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
+        participants_nr = event.participants.count()
         event_votes = {}
+        tuples_yes = []
+        tuples_no = []
+        tuples_if_need_be = []
+    # extracting each vote
         for slot in event.event_datetimeslot.all():
             slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
             for datetime in slot.participants_votes.all():
@@ -168,8 +174,15 @@ class EventView(LoginRequiredMixin, View):
                     slot_votes["yes"] += 1
                 elif datetime.vote == 3:
                     slot_votes["if_need_be"] += 1
-                event_votes[slot] = slot_votes
-        ctx = {"event": event, "event_votes": event_votes}
+            event_votes[slot] = slot_votes
+    # counting the winning datetime slot
+            tuples_yes.append((slot_votes["yes"], slot),)
+            tuples_no.append((slot_votes["no"], slot),)
+            tuples_if_need_be.append((slot_votes["if_need_be"], slot),)
+            highest_yes = max(tuples_yes, key=lambda item: item[0])
+            highest_no = max(tuples_no, key=lambda item: item[0])
+            highest_if_need_be = max(tuples_if_need_be, key=lambda item: item[0])
+        ctx = {"event": event, "event_votes": event_votes, "winning" : highest_yes[1]}
         return render(request, "view_event_tmp.html", ctx)
 
 

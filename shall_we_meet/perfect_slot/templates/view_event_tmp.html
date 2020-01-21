@@ -16,23 +16,36 @@
     <table class="table table-striped table-sm">
         <tbody>
         <tr>
-            <th scope="row">Description</th>
+            <th scope="row">Status:</th>
+            <td><b>
+                {% if event.is_in_progress %}
+                    In progress
+                {% elif event %}
+                    Upcoming
+                {% elif event %}
+                    Archived
+                {% endif %}
+            </b>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">Description:</th>
             <td>{{ event.description }}</td>
         </tr>
         <tr>
-            <th scope="row">Organizer</th>
+            <th scope="row">Organizer:</th>
             <td>{{ event.owner }}</td>
         </tr>
         <tr>
-            <th scope="row">Location</th>
+            <th scope="row">Location:</th>
             <td>{{ event.location }}</td>
         </tr>
         <tr>
-            <th scope="row">Duration</th>
+            <th scope="row">Duration:</th>
             <td>{{ event.approx_duration }} hours</td>
         </tr>
         <tr>
-            <th scope="row">Participants ({{ event.participants.count }})</th>
+            <th scope="row">Participants ({{ event.participants.count }}):</th>
             <td></td>
         </tr>
         {% for participant in event.participants.all %}
@@ -42,7 +55,7 @@
             </tr>
         {% endfor %}
         <tr>
-            <th scope="row">Proposed time slots</th>
+            <th scope="row">Proposed time slots:</th>
             <td>
                 {% if event.owner != request.user %}
                     <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Vote
@@ -53,32 +66,19 @@
         {% for slot, slot_values in event_votes.items %}
             <tr>
                 <th scope="row">
-                    {% if winning %}
-                        <span class="badge badge-dark badge-pill">WINNING!</span>
+                    {% if slot == winning %}
+                        <span class="badge badge-dark badge-pill">CURRENTLY WINNING</span>
                     {% endif %}
                 </th>
                 <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
-                    <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
-                    <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
                     <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
-
+                    <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
+                    <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
                 </td>
             </tr>
         {% endfor %}
         <tr>
-            <th scope="row">Status</th>
-            <td>
-                {% if event.is_in_progress %}
-                    In progress
-                {% elif event %}
-                    Upcoming
-                {% elif event %}
-                    Archived
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">Created on</th>
+            <th scope="row">Created on:</th>
             <td>{{ event.creation_time }}</td>
         </tr>
         </tbody>
