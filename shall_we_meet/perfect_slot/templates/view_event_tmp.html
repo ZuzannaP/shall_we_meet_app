@@ -2,13 +2,13 @@
 {% load crispy_forms_tags %}
 
 
-{% block mytitle %}<h1>Meeting details</h1>{% endblock %}
+{% block mytitle %}<h1>Meeting: {{ event.title }}</h1>{% endblock %}
 
 {% block event %}
 
-    {% if object.owner == request.user %}
-        <a type="button" class="btn btn-info myButton" href="{% url "edit_event" object.pk %}">Edit</a>
-        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" object.pk %}">Delete</a></br>
+    {% if event.owner == request.user %}
+        <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
+        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br>
         </br>
     {% endif %}
 
@@ -16,64 +16,70 @@
     <table class="table table-striped table-sm">
         <tbody>
         <tr>
-            <th scope="row">Title</th>
-            <td>{{ object.title }}</td>
-        </tr>
-        <tr>
             <th scope="row">Description</th>
-            <td>{{ object.description }}</td>
+            <td>{{ event.description }}</td>
         </tr>
         <tr>
             <th scope="row">Organizer</th>
-            <td>{{ object.owner }}</td>
+            <td>{{ event.owner }}</td>
         </tr>
         <tr>
             <th scope="row">Location</th>
-            <td>{{ object.location }}</td>
+            <td>{{ event.location }}</td>
         </tr>
         <tr>
             <th scope="row">Duration</th>
-            <td>{{ object.approx_duration }}</td>
+            <td>{{ event.approx_duration }} hours</td>
         </tr>
-         <tr>
-            <th scope="row">Proposed time slots</th>
-            <td>
-                {% if object.owner != request.user %}
-                <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" object.id %}">Vote for time slots</a>
-                {%  endif %}
-            </td>
+        <tr>
+            <th scope="row">Participants ({{ event.participants.count }})</th>
+            <td></td>
         </tr>
-        {% for slot in object.event_datetimeslot.all %}
+        {% for participant in event.participants.all %}
             <tr>
-                <th scope="row"></th>
-                <td>{{ slot.date_time_from|date:'Y-m-d H:i D' }} - {{ slot.date_time_to|date:'Y-m-d H:i D' }}</td>
+                <th scope="row" id="forloop">{{ forloop.counter }}.</th>
+                <td>{{ participant }}</td>
             </tr>
         {% endfor %}
         <tr>
-            <th scope="row" >Participants</th>
-            <td></td>
+            <th scope="row">Proposed time slots</th>
+            <td>
+                {% if event.owner != request.user %}
+                    <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Vote
+                        for time slots</a>
+                {% endif %}
+            </td>
         </tr>
-        {% for participant in object.participants.all %}
+        {% for slot, slot_values in event_votes.items %}
             <tr>
-                <th scope="row"></th>
-                <td>{{ participant }}</td>
+                <th scope="row">
+                    {% if winning %}
+                        <span class="badge badge-dark badge-pill">WINNING!</span>
+                    {% endif %}
+                </th>
+                <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
+                    <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
+                    <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
+                    <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
+
+                </td>
             </tr>
         {% endfor %}
         <tr>
             <th scope="row">Status</th>
             <td>
-                {% if object.is_in_progress %}
+                {% if event.is_in_progress %}
                     In progress
-                {% elif object_is_upcoming %}
+                {% elif event %}
                     Upcoming
-                {% elif object_is_archive %}
+                {% elif event %}
                     Archived
                 {% endif %}
             </td>
         </tr>
         <tr>
             <th scope="row">Created on</th>
-            <td>{{ object.creation_time }}</td>
+            <td>{{ event.creation_time }}</td>
         </tr>
         </tbody>
     </table>

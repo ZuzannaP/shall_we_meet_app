@@ -154,12 +154,26 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         return render(request, "propose_time_slots_tmp.html", ctx)
 
 
+class EventView(LoginRequiredMixin, View):
+
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        event_votes = {}
+        for slot in event.event_datetimeslot.all():
+            slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
+            for datetime in slot.participants_votes.all():
+                if datetime.vote == 1:
+                    slot_votes["no"] += 1
+                elif datetime.vote == 2:
+                    slot_votes["yes"] += 1
+                elif datetime.vote == 3:
+                    slot_votes["if_need_be"] += 1
+                event_votes[slot] = slot_votes
+        ctx = {"event": event, "event_votes": event_votes}
+        return render(request, "view_event_tmp.html", ctx)
+
+
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
-class EventView(LoginRequiredMixin, DetailView):
-    model = Event
-    template_name = "view_event_tmp.html"
-
-
 class EditEventView(LoginRequiredMixin,  UpdateView):
     model = Event
     form_class = EditEventForm
@@ -224,7 +238,6 @@ class OrganizerArchiveView(LoginRequiredMixin, ListView):
         return render(request, "owner_archive_tmp.html", {"events": events})
 
 
-#chyba do tych 3 muszęje jeszcze dodać, że tylko te, gdzie jestem jako guest!
 class AsGuestInProgressView(LoginRequiredMixin, View):
     def get(self, request):
         events = Event.objects.filter(participants=request.user).filter(is_in_progress=True)
@@ -269,14 +282,7 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
 class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
     def get(self, request, timeslot_id, vote):
         timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
-        thevote = None
-        print(vote)
-        if vote == "yes":
-            thevote = 2
-        elif vote == "no":
-            thevote = 1
-        elif vote == "ifneedbe":
-            thevote = 3
+        thevote = 2 if vote == "yes" else (1 if vote == "no" else "ifneedbe")
         event = timeslot.event
         participantslotvote = ParticipantSlotVote.objects.filter(participant=request.user, slot=timeslot)[0]
         participantslotvote.vote = thevote

@@ -10,8 +10,8 @@
 
       <ul class="list-group>">
         {% for timeslot in timeslots %}
-            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item">{{ timeslot.date_time_from }}
-                - {{ timeslot.date_time_to }}</a>
+            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item">{{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }}
+                - {{ timeslot.date_time_to|date:'d.m.Y H:i (D)' }}</a>
             {% empty %}
             <p>No time slots here.</p>
         {% endfor %}

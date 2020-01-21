@@ -117,3 +117,16 @@ tr{
     color:#883896;
     font-size: larger;
 }
+
+.vote-badge{
+    background-color: #cccccc;
+    color: #484848;
+    font-size: 90%;
+    margin: 2px;
+}
+
+#forloop{
+    text-align: right;
+    font-weight: normal;
+    font-size: 90%;
+}
