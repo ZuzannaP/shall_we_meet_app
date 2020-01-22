@@ -11,8 +11,8 @@ from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
-from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, ProposeTimeslotsForm, \
-    EditEventForm
+from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, \
+    EditEventForm, CustomDatetimePicker
 
 
 def homepage(request):
@@ -132,12 +132,12 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         event = Event.objects.get(pk=event_id)
         timeslots_nr = event.event_datetimeslot.count()
         print(timeslots_nr)
-        form = ProposeTimeslotsForm(instance=event)
+        form = CustomDatetimePicker(instance=event)
         ctx = {"form": form, "event": event, "timeslots_nr":timeslots_nr}
         return render(request, "propose_time_slots_tmp.html", ctx)
 
     def post(self, request, event_id):
-        form = ProposeTimeslotsForm(request.POST)
+        form = CustomDatetimePicker(request.POST)
         if form.is_valid():
             date_time_from = form.cleaned_data["date_time_from"]
             date_time_to = form.cleaned_data["date_time_to"]
@@ -146,8 +146,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
             event_participants = event.participants.all()
             for participant in event_participants:
                 datetimeslot.participants.add(participant)
-            #TODO: nie chce, zęby wyświetlało z sekundami, tak jak poniżej!
-            messages.success(request, f'Timeslot {datetimeslot} has been added!')
+            messages.success(request, f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to {date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
             return redirect(f'/event/create/timeslots/{event.id}/')
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
@@ -187,6 +186,7 @@ class EventView(LoginRequiredMixin, View):
 
 
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
+# poza tym zrób tak jak w create view, żeby ownera nie wyśwwietlało jako możliwego partycypanta
 class EditEventView(LoginRequiredMixin,  UpdateView):
     model = Event
     form_class = EditEventForm
@@ -204,10 +204,10 @@ class EditTimeslotsView(LoginRequiredMixin,  ListView):
         timeslots = event.event_datetimeslot.all()
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event":event})
 
-
+# todo chyba do usunięcia, bo nie chcę jednak dawać możliwości edycji timeslots, jak już ktoś zagłosował - można zmienić tylko jak nikt nie zagłosował!
 class EditOneTimeslotView(LoginRequiredMixin,  UpdateView):
     model = DateTimeSlot
-    fields = ["date_time_from", "date_time_to"]
+    form_class = CustomDatetimePicker
     template_name = "edit_one_time_slot_tmp.html"
 
     def get_success_url(self):
@@ -301,6 +301,3 @@ class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
         participantslotvote.vote = thevote
         participantslotvote.save()
         return redirect(f'/event/vote/timeslots/{event.id}')
-
-
-

@@ -7,17 +7,17 @@
 {% block event %}
 
     <h2>Click on timeslot to edit or go back to event by clicking "Edition done"</h2></br></br>
-
+<div class="container-fluid col-md-8">
       <ul class="list-group>">
         {% for timeslot in timeslots %}
-            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item">{{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }}
+            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item" id="myMeetings">{{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }}
                 - {{ timeslot.date_time_to|date:'d.m.Y H:i (D)' }}</a>
             {% empty %}
             <p>No time slots here.</p>
         {% endfor %}
     </ul>
     <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Edition done</a>
-
+</div>
 
 {% endblock %}
 

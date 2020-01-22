@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser, Event, DateTimeSlot
+from tempus_dominus.widgets import DateTimePicker
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -43,7 +44,7 @@ class LoginForm(forms.Form):
 
 class CreateEventForm(forms.ModelForm):
 
-    def __init__(self, excluding_owner, *args, **kwargs):
+    def __init__(self, *args, excluding_owner, **kwargs):
         '''overriding default method , which allows to exclude current user from queryset
         For it to work you have to add in views
         form = CreateEventForm(excluding_owner=request.user)'''
@@ -53,22 +54,46 @@ class CreateEventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["title", "description", "location", "approx_duration", "participants"]
-    #TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
+        # TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
 
 
-class ProposeTimeslotsForm(forms.ModelForm):
-    class Meta:
-        model = DateTimeSlot
-        fields = ["date_time_from", "date_time_to"]
-
-
 class EditEventForm(forms.ModelForm):
+
     class Meta:
         model = Event
         fields = ['title', "description", 'location', 'approx_duration', 'participants']
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
+        }
+
+
+class CustomDatetimePicker(forms.ModelForm):
+    class Meta:  # model must be in the Meta class
+        model = DateTimeSlot
+        fields = ["date_time_from", "date_time_to"]
+        widgets = {
+            "date_time_from": DateTimePicker(
+                    options={
+                        'useCurrent': True,
+                        'collapse': False,
+                    },
+                    attrs={
+                        'append': 'fa fa-calendar',
+                        'icon_toggle': True,
+                    }
+                ),
+            "date_time_to": DateTimePicker(
+                    options={
+                        'useCurrent': True,
+                        'collapse': False,
+                    },
+                    attrs={
+                        'append': 'fa fa-calendar',
+                        'icon_toggle': True,
+                    }
+                ),
+
         }
