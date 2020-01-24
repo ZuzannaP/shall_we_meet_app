@@ -19,9 +19,7 @@ from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, Edit
     CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView, EventView, \
     OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, ProposeTimeslotsView, EditEventView, \
     DeleteEventView, EditOneTimeslotView, EditTimeslotsView, AsGuestInProgressView, AsGuestUpcomingView,  \
-    AsGuestArchiveView, VoteForTimeslotsView, VoteView
-
-#VoteYesView, VoteNoView,  VoteIfneedbeView
+    AsGuestArchiveView, VoteForTimeslotsView, VoteView, CompleteEventView
 
 
 urlpatterns = [
@@ -49,7 +47,8 @@ urlpatterns = [
     path("event/guest/upcoming", AsGuestUpcomingView.as_view(), name="guest_upcoming"),
     path("event/guest/archive", AsGuestArchiveView.as_view(), name="guest_is_archive"),
     path("event/vote/timeslots/<int:event_id>", VoteForTimeslotsView.as_view(), name="vote_for_timeslots"),
-    path("event/vote/<int:timeslot_id>/<str:vote>/", VoteView.as_view(), name="vote")
+    path("event/vote/<int:timeslot_id>/<str:vote>/", VoteView.as_view(), name="vote"),
+    path("event/complete/<int:event_id>", CompleteEventView.as_view(), name="complete_event")
 
 ]
 

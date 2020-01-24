@@ -31,7 +31,6 @@
                 {% if request.user.is_authenticated %}
                 <a class="nav-item nav-link"  href="{% url "create_event" %}">Create new meeting</a>
                 <a class="nav-item nav-link" href="{% url "homepage" %}">Manage meetings</a>
-                <a class="nav-item nav-link" href="{% url "homepage" %}">Invite friends to join</a>
                 <div class="nav-item dropdown navbar-dark navbar-nav navbar-brand:hover">
                     <a class="btn btn-info nav-link dropdown-toggle nav_button" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ request.user.username }}

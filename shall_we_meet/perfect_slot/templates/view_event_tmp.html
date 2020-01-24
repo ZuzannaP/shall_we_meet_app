@@ -8,8 +8,8 @@
 
     {% if event.owner == request.user %}
         <div class="float-right">
-        <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
-        <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br></br>
+            <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
+            <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br></br>
         </div>
     {% endif %}
 
@@ -60,6 +60,8 @@
                 {% if event.owner != request.user %}
                     <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Click here to vote
                         for time slots</a>
+                {% else %}
+                    <a type="button" class="btn btn-info myButton" href="{% url "complete_event" event.pk %}">Choose final time slot</a>
                 {% endif %}
             </td>
         </tr>

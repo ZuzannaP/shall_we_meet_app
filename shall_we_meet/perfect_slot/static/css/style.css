@@ -1,6 +1,6 @@
 /*NAVBAR TOP*/
 
-.navbar{
+.navbar {
     background-color: #883896 !important;
     border-radius: 0;
     font-size: larger;
@@ -16,49 +16,49 @@
     color: #ffffff;
 }
 
-#navbarDropdown{
+#navbarDropdown {
     margin-left: 50px;
 }
 
-#navbarNavAltMarkup > ul > div > div > a:nth-child(1):active, #navbarNavAltMarkup > ul > div > div > a:nth-child(2):active{
-    background-color: #883896 ;
+#navbarNavAltMarkup > ul > div > div > a:nth-child(1):active, #navbarNavAltMarkup > ul > div > div > a:nth-child(2):active {
+    background-color: #883896;
 }
 
 .nav-item {
     text-align: right;
 }
 
-a.nav-item.nav-link{
+a.nav-item.nav-link {
     margin-right: 15px;
 
 }
 
-.nav_button{
+.nav_button {
     background-color: #008B84;
     color: #ffffff;
     margin: 4px;
 }
 
-#shall_we_meet_logo{
+#shall_we_meet_logo {
     color: #e4ddb5;
     font-weight: 900;
     font-size: x-large;
 }
 
 /* NAV LEFT */
-#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li{
+#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li {
     background-color: #008B84;
     color: #fffcff;
 }
 
 
-#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a{
-  background-color:  #E2E8F7;
+#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a {
+    background-color: #E2E8F7;
     color: #4F4350;
 }
 
 /*BADGE PILLS*/
-.badge{
+.badge {
     background-color: #883896;
 }
 
@@ -76,55 +76,64 @@ h2 {
     font-size: large;
 }
 
-body{
+body {
     background: #fffcff;
     font-family: 'Nunito Sans', sans-serif;
     color: #4F4350;
 }
 
-.container-fluid{
+.container-fluid {
     padding: 0 40px 0 40px;
     text-align: center;
 }
 
-.myButton{
+.myButton {
     background-color: #008B84;
     color: #ffffff;
 }
 
-#youSure{
+#youSure {
     color: #a12291;
     font-size: large;
     font-weight: 700;
 }
 
-#myMeetings, #votingSlots{
-      background-color:  #E2E8F7;
-        color: #4F4350;
+#myMeetings, #votingSlots {
+    background-color: #E2E8F7;
+    color: #4F4350;
 }
 
-#myMeetings:hover{
-      background-color: #008B84;
-        color: #ffffff;
+#myMeetings:hover {
+    background-color: #008B84;
+    color: #ffffff;
 }
 
-tr{
+tr {
     text-align: left;
 }
 
 
-.table_header{
-    color:#883896;
+.table_header {
+    color: #883896;
     font-size: larger;
 }
 
-.vote-badge{
+.vote-badge {
     background-color: #dcdcdc;
     color: #747474;
     font-size: 90%;
     margin: 2px;
 }
 
-#in-progress-badge{
+#in-progress-badge {
     background-color: #747474;
+}
+
+.message-box {
+    border: 2px hidden #883896;
+    padding: 10px;
+    border-radius: 25px;
+    background-color: #968838;
+    color: #222222;
+    margin-bottom: 4%;
 }

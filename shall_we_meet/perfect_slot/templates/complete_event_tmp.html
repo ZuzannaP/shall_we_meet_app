@@ -1,0 +1,36 @@
+{% extends 'homepage.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block mytitle %}<h1>Finalize meeting: {{ event.title }}</h1>{% endblock %}
+
+{% block event %}
+
+
+    <div class="container-fluid col-md-10 message-box">Current percentage of guests that voted is {{ participants_pct }}% </br>
+     We encourage you to wait with finalizing meeting until at least 60% of guests have voted.</div>
+
+
+    <table class="table table-striped table-sm">
+        <tbody>
+        {% for slot, slot_values in event_votes.items %}
+            <tr>
+                <th scope="row">
+                    {% if slot in winning %}
+                        <span class="badge badge-dark badge-pill float-right">CURRENTLY WINNING</span>
+                    {% endif %}
+                </th>
+                <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
+                    <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
+                    <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
+                    <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+
+</div>

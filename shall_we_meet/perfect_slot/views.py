@@ -175,10 +175,10 @@ class EventView(LoginRequiredMixin, View):
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
         highest = max(summary_votes, key=lambda item: item[0])
+    #todo: zrób z tego list comprehension
         if not highest[0]:
             winning = None
         else:
-        #     o = [winning.append(votes[1]) for votes in summary_votes if votes[0] == highest[0]]
             for votes in summary_votes:
                 if votes[0] == highest[0]:
                     winning.append(votes[1])
@@ -302,3 +302,39 @@ class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
         participantslotvote.vote = thevote
         participantslotvote.save()
         return redirect(f'/event/vote/timeslots/{event.id}')
+
+
+class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, View):
+
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        participants_nr = event.participants.count()
+        event_votes = {}
+        summary_votes = []
+        winning = []
+        participants_that_voted = set()
+        # extracting each vote
+        for slot in event.event_datetimeslot.all():
+            slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
+            for datetime in slot.participants_votes.all():
+                if datetime.vote == 1:
+                    slot_votes["no"] += 1
+                elif datetime.vote == 2:
+                    slot_votes["yes"] += 1
+                elif datetime.vote == 3:
+                    slot_votes["if_need_be"] += 1
+                participants_that_voted.add(datetime.participant)
+            score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
+            summary_votes.append((score, slot,))
+            event_votes[slot] = slot_votes
+        highest = max(summary_votes, key=lambda item: item[0])
+        # todo: zrób z tego list comprehension
+        if not highest[0]:
+            winning = None
+        else:
+            for votes in summary_votes:
+                if votes[0] == highest[0]:
+                    winning.append(votes[1])
+        participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
+        ctx = {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
+        return render(request, "complete_event_tmp.html", ctx)
