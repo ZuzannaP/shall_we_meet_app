@@ -119,14 +119,12 @@ tr{
 }
 
 .vote-badge{
-    background-color: #cccccc;
-    color: #484848;
+    background-color: #dcdcdc;
+    color: #747474;
     font-size: 90%;
     margin: 2px;
 }
 
-#forloop{
-    text-align: right;
-    font-weight: normal;
-    font-size: 90%;
+#in-progress-badge{
+    background-color: #747474;
 }

@@ -13,7 +13,7 @@
                         {% for event in events %}
                             <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
                                 {{ event.title }}: {{ event.location }}
-                                   <span class="badge badge-dark badge-pill">Creation not finished yet</span>
+                                   <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
                             </a>
                             {% empty %}
                             <p>No meetings in here.</p>

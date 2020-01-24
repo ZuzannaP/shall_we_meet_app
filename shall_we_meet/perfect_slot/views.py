@@ -82,7 +82,6 @@ class EditPersonalInfoView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-# dodaj message , że konto zostało skasowane
 class DeleteAccountView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     template_name = 'account_confirm_delete.html'
     model = CustomUser
@@ -160,9 +159,8 @@ class EventView(LoginRequiredMixin, View):
         event = Event.objects.get(pk=event_id)
         participants_nr = event.participants.count()
         event_votes = {}
-        tuples_yes = []
-        tuples_no = []
-        tuples_if_need_be = []
+        summary_votes = []
+        winning = []
     # extracting each vote
         for slot in event.event_datetimeslot.all():
             slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
@@ -173,15 +171,18 @@ class EventView(LoginRequiredMixin, View):
                     slot_votes["yes"] += 1
                 elif datetime.vote == 3:
                     slot_votes["if_need_be"] += 1
+            score = (((slot_votes["yes"]*1) + (slot_votes["if_need_be"]*0.5)) / participants_nr)*100
+            summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
-    # counting the winning datetime slot
-            tuples_yes.append((slot_votes["yes"], slot),)
-            tuples_no.append((slot_votes["no"], slot),)
-            tuples_if_need_be.append((slot_votes["if_need_be"], slot),)
-            highest_yes = max(tuples_yes, key=lambda item: item[0])
-            highest_no = max(tuples_no, key=lambda item: item[0])
-            highest_if_need_be = max(tuples_if_need_be, key=lambda item: item[0])
-        ctx = {"event": event, "event_votes": event_votes, "winning" : highest_yes[1]}
+        highest = max(summary_votes, key=lambda item: item[0])
+        if not highest[0]:
+            winning = None
+        else:
+        #     o = [winning.append(votes[1]) for votes in summary_votes if votes[0] == highest[0]]
+            for votes in summary_votes:
+                if votes[0] == highest[0]:
+                    winning.append(votes[1])
+        ctx = {"event": event, "event_votes": event_votes, "winning" : winning}
         return render(request, "view_event_tmp.html", ctx)
 
 
@@ -295,7 +296,7 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
 class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
     def get(self, request, timeslot_id, vote):
         timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
-        thevote = 2 if vote == "yes" else (1 if vote == "no" else "ifneedbe")
+        thevote = 2 if vote == "yes" else (1 if vote == "no" else 3)
         event = timeslot.event
         participantslotvote = ParticipantSlotVote.objects.filter(participant=request.user, slot=timeslot)[0]
         participantslotvote.vote = thevote
