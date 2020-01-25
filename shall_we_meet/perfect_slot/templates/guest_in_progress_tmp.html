@@ -5,23 +5,6 @@
 
 {% block mytitle %} <h1>Meetings in progress I have been invited to</h1> {% endblock %}
 
-{#{% block event %}#}
-{#    <ul class="list-group>">#}
-{#        {% for event in events %}#}
-{#            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">#}
-{#            {% if missing %}#}
-{#                <span class="badge badge-dark badge-pill">Vote!</span>#}
-{#            {% endif %}#}
-{#                {{ event.title }}: {{ event.location }}#}
-{#            </a>#}
-{#            {% empty %}#}
-{#            <p>No meetings in here.</p>#}
-{#            </br> </br> </br>#}
-{#            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>#}
-{#        {% endfor %}#}
-{#    </ul>#}
-{#{% endblock %}#}
-
 {% block event %}
     <div class="container col-md-10">
         <ul class="list-group>">
