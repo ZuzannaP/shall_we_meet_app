@@ -164,6 +164,7 @@ tr {
   width: 15px;
   background-color: rgba(0, 139, 132, 0.6);
   border-radius: 50%;
+
 }
 
     /* On mouse-over, add  background color */
@@ -176,4 +177,8 @@ tr {
   background-color: #a12291;
 }
 
+/* moving text further form buttn */
+#paragraph{
+    margin-left: 3%;
+}
 /*------------------------------------------*/
