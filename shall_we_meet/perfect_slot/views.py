@@ -151,39 +151,42 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         return render(request, "propose_time_slots_tmp.html", ctx)
 
 
-class EventView(LoginRequiredMixin, View):
-
-#TODO: jak to podzielić na 2 funkcje, bo za dużo tu kontentu na jedna?
-
+class GenericEventView(View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
         winning = []
-    # extracting each vote
-        for slot in event.event_datetimeslot.all():
-            slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
-            for datetime in slot.participants_votes.all():
-                if datetime.vote == 1:
-                    slot_votes["no"] += 1
-                elif datetime.vote == 2:
-                    slot_votes["yes"] += 1
-                elif datetime.vote == 3:
-                    slot_votes["if_need_be"] += 1
-            score = (((slot_votes["yes"]*1) + (slot_votes["if_need_be"]*0.5)) / participants_nr)*100
+        participants_that_voted = set()
+        for slot in event.event_datetimeslot.iterator():
+            slot_votes = {}
+            slot_votes["no"] = slot.participants_votes.filter(vote=1).count()
+            slot_votes["yes"] = slot.participants_votes.filter(vote=2).count()
+            slot_votes["if_need_be"] = slot.participants_votes.filter(vote=3).count()
+            participants_that_voted.add(slot.participants_votes.values_list("participant", flat=True))
+            score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
         highest = max(summary_votes, key=lambda item: item[0])
-    #todo: zrób z tego list comprehension
-        if not highest[0]:
-            winning = None
-        else:
-            for votes in summary_votes:
-                if votes[0] == highest[0]:
-                    winning.append(votes[1])
-        ctx = {"event": event, "event_votes": event_votes, "winning" : winning}
-        return render(request, "view_event_tmp.html", ctx)
+        winning = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
+        participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
+        ctx = self.get_context(request, event, event_votes, winning, participants_pct)
+        return render(request, self.template_name, ctx)
+
+
+class EventView(LoginRequiredMixin, GenericEventView):
+    template_name = "view_event_tmp.html"
+
+    def get_context(self, request, event, event_votes, winning, participants_pct):
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
+
+
+class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventView):
+    template_name = "complete_event_tmp.html"
+
+    def get_context(self, request, event, event_votes, winning, participants_pct):
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
 
 
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
@@ -304,37 +307,3 @@ class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
         return redirect(f'/event/vote/timeslots/{event.id}')
 
 
-class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, View):
-
-    def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
-        participants_nr = event.participants.count()
-        event_votes = {}
-        summary_votes = []
-        winning = []
-        participants_that_voted = set()
-        # extracting each vote
-        for slot in event.event_datetimeslot.all():
-            slot_votes = {"yes": 0, "no": 0, "if_need_be": 0}
-            for datetime in slot.participants_votes.all():
-                if datetime.vote == 1:
-                    slot_votes["no"] += 1
-                elif datetime.vote == 2:
-                    slot_votes["yes"] += 1
-                elif datetime.vote == 3:
-                    slot_votes["if_need_be"] += 1
-                participants_that_voted.add(datetime.participant)
-            score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
-            summary_votes.append((score, slot,))
-            event_votes[slot] = slot_votes
-        highest = max(summary_votes, key=lambda item: item[0])
-        # todo: zrób z tego list comprehension
-        if not highest[0]:
-            winning = None
-        else:
-            for votes in summary_votes:
-                if votes[0] == highest[0]:
-                    winning.append(votes[1])
-        participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
-        ctx = {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
-        return render(request, "complete_event_tmp.html", ctx)
