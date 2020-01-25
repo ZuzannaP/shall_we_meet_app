@@ -61,6 +61,13 @@ class CreateEventForm(forms.ModelForm):
 
 
 class EditEventForm(forms.ModelForm):
+    def __init__(self, *args, excluding_owner, **kwargs):
+        '''overriding default method , which allows to exclude current user from queryset
+        For it to work you have to add in views
+        form = CreateEventForm(excluding_owner=request.user)'''
+        super(EditEventForm, self).__init__(*args, **kwargs)
+        self.fields['participants'].queryset = self.fields['participants'].queryset.exclude(pk=excluding_owner.pk)
+
 
     class Meta:
         model = Event

@@ -133,7 +133,7 @@ tr {
     border: 2px hidden;
     padding: 10px;
     border-radius: 25px;
-    background-color: #968838;
+    background-color: rgba(150, 136, 56, 0.35);
     color: #222222;
     margin-bottom: 4%;
 }

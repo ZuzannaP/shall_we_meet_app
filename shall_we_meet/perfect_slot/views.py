@@ -146,7 +146,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
             for participant in event_participants:
                 datetimeslot.participants.add(participant)
             messages.success(request, f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to {date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
-            return redirect(f'/event/create/timeslots/{event.id}/')
+            return redirect("propose_timeslots", event_id)
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
 
@@ -157,14 +157,13 @@ class GenericEventView(View):
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
-        winning = []
         participants_that_voted = set()
         for slot in event.event_datetimeslot.iterator():
             slot_votes = {}
             slot_votes["no"] = slot.participants_votes.filter(vote=1).count()
             slot_votes["yes"] = slot.participants_votes.filter(vote=2).count()
             slot_votes["if_need_be"] = slot.participants_votes.filter(vote=3).count()
-            participants_that_voted.add(slot.participants_votes.values_list("participant", flat=True))
+            participants_that_voted.update(list(slot.participants_votes.values_list("participant", flat=True)))
             score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
@@ -188,13 +187,29 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
     def get_context(self, request, event, event_votes, winning, participants_pct):
         return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
 
+    def post(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        selected_choice = request.POST.get("chosen_slot")
+        chosen_slot = DateTimeSlot.objects.get(pk=selected_choice)
+        all_slots = event.event_datetimeslot.all()
+        for slot in all_slots:
+            slot.winning = False
+            slot.save()
+        chosen_slot.winning = True
+        chosen_slot.save()
+        return redirect("event_view", event_id)
+
 
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
-# poza tym zrób tak jak w create view, żeby ownera nie wyśwwietlało jako możliwego partycypanta
 class EditEventView(LoginRequiredMixin,  UpdateView):
     model = Event
-    form_class = EditEventForm
     template_name = "edit_event_tmp.html"
+    form_class = EditEventForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["excluding_owner"] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         event_id = self.kwargs['pk']

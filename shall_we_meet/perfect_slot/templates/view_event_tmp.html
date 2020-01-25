@@ -50,35 +50,48 @@
         </tr>
         {% for participant in event.participants.all %}
             <tr>
-                <th scope="row" ></th>
+                <th scope="row"></th>
                 <td>{{ forloop.counter }}. {{ participant }}</td>
             </tr>
         {% endfor %}
-        <tr>
-            <th scope="row">Proposed time slots:</th>
-            <td>
-                {% if event.owner != request.user %}
-                    <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Click here to vote
-                        for time slots</a>
-                {% else %}
-                    <a type="button" class="btn btn-info myButton" href="{% url "complete_event" event.pk %}">Choose final time slot</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% for slot, slot_values in event_votes.items %}
+
+        {% if event.event_datetimeslot.winning %}
             <tr>
-                <th scope="row">
-                    {% if slot in winning %}
-                        <span class="badge badge-dark badge-pill float-right">CURRENTLY WINNING</span>
+                <th scope="row">Proposed time slots:</th>
+                <td>
+                    {% if event.owner != request.user %}
+                        <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Click
+                            here to vote
+                            for time slots</a>
+                    {% else %}
+                        <a type="button" class="btn btn-info myButton" href="{% url "complete_event" event.pk %}">Choose
+                            final time slot</a>
                     {% endif %}
-                </th>
-                <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
-                    <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
-                    <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
-                    <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
                 </td>
             </tr>
-        {% endfor %}
+            {% for slot, slot_values in event_votes.items %}
+                <tr>
+                    <th scope="row">
+                        {% if slot in winning %}
+                            <span class="badge badge-dark badge-pill float-right">CURRENTLY WINNING</span>
+                        {% endif %}
+                    </th>
+                    <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
+                        <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
+                        <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
+                        <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <th scope="row">Date and time:</th>
+                <td>
+                    Lulu
+                </td>
+            </tr>
+        {% endif %}
+
         <tr>
             <th scope="row">Created on:</th>
             <td>{{ event.creation_time }}</td>
