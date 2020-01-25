@@ -210,7 +210,7 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
         return redirect("event_view", event_id)
 
 
-#TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
+#TODO: Potem ustalę ostatecznie co można zmieniać, czego nie
 class EditEventView(LoginRequiredMixin, UpdateView):
     model = Event
     template_name = "edit_event_tmp.html"
@@ -271,6 +271,8 @@ class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
 class DeleteEventView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
+        if event.owner != request.user:
+            raise PermissionDenied
         return render(request, "delete_event_tmp.html", {"event": event})
 
     def post(self, request, event_id):
@@ -337,10 +339,10 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
             for slot in timeslots:
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
                 vote_list[slot] = my_vote.vote
-            ctx = {"timeslots": timeslots, "event": event, 'vote_list':vote_list}
+            ctx = {"timeslots": timeslots, "event": event, 'vote_list': vote_list}
             return render(request, "vote_for_timeslots_tmp.html", ctx)
         else:
-            raise PermissionDenied("You are not authorized!")
+            raise PermissionDenied
 
 
 class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
@@ -351,6 +353,6 @@ class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
         participantslotvote = ParticipantSlotVote.objects.filter(participant=request.user, slot=timeslot)[0]
         participantslotvote.vote = thevote
         participantslotvote.save()
-        return redirect(f'/event/vote/timeslots/{event.id}')
+        return redirect("vote_for_timeslots", event.id)
 
 
