@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'perfect_slot.middleware.archiving_middleware'
 ]
 
 ROOT_URLCONF = 'shall_we_meet.urls'
