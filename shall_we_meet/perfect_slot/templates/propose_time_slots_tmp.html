@@ -18,7 +18,7 @@
         {{ form | crispy }}
         <button type="submit" class="btn btn-info myButton">Save time slot</button>
         {% if timeslots_nr >= 2 %}
-            <a href="{% url "event_view" event.id %}" class="btn btn-info myButton">Finish</a>
+            </br></br><a href="{% url "event_view" event.id %}" class="btn btn-info myButton">Finish</a>
         {% endif %}
     </form>
 

@@ -129,6 +129,8 @@ class CreateEventView(LoginRequiredMixin, View):
 class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
+        if event.owner != request.user:
+            raise PermissionDenied
         timeslots_nr = event.event_datetimeslot.count()
         print(timeslots_nr)
         form = CustomDatetimePicker(instance=event)
@@ -154,6 +156,9 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
 class GenericEventView(View):
     def get(self, request, event_id):
         event = Event.objects.get(pk=event_id)
+        if self.template_name == "complete_event_tmp.html":
+            if event.owner != request.user:
+                raise PermissionDenied
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
@@ -204,11 +209,18 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
         event.save()
         return redirect("event_view", event_id)
 
+
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
-class EditEventView(LoginRequiredMixin,  UpdateView):
+class EditEventView(LoginRequiredMixin, UpdateView):
     model = Event
     template_name = "edit_event_tmp.html"
     form_class = EditEventForm
+
+    def get_object(self, **kwargs):
+        event_object = super().get_object(**kwargs)
+        if event_object.owner != self.request.user:
+            raise PermissionDenied
+        return event_object
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -220,18 +232,34 @@ class EditEventView(LoginRequiredMixin,  UpdateView):
         return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
 
 
-#TODO: dodaj opcję edycji oraz opcję usunięcia pojedynczego datetimeslotu i dodania timeslotu (do  pierwszego wystarczy zmienić link na guzik, do drugiego trzeba stworzyć nowy deleteview
 class EditTimeslotsView(LoginRequiredMixin,  ListView):
     def get(self, request, pk):
         event = Event.objects.get(pk=pk)
+        if event.owner != request.user:
+            raise PermissionDenied
         timeslots = event.event_datetimeslot.all()
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event":event})
 
+    def post(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        timeslots = event.event_datetimeslot.all()
+        timeslot_id = request.POST.get("timeslot_pk")
+        timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
+        timeslot.delete()
+        return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event": event})
+
+
 # todo chyba do usunięcia, bo nie chcę jednak dawać możliwości edycji timeslots, jak już ktoś zagłosował - można zmienić tylko jak nikt nie zagłosował!
-class EditOneTimeslotView(LoginRequiredMixin,  UpdateView):
+class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
     model = DateTimeSlot
     form_class = CustomDatetimePicker
     template_name = "edit_one_time_slot_tmp.html"
+
+    def get_object(self, **kwargs):
+        event_object = super().get_object(**kwargs)
+        if event_object.event.owner != self.request.user:
+            raise PermissionDenied
+        return event_object
 
     def get_success_url(self):
         datetime_id = self.kwargs['pk']

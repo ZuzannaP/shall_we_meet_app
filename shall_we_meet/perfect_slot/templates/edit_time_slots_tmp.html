@@ -1,23 +1,44 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 
 {% block mytitle %} <h1>Step 2 - Edit time slots</h1> {% endblock %}
 
 {% block event %}
 
-    <h2>Click on timeslot to edit or go back to event by clicking "Edition done"</h2></br></br>
-<div class="container-fluid col-md-8">
-      <ul class="list-group>">
-        {% for timeslot in timeslots %}
-            <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="list-group-item" id="myMeetings">{{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }}
-                - {{ timeslot.date_time_to|date:'d.m.Y H:i (D)' }}</a>
-            {% empty %}
-            <p>No time slots here.</p>
-        {% endfor %}
-    </ul>
-    <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Edition done</a>
-</div>
+    <h2>Edit, delete or go back by clicking "Edition done"</h2></br></br>
+    <div class="container-fluid col-md-8">
+        <table class="table table-striped table-sm">
+            <tbody>
+            {% for timeslot in timeslots %}
+                <tr>
+                    <td scope="row">  {{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }} -
+                        {{ timeslot.date_time_to|date:'d.m.Y H:i (D)' }}</td>
+                    <td>
+                        <a href="{% url "edit_one_timeslot" timeslot.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    </td>
+                    <td>
+                        <form action="" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" value="{{ timeslot.pk }}" name="timeslot_pk"
+                                    class="btn btn-outline-danger btn-sm">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                No time slots here.
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+        <button onclick="location.href='{% url 'propose_timeslots' event.pk %}'" type="button"
+                class="btn btn-info myButton">Add another
+        </button>
+        <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Edition done</a>
+    </div>
 
 {% endblock %}
 
