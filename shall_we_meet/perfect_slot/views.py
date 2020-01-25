@@ -159,19 +159,19 @@ class GenericEventView(View):
         summary_votes = []
         participants_that_voted = set()
         for slot in event.event_datetimeslot.iterator():
-            slot_votes = {}
-            slot_votes["no"] = slot.participants_votes.filter(vote=1).count()
-            slot_votes["yes"] = slot.participants_votes.filter(vote=2).count()
-            slot_votes["if_need_be"] = slot.participants_votes.filter(vote=3).count()
-            participants_that_voted.update(list(slot.participants_votes.values_list("participant", flat=True)))
+            slot_votes = {"no": slot.participants_votes.filter(vote=1).count(),
+                          "yes": slot.participants_votes.filter(vote=2).count(),
+                          "if_need_be": slot.participants_votes.filter(vote=3).count()}
+            # participants_that_voted.update(list(slot.participants_votes.value_list.exclude(vote=-2)))
+            participants_that_voted.update(list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
             score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
         highest = max(summary_votes, key=lambda item: item[0])
+        print(participants_that_voted)
         winning = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
         participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
-        print(chosen_slot)
         ctx = self.get_context(request, event, event_votes, winning, participants_pct, chosen_slot)
         return render(request, self.template_name, ctx)
 

@@ -57,11 +57,13 @@ a.nav-item.nav-link {
     color: #4F4350;
 }
 
+/*------------------------------------------*/
 /*BADGE PILLS*/
 .badge {
     background-color: #883896;
 }
 
+/*------------------------------------------*/
 /*BODY*/
 
 h1 {
@@ -137,3 +139,41 @@ tr {
     color: #222222;
     margin-bottom: 4%;
 }
+/*------------------------------------------*/
+/* RADIO BUTTON  */
+
+    /* The container */
+.container {
+  display: block;
+  position: relative;
+}
+
+    /* Hide default browser radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+    /* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 15px;
+  width: 15px;
+  background-color: rgba(0, 139, 132, 0.6);
+  border-radius: 50%;
+}
+
+    /* On mouse-over, add  background color */
+.container:hover input ~ .checkmark {
+  background-color: rgba(136, 56, 150, 0.64);
+}
+
+    /*  add background when the radio button is checked */
+.container input:checked ~ .checkmark {
+  background-color: #a12291;
+}
+
+/*------------------------------------------*/
