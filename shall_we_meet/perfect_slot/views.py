@@ -170,22 +170,24 @@ class GenericEventView(View):
         highest = max(summary_votes, key=lambda item: item[0])
         winning = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
         participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
-        ctx = self.get_context(request, event, event_votes, winning, participants_pct)
+        chosen_slot = event.event_datetimeslot.filter(winning=True).first()
+        print(chosen_slot)
+        ctx = self.get_context(request, event, event_votes, winning, participants_pct, chosen_slot)
         return render(request, self.template_name, ctx)
 
 
 class EventView(LoginRequiredMixin, GenericEventView):
     template_name = "view_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct):
-        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct, "chosen_slot": chosen_slot}
 
 
 class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventView):
     template_name = "complete_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct):
-        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct}
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct, "chosen_slot": chosen_slot}
 
     def post(self, request, event_id):
         event = Event.objects.get(pk=event_id)
@@ -197,8 +199,10 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
             slot.save()
         chosen_slot.winning = True
         chosen_slot.save()
+        event.is_in_progress = False
+        event.is_upcoming = True
+        event.save()
         return redirect("event_view", event_id)
-
 
 #TODO: na razie robocze edytowanie. Potem ustalę ostatecznie co można zmieniać, czego nie
 class EditEventView(LoginRequiredMixin,  UpdateView):

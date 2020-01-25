@@ -49,7 +49,7 @@
                                 {{ event.title }}: {{ event.location }}
                                {% if event.is_in_progress %}
                                     (In progress)
-                                {% elif event_is_upcoming %}
+                                {% elif event.is_upcoming %}
                                     (Upcoming)
                                 {% endif %}
                             </a>

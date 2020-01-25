@@ -8,7 +8,9 @@
 
     {% if event.owner == request.user %}
         <div class="float-right">
+            {% if not chosen_slot %}
             <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
+             {% endif %}
             <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br></br>
         </div>
     {% endif %}
@@ -55,7 +57,7 @@
             </tr>
         {% endfor %}
 
-        {% if event.event_datetimeslot.winning %}
+        {% if not chosen_slot %}
             <tr>
                 <th scope="row">Proposed time slots:</th>
                 <td>
@@ -86,9 +88,7 @@
         {% else %}
             <tr>
                 <th scope="row">Date and time:</th>
-                <td>
-                    Lulu
-                </td>
+                <td>{{ chosen_slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ chosen_slot.date_time_to|date:'d.m.Y H:i (D)'}}</td>
             </tr>
         {% endif %}
 
