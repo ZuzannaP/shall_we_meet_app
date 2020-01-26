@@ -19,8 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8+@=qrq@9pupezzkf_8z)obn%+q^u86jz*-bm4m5ebkw4uq4qf'
+try:
+    from shall_we_meet.local_settings import SECRET_KEY
+except ModuleNotFoundError:
+    print("Brak konfiguracji SECRET_KEY w pliku local_settings.py!")
+    print("Uzupełnij dane i spróbuj ponownie!")
+    exit(0)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
