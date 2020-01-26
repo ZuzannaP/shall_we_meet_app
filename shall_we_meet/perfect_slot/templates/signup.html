@@ -1,23 +1,61 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block additional_links_scripts_top %}
+    <!-- Leaf css :) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <!-- Leaf js -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+
+    <link rel="stylesheet" href="/static/css/MarkerCluster.css"/>
+    <link rel="stylesheet" href="/static/css/MarkerCluster.Default.css"/>
+    <script src="/static/js/leaflet.markercluster.js"></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
+            integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.3.2/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="">
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.2/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-8twnXcrOGP3WfMvjB0jS5pNigFuIWj4ALwWEgxhZ+mxvjF5/FBPVd5uAxqT8dd2kUmTVK9+yQJ4CmTmSg/sXAQ=="
+            crossorigin=""></script>
+
+{% endblock %}
+
 
 
 {% block content %}
 
     <div class="container-fluid col-md-5">
-    <h1>Sign up</h1>
+        <h1>Sign up</h1>
 
-{#        Usuń to, jeśli nie będzie apki geolokalizacyjnej. Wtedy w ogóle z bazy trzeba usunąć pola na adresy ludzi#}
-       <h2> As you see below we ask about your residence address (but not about your flat number!).
-        This is because the address of residence will be used to suggest the most optimal meeting place
-        for all participants :) </h2> </br></br>
+        {#        Usuń to, jeśli nie będzie apki geolokalizacyjnej. Wtedy w ogóle z bazy trzeba usunąć pola na adresy ludzi#}
+        <h2> As you see below we ask about your residence address (but not about your flat number!).
+            This is because the address of residence will be used to suggest the most optimal meeting place
+            for all participants :) </h2> </br></br>
 
-    <form method="post">
-      {% csrf_token %}
-      {{ form | crispy }}
-      <button type="submit" class="btn btn-info myButton">Sign up</button>
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-info myButton">Sign up</button>
+        </form>
+
+        <div id="mapid"></div>
+
     </div>
 
+{% endblock %}
 
+{#tu jest na dole magia z tym with address_map , marek wyjaśnił na slacku#}
+{% block additional_links_scripts_bottom %}
+    {% include 'my_maps.html' with address_map=address_map %}
 {% endblock %}
