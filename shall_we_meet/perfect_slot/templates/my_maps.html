@@ -1,12 +1,13 @@
 <script>
 
+
 var mymap = L.map('mapid').setView([52.232079, 21.006311], 9);
 
+{#nie trzymaj tego api key w repo#}
 L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=9f79bff8a5e4496c87bb5f2dc0faff40', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://thunderforest.com/">Thunderforest</a>',
     maxZoom: 18,
 }).addTo(mymap);
-
 
 L.control.scale().addTo(mymap);
 
@@ -27,6 +28,18 @@ providers: [
 }).addTo(mymap);
 
 mymap.addLayer(markersLayer);
+
+var marker;
+mymap.on('click',
+    function(addingMarker){
+        var coord = addingMarker.latlng.toString().split(',');
+        var lat = coord[0].split('(');
+        var lng = coord[1].split(')');
+       if (marker) { // check
+        mymap.removeLayer(marker); // remove
+    }
+    marker = new L.marker(addingMarker.latlng, {draggable: true}).addTo(mymap);
+    });
 
 
 {#dodawanie punktów na mapie#}
