@@ -7,7 +7,8 @@ from tempus_dominus.widgets import DateTimePicker
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city')
+        fields = ('username', 'first_name', 'last_name', 'email')
+        # fields = ('username', 'first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city')
 
     # added this part to make the on default not required fields in Django User model be required
     def __init__(self, *args, **kwargs):
@@ -16,7 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['email'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        self.fields['house_nr'].help_text = "We ask only about house number. Don't provide additional flat number!"
+        # self.fields['house_nr'].help_text = "We ask only about house number. Don't provide additional flat number!"
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -25,7 +26,8 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city']
+        fields = ['first_name', 'last_name', 'email']
+        # fields = ['first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city']
 
     # added this part to make the on default not required fields in Django User model be required
     def __init__(self, *args, **kwargs):
@@ -34,7 +36,7 @@ class CustomUserChangeForm(UserChangeForm):
         self.fields['email'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        self.fields['house_nr'].help_text = "We ask only about house number. Don't provide additional flat number!"
+        # self.fields['house_nr'].help_text = "We ask only about house number. Don't provide additional flat number!"
 
 
 class LoginForm(forms.Form):

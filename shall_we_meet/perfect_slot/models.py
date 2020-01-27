@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import CASCADE, SET_DEFAULT, DO_NOTHING
-
+from django.db.models import CASCADE
+from django.contrib.gis.db import models
 
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
 # modelu w Event oraz User     geographical_coordinates = models.PointField() na\
@@ -11,15 +11,13 @@ from django.db.models import CASCADE, SET_DEFAULT, DO_NOTHING
 # so, if you're coming from google maps, and experienced to latlng objects and the like, x and y are like switched.\
 # this caused my some headache! X is longitude, Y is latitude.
 
-# from django.contrib.gis.db import models
-
 
 class CustomUser(AbstractUser):
-    street = models.CharField(max_length=128)
-    house_nr = models.CharField(max_length=10)
-    zip_code = models.CharField(max_length=6)
-    city = models.CharField(max_length=128)
-    # geographical_coordinates = models.PointField(blank=True, null=True)
+    # street = models.CharField(max_length=128)
+    # house_nr = models.CharField(max_length=10)
+    # zip_code = models.CharField(max_length=6)
+    # city = models.CharField(max_length=128)
+    geographical_coordinates = models.PointField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -38,7 +36,7 @@ class Event(models.Model):
     is_upcoming = models.BooleanField(default=False)
     is_archive = models.BooleanField(default=False)
 
-    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
+    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny (polygonfield?)
     # common_geographical_coordinates = models.PointField(blank=True, null=True)
 
     # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
