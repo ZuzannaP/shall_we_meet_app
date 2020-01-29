@@ -29,6 +29,19 @@ providers: [
 
 mymap.addLayer(markersLayer);
 
+
+{#showing address on the  - jeszcze włącz context processor i w settingsach apkę :) #}
+{#function show_user_address(custom_user){#}
+{#    var address = custom_user["address"];#}
+{#        marker = new L.Marker(new L.latLng((address))).addTo(mymap);#}
+{#        markersLayer.addLayer(marker);#}
+{#}#}
+{##}
+{#var user =  JSON.parse("{{ user_detailing }}");#}
+{##}
+{#show_user_address(user);#}
+
+{#adding marker to map#}
 var marker;
 mymap.on('click',
     function(addingMarker){
@@ -40,27 +53,5 @@ mymap.on('click',
     }
     marker = new L.marker(addingMarker.latlng, {draggable: true}).addTo(mymap);
     });
-
-
-{#dodawanie punktów na mapie#}
-{##}
-{##}
-{#function populateMap(data){#}
-{#    for(i in data) {#}
-{#    var title = data[i].title,#}
-{#        loc = data[i].loc,#}
-{#        author = data[i].author,#}
-{#        hint = data[i].hint,#}
-{#        address = data[i].address,#}
-{#        marker = new L.Marker(new L.latLng(loc), {title: title, author: author, hint: hint} );#}
-{#    markersLayer.addLayer(marker);#}
-{#    }#}
-{#}#}
-{#var map_books =  JSON.parse("{{ map_books }}");#}
-{#var new_lat = map_books[0].loc[0];#}
-{#var new_lon = map_books[0].loc[1];#}
-{#populateMap(map_books);#}
-
-
 
 </script>

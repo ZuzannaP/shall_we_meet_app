@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'perfect_slot.my_context_processors.navbar_input',
+                # 'perfect_slot.my_context_processors.user_datails',
             ],
         },
     },

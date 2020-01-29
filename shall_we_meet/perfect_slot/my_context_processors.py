@@ -1,6 +1,9 @@
+import json
 from django.db.models import Q
+from django.utils.html import escapejs
+from django.utils.safestring import mark_safe
 
-from .models import Event, ParticipantSlotVote
+from .models import Event, ParticipantSlotVote, CustomUser
 
 
 def navbar_input(request):
@@ -24,5 +27,10 @@ def navbar_input(request):
         ctx = {"owner_pending_actions": "n/a", "owner_upcoming_events":"n/a", "guest_pending_actions": "n/a", "guest_upcoming_events":"n/a"}
         return ctx
 
-
-
+#
+# def user_datails(request):
+#     user_d = CustomUser.objects.get(pk=3)
+#     user_datailing = {'address': [float(coord) for coord in reversed(user_d.geographical_coordinates.coords)]}
+#     return {"user_detailing": mark_safe(escapejs(json.dumps(user_datailing)))}
+# [0]
+#

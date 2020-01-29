@@ -7,6 +7,7 @@ from django.contrib.gis.db import models
 # zauważ, że używasz tego tylko po to, by mieć models.PointField(). Oznacza to, że jeśli zdecydujesz się zmienić w \
 # modelu w Event oraz User     geographical_coordinates = models.PointField() na\
 # models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True) to skasuj poniższy import z GIS
+
 # Note "X and Y coordinates".
 # so, if you're coming from google maps, and experienced to latlng objects and the like, x and y are like switched.\
 # this caused my some headache! X is longitude, Y is latitude.
@@ -17,7 +18,7 @@ class CustomUser(AbstractUser):
     # house_nr = models.CharField(max_length=10)
     # zip_code = models.CharField(max_length=6)
     # city = models.CharField(max_length=128)
-    geographical_coordinates = models.PointField(blank=True, null=True)
+    geographical_coordinates = models.PointField()
 
     def __str__(self):
         return self.username
