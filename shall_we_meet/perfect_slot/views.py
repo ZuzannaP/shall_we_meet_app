@@ -1,7 +1,10 @@
+import json
+
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
+from django.contrib.gis.geos import Point
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -18,7 +21,8 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
-        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(Q(is_in_progress=True) | Q(is_upcoming=True)).distinct()
+        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
+            Q(is_in_progress=True) | Q(is_upcoming=True)).distinct()
         return render(request, "homepage.html", ctx)
     else:
         ctx["events"] = "n/a"
@@ -65,11 +69,37 @@ class AccountSettingsView(View):
         return render(request, "account_settings_tmp.html")
 
 
-class SignUpView(SuccessMessageMixin, CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy("login")
-    success_message = 'Your account has been created. Welcome on board!'
-    template_name = 'signup.html'
+class SignUpView(SuccessMessageMixin, View):
+
+    def get(self, request):
+        form = CustomUserCreationForm()
+        # coordinates_lat = request.POST.get('coordinates_lat')
+        # coordinates_lng = request.POST.get('coordinates_lng')
+        # print(coordinates_lat)
+        # print(coordinates_lng)
+        ctx = {"form": form}
+        return render(request, "signup.html", ctx)
+
+    def post(self, request):
+        form = CustomUserCreationForm(request.POST)
+        coordinates_lat = request.POST.get('coordinates_lat')
+        coordinates_lng = request.POST.get('coordinates_lng')
+        print(coordinates_lat)
+        print(coordinates_lng)
+        if form.is_valid():
+            coordinates_lat = float(coordinates_lat)
+            coordinates_lng = float(coordinates_lng)
+            if coordinates_lat is not None:
+                instance = form.save(commit=False)
+                instance.geographical_coordinates = Point(coordinates_lng, coordinates_lat)
+                instance.save()
+                return redirect('login')
+            else:
+                messages.error(request, "Please mark your residency address on the map and complete password again")
+                ctx = {"form": form}
+                return render(request, "signup.html", ctx)
+        ctx = {"form": form}
+        return render(request, "signup.html", ctx)
 
 
 class EditPersonalInfoView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -121,7 +151,7 @@ class CreateEventView(LoginRequiredMixin, View):
                                          approx_duration=approx_duration, owner=request.user)
             for participant in participants:
                 event.participants.add(participant)
-            return redirect(f'/event/create/timeslots/{event.id}/')
+            return redirect("propose_timeslots", event.id)
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
 
@@ -134,7 +164,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         timeslots_nr = event.event_datetimeslot.count()
         print(timeslots_nr)
         form = CustomDatetimePicker(instance=event)
-        ctx = {"form": form, "event": event, "timeslots_nr":timeslots_nr}
+        ctx = {"form": form, "event": event, "timeslots_nr": timeslots_nr}
         return render(request, "propose_time_slots_tmp.html", ctx)
 
     def post(self, request, event_id):
@@ -143,11 +173,13 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
             date_time_from = form.cleaned_data["date_time_from"]
             date_time_to = form.cleaned_data["date_time_to"]
             event = Event.objects.get(pk=event_id)
-            datetimeslot = DateTimeSlot.objects.create(date_time_from=date_time_from, date_time_to=date_time_to, event=event)
+            datetimeslot = DateTimeSlot.objects.create(date_time_from=date_time_from, date_time_to=date_time_to,
+                                                       event=event)
             event_participants = event.participants.all()
             for participant in event_participants:
                 datetimeslot.participants.add(participant)
-            messages.success(request, f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to {date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
+            messages.success(request,
+                             f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to {date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
             return redirect("propose_timeslots", event_id)
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
@@ -168,7 +200,8 @@ class GenericEventView(View):
                           "yes": slot.participants_votes.filter(vote=2).count(),
                           "if_need_be": slot.participants_votes.filter(vote=3).count()}
             # participants_that_voted.update(list(slot.participants_votes.value_list.exclude(vote=-2)))
-            participants_that_voted.update(list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
+            participants_that_voted.update(
+                list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
             score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
@@ -185,14 +218,16 @@ class EventView(LoginRequiredMixin, GenericEventView):
     template_name = "view_event_tmp.html"
 
     def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
-        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct, "chosen_slot": chosen_slot}
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
+                "chosen_slot": chosen_slot}
 
 
 class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventView):
     template_name = "complete_event_tmp.html"
 
     def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
-        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct":participants_pct, "chosen_slot": chosen_slot}
+        return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
+                "chosen_slot": chosen_slot}
 
     def post(self, request, event_id):
         event = Event.objects.get(pk=event_id)
@@ -210,7 +245,7 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
         return redirect("event_view", event_id)
 
 
-#TODO: Potem ustalę ostatecznie co można zmieniać, czego nie
+# TODO: Potem ustalę ostatecznie co można zmieniać, czego nie
 class EditEventView(LoginRequiredMixin, UpdateView):
     model = Event
     template_name = "edit_event_tmp.html"
@@ -232,13 +267,13 @@ class EditEventView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
 
 
-class EditTimeslotsView(LoginRequiredMixin,  ListView):
+class EditTimeslotsView(LoginRequiredMixin, ListView):
     def get(self, request, pk):
         event = Event.objects.get(pk=pk)
         if event.owner != request.user:
             raise PermissionDenied
         timeslots = event.event_datetimeslot.all()
-        return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event":event})
+        return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event": event})
 
     def post(self, request, pk):
         event = Event.objects.get(pk=pk)
@@ -289,7 +324,7 @@ class DeleteEventView(LoginRequiredMixin, View):
 class OrganizerInProgressView(LoginRequiredMixin, View):
     def get(self, request):
         events = Event.objects.filter(owner=self.request.user).filter(is_in_progress=True)
-        return render(request, "owner_in_progress_tmp.html",{"events":events})
+        return render(request, "owner_in_progress_tmp.html", {"events": events})
 
 
 class OrganizerUpcomingView(LoginRequiredMixin, ListView):
@@ -315,7 +350,7 @@ class AsGuestInProgressView(LoginRequiredMixin, View):
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
                 if my_vote.vote == -2:
                     event_votes[event] = "missing"
-        return render(request, "guest_in_progress_tmp.html", { "event_votes": event_votes})
+        return render(request, "guest_in_progress_tmp.html", {"event_votes": event_votes})
 
 
 class AsGuestUpcomingView(LoginRequiredMixin, ListView):
@@ -354,5 +389,3 @@ class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
         participantslotvote.vote = thevote
         participantslotvote.save()
         return redirect("vote_for_timeslots", event.id)
-
-
