@@ -33,20 +33,13 @@ mymap.addLayer(markersLayer);
 var marker;
 mymap.on('click',
     function(addingMarker){
-        var coordinates_lat = addingMarker.latlng["lat"].toString();
-        var coordinates_lng = addingMarker.latlng["lng"].toString();
-        console.log(coordinates_lat);
-        console.log(coordinates_lng);
+        var coordinates_lat = addingMarker.latlng["lat"];
+        var coordinates_lng = addingMarker.latlng["lng"];
+        console.log(coordinates_lng, coordinates_lat );
+        document.getElementById('id_geographical_coordinates').value = `Point(${coordinates_lng}  ${coordinates_lat})`;
        if (marker) { // check
            mymap.removeLayer(marker); // remove
        }
-       $.ajax({
-         url: '/account/create',
-         data: {"coordinates_lat": coordinates_lat,
-                "coordinates_lng": coordinates_lng,
-                "csrfmiddlewaretoken": "{{csrf_token}}"},
-         type: 'POST'
-       });
 
     marker = new L.marker(addingMarker.latlng, {draggable: true}).addTo(mymap);
     });

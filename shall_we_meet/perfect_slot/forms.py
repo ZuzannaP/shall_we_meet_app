@@ -7,7 +7,8 @@ from tempus_dominus.widgets import DateTimePicker
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('username', 'first_name', 'last_name', 'email', 'geographical_coordinates')
+        widgets = {'geographical_coordinates': forms.HiddenInput()}
         # fields = ('username', 'first_name', 'last_name', 'email', 'street', 'house_nr', 'zip_code', 'city')
 
     # added this part to make the on default not required fields in Django User model be required

@@ -25,9 +25,9 @@ def navbar_input(request):
         ctx = {"owner_pending_actions": "n/a", "owner_upcoming_events":"n/a", "guest_pending_actions": "n/a", "guest_upcoming_events":"n/a"}
         return ctx
 
-
+#
 # def user_datails(request):
-#     user_d = CustomUser.objects.get(pk=3)
+#     user_d = CustomUser.objects.get(pk=2)
 #     user_datailing = {'address': [float(coord) for coord in reversed(user_d.geographical_coordinates.coords)]}
 #     return {"user_detailing": mark_safe(escapejs(json.dumps(user_datailing)))}
 #

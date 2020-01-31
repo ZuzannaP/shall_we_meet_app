@@ -69,35 +69,20 @@ class AccountSettingsView(View):
         return render(request, "account_settings_tmp.html")
 
 
-class SignUpView(SuccessMessageMixin, View):
+class SignUpView(View):
 
     def get(self, request):
         form = CustomUserCreationForm()
-        # coordinates_lat = request.POST.get('coordinates_lat')
-        # coordinates_lng = request.POST.get('coordinates_lng')
-        # print(coordinates_lat)
-        # print(coordinates_lng)
         ctx = {"form": form}
         return render(request, "signup.html", ctx)
 
     def post(self, request):
         form = CustomUserCreationForm(request.POST)
-        coordinates_lat = request.POST.get('coordinates_lat')
-        coordinates_lng = request.POST.get('coordinates_lng')
-        print(coordinates_lat)
-        print(coordinates_lng)
         if form.is_valid():
-            coordinates_lat = float(coordinates_lat)
-            coordinates_lng = float(coordinates_lng)
-            if coordinates_lat is not None:
-                instance = form.save(commit=False)
-                instance.geographical_coordinates = Point(coordinates_lng, coordinates_lat)
-                instance.save()
-                return redirect('login')
-            else:
-                messages.error(request, "Please mark your residency address on the map and complete password again")
-                ctx = {"form": form}
-                return render(request, "signup.html", ctx)
+            form.save()
+            messages.success(request, "Your account has been created!")
+            return redirect('login')
+        messages.error(request, "Please remember to put a pin where your residency address is!")
         ctx = {"form": form}
         return render(request, "signup.html", ctx)
 

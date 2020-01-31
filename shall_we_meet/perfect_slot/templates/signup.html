@@ -28,30 +28,23 @@
     <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.2/dist/esri-leaflet-geocoder.js"
             integrity="sha512-8twnXcrOGP3WfMvjB0jS5pNigFuIWj4ALwWEgxhZ+mxvjF5/FBPVd5uAxqT8dd2kUmTVK9+yQJ4CmTmSg/sXAQ=="
             crossorigin=""></script>
-
 {% endblock %}
 
 
-
 {% block content %}
-
     <div class="container-fluid col-md-5">
         <h1>Sign up</h1>
-
         <form method="post">
             {% csrf_token %}
             {{ form | crispy }}
-            </br></br><p>1) Use magnifying glass icon on the map to search for your residency address</br>2) Click exact point on the map</p>
+            </br></br><p class="message-box">1) Use magnifying glass icon on the left side of map to search for your residency address</br>2) Click exact point on the map</p>
             <div id="mapid"></div></br>
             <button type="submit" class="btn btn-info myButton">Submit</button>
         </form>
-
-
     </div>
-
 {% endblock %}
 
 {#tu jest na dole magia z tym with address_map , marek wyjaśnił na slacku#}
 {% block additional_links_scripts_bottom %}
-    {% include 'maps_create_one_tmp.html' with address_map=address_map %}
+    {% include 'maps_create_one_tmp.html' %}
 {% endblock %}
