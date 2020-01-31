@@ -44,7 +44,8 @@
     </div>
 {% endblock %}
 
-{#tu jest na dole magia z tym with address_map , marek wyjaśnił na slacku#}
+{# for future: if I had context in the template below and I would like to pass it here,#}
+{#I would need to add a phraze with: {% include 'mytemplate.html' with nameofmycontext = nameofmycontext %} .#}
 {% block additional_links_scripts_bottom %}
     {% include 'maps_create_one_tmp.html' %}
 {% endblock %}

@@ -70,7 +70,7 @@ ROOT_URLCONF = 'shall_we_meet.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], ############dodałam to
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], #dodałam to
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +79,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'perfect_slot.my_context_processors.navbar_input',
-                # 'perfect_slot.my_context_processors.user_datails',
             ],
         },
     },
