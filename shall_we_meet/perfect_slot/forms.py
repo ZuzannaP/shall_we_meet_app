@@ -54,17 +54,25 @@ class CreateEventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ["title", "description", "approx_duration", "participants"]
+        fields = ["title", "description", "participants"]
         # TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
 
+
 class ChooseMeetingLocationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ChooseMeetingLocationForm, self).__init__(*args, **kwargs)
+        self.fields['meeting_address'].widget.attrs['readonly'] = True
+        self.fields['meeting_address'].label = False
+        self.fields['location_comments'].label = "***Additional comments:**"
+
     class Meta:
         model = Event
-        fields = ["meeting_address", "meeting_geographical_coordinates"]
+        fields = ["meeting_address", "meeting_geographical_coordinates", "location_comments"]
         widgets = {'meeting_geographical_coordinates': forms.HiddenInput()}
+
 
 class EditEventForm(forms.ModelForm):
     def __init__(self, *args, excluding_owner, **kwargs):
@@ -76,10 +84,23 @@ class EditEventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['title', "description", 'approx_duration', 'participants']
+        fields = ['title', "description", 'participants']
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
+
+
+class EditMeetingLocationForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EditMeetingLocationForm, self).__init__(*args, **kwargs)
+        self.fields['meeting_address'].widget.attrs['readonly'] = True
+        self.fields['meeting_address'].label = False
+        self.fields['location_comments'].label = "***Additional comments:**"
+
+    class Meta:
+        model = Event
+        fields = ["meeting_address", "meeting_geographical_coordinates", "location_comments"]
+        widgets = {'meeting_geographical_coordinates': forms.HiddenInput()}
 
 
 class CustomDatetimePicker(forms.ModelForm):

@@ -30,13 +30,12 @@
 {% endblock %}
 
 
-{% block mytitle %} <h1>Step 2 - Choose meeting location</h1> {% endblock %}
+{% block mytitle %} <h1>Step 2 - Edit meeting location</h1> {% endblock %}
 
 {% block event %}
 <div class="container-fluid col-md-8">
 
-    <h2>Below you see the area where all your guests and you reside.</br>
-    It might help with choosing the most suitable place to meet for all.
+    <h2>Below you see the area where all your guests and you reside and a pin with the previous meeting location.
     </h2></br>
 
     <form method="post">
@@ -53,5 +52,5 @@
 {# for future: if I had context in the template below and I would like to pass it here,#}
 {#I would need to add a phraze with: {% include 'mytemplate.html' with nameofmycontext = nameofmycontext %} .#}
 {% block additional_links_scripts_bottom %}
-    {% include 'maps_choose_location_tmp.html' %}
+    {% include 'maps_edit_location_tmp.html' %}
 {% endblock %}

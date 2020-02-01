@@ -13,7 +13,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, \
-    EditEventForm, CustomDatetimePicker, ChooseMeetingLocationForm
+    EditEventForm, CustomDatetimePicker, ChooseMeetingLocationForm, EditMeetingLocationForm
 
 
 def homepage(request):
@@ -136,27 +136,7 @@ class CreateEventView(LoginRequiredMixin, View):
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
 
-# class CreateEventView(LoginRequiredMixin, View):
-#     def get(self, request):
-#         form = CreateEventForm(excluding_owner=request.user)
-#         ctx = {"form": form}
-#         return render(request, "create_event_tmp.html", ctx)
-#
-#     def post(self, request):
-#         form = CreateEventForm(request.POST, excluding_owner=request.user)
-#         if form.is_valid():
-#             title = form.cleaned_data["title"]
-#             description = form.cleaned_data["description"]
-#             location = form.cleaned_data["location"]
-#             approx_duration = form.cleaned_data["approx_duration"]
-#             participants = form.cleaned_data["participants"]
-#             event = Event.objects.create(title=title, description=description, location=location,
-#                                          approx_duration=approx_duration, owner=request.user)
-#             for participant in participants:
-#                 event.participants.add(participant)
-#             return redirect("propose_timeslots", event.id)
-#         ctx = {"form": form}
-#         return render(request, "create_event_tmp.html", ctx)
+
 class ChooseMeetingLocationView(LoginRequiredMixin, View):
 
     def get(self, request, event_id):
@@ -169,8 +149,24 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "choose_meeting_location_tmp.html", ctx)
 
+    def post(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        form = ChooseMeetingLocationForm(request.POST)
+        if form.is_valid():
+            meeting_address = form.cleaned_data["meeting_address"]
+            meeting_geographical_coordinates = form.cleaned_data["meeting_geographical_coordinates"]
+            location_comments = form.cleaned_data["location_comments"]
+            event.meeting_address = meeting_address
+            event.meeting_geographical_coordinates = meeting_geographical_coordinates
+            event.location_comments = location_comments
+            event.save()
+            messages.success(request, "Location saved!")
+            return redirect("propose_timeslots", event.id)
+        messages.error(request, "Please remember to put a pin on the map!")
+        ctx = {"form": form}
+        return render(request, "choose_meeting_location_tmp.html", ctx)
 
-        # return redirect("propose_timeslots", event.id)
+
 
 class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
@@ -214,7 +210,6 @@ class GenericEventView(View):
             slot_votes = {"no": slot.participants_votes.filter(vote=1).count(),
                           "yes": slot.participants_votes.filter(vote=2).count(),
                           "if_need_be": slot.participants_votes.filter(vote=3).count()}
-            # participants_that_voted.update(list(slot.participants_votes.value_list.exclude(vote=-2)))
             participants_that_voted.update(
                 list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
             score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
@@ -259,7 +254,6 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
         return redirect("event_view", event_id)
 
 
-# TODO: Potem ustalę ostatecznie co można zmieniać, czego nie
 class EditEventView(LoginRequiredMixin, UpdateView):
     model = Event
     template_name = "edit_event_tmp.html"
@@ -278,7 +272,37 @@ class EditEventView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         event_id = self.kwargs['pk']
-        return reverse_lazy('edit_timeslots', kwargs={'pk': event_id})
+        return reverse_lazy('edit_location', kwargs={'pk': event_id})
+
+
+class EditMeetingLocationView(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        if event.owner != request.user:
+            raise PermissionDenied
+        form = EditMeetingLocationForm(instance=event)
+        participants_coordinates = [ [participant.geographical_coordinates.coords[1], participant.geographical_coordinates.coords[0]] for participant in event.participants.all()]
+        participants_coordinates.append([event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
+        ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
+        return render(request, "edit_meeting_location_tmp.html", ctx)
+
+    def post(self, request, pk):
+        event = Event.objects.get(pk=pk)
+        form = EditMeetingLocationForm(request.POST)
+        if form.is_valid():
+            meeting_address = form.cleaned_data["meeting_address"]
+            meeting_geographical_coordinates = form.cleaned_data["meeting_geographical_coordinates"]
+            location_comments = form.cleaned_data["location_comments"]
+            event.meeting_address = meeting_address
+            event.meeting_geographical_coordinates = meeting_geographical_coordinates
+            event.location_comments = location_comments
+            event.save()
+            messages.success(request, "Location changed!")
+            return redirect("edit_timeslots", event.id)
+        messages.error(request, "Please remember to put a pin on the map!")
+        ctx = {"form": form}
+        return render(request, "edit_meeting_location_tmp.html", ctx)
 
 
 class EditTimeslotsView(LoginRequiredMixin, ListView):

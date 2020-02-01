@@ -18,7 +18,6 @@ class Event(models.Model):
     description = models.TextField()
     creation_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-    approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
     participants = models.ManyToManyField(CustomUser, related_name='their_events')
     owner = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_events')
     is_in_progress = models.BooleanField(default=True)
@@ -26,6 +25,8 @@ class Event(models.Model):
     is_archive = models.BooleanField(default=False)
     meeting_geographical_coordinates = models.PointField(null=True)
     meeting_address = models.CharField(max_length=256, null=True)
+    location_comments = models.TextField(null=True, blank=True)
+
 
     def __str__(self):
         return self.title

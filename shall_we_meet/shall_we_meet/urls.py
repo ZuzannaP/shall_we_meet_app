@@ -18,8 +18,8 @@ from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
     CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, ChooseMeetingLocationView,\
     AccountSettingsView, EventView, OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, \
-    ProposeTimeslotsView, EditEventView, DeleteEventView, EditOneTimeslotView, EditTimeslotsView, AsGuestInProgressView,\
-    AsGuestUpcomingView, AsGuestArchiveView, VoteForTimeslotsView, VoteView, CompleteEventView
+    ProposeTimeslotsView, EditEventView, EditMeetingLocationView, DeleteEventView, EditOneTimeslotView, EditTimeslotsView, \
+    AsGuestInProgressView, AsGuestUpcomingView, AsGuestArchiveView, VoteForTimeslotsView, VoteView, CompleteEventView
 
 
 urlpatterns = [
@@ -37,6 +37,7 @@ urlpatterns = [
     path("event/create/location/<int:event_id>/", ChooseMeetingLocationView.as_view(), name="choose_location"),
     path("event/create/timeslots/<int:event_id>/", ProposeTimeslotsView.as_view(), name="propose_timeslots"),
     path("event/edit/<int:pk>/" , EditEventView.as_view(), name="edit_event"),
+    path("event/edit/locations/<int:pk>/", EditMeetingLocationView.as_view(), name="edit_location"),
     path("event/edit/timeslots/<int:pk>/", EditTimeslotsView.as_view(), name="edit_timeslots"),
     path("event/edit/timeslot/<int:pk>/", EditOneTimeslotView.as_view(), name="edit_one_timeslot"),
     path("event/delete/<int:event_id>/", DeleteEventView.as_view(), name="delete_event"),

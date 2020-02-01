@@ -29,6 +29,24 @@
     mymap.addLayer(markersLayer);
 
 
+    {#showing address on the map#}
+    function show_meeting_address() {
+        var old_coords = document.getElementById('id_meeting_geographical_coordinates').value;
+        if (old_coords.length !== 0) {
+            old_coords = old_coords.split("(");
+            var mycoords = old_coords[1].split(" ");
+            var mylng = parseFloat(mycoords[0]);
+            var mylat = parseFloat(mycoords[1].slice(0, -1));
+            var old_address = [mylat, mylng,];
+            marker = new L.Marker(new L.latLng((old_address))).addTo(mymap);
+            markersLayer.addLayer(marker);
+        }
+    }
+
+
+show_meeting_address()
+
+
     {#showing polygon on the map #}
 
     function show_polygon(coordinates_array) {
@@ -36,10 +54,9 @@
         // zoom the map to the polygon
         mymap.fitBounds(polygon.getBounds());
     }
-
     var participants_coordinates = JSON.parse("{{ participants_coordinates }}");
-    if (participants_coordinates) {
-        show_polygon(participants_coordinates);
+    if (participants_coordinates){
+            show_polygon(participants_coordinates);
     }
 
 
@@ -61,8 +78,6 @@
                 marker = new L.marker(result.latlng, {draggable: true}).addTo(mymap).bindPopup(result.address.Match_addr).openPopup();
                 document.getElementById('id_meeting_address').value = results;
             });
-
-
         });
 
 
