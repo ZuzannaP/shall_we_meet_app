@@ -16,10 +16,10 @@ Including another URLconf
 from django.contrib import admin, auth
 from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
-    CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, AccountSettingsView, EventView, \
-    OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, ProposeTimeslotsView, EditEventView, \
-    DeleteEventView, EditOneTimeslotView, EditTimeslotsView, AsGuestInProgressView, AsGuestUpcomingView,  \
-    AsGuestArchiveView, VoteForTimeslotsView, VoteView, CompleteEventView
+    CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, ChooseMeetingLocationView,\
+    AccountSettingsView, EventView, OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, \
+    ProposeTimeslotsView, EditEventView, DeleteEventView, EditOneTimeslotView, EditTimeslotsView, AsGuestInProgressView,\
+    AsGuestUpcomingView, AsGuestArchiveView, VoteForTimeslotsView, VoteView, CompleteEventView
 
 
 urlpatterns = [
@@ -34,6 +34,7 @@ urlpatterns = [
     path('password/change/', CustomPasswordChangeView.as_view(),  name='password_change'),
     path('password/change_done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
     path("event/create", CreateEventView.as_view(), name="create_event"),
+    path("event/create/location/<int:event_id>/", ChooseMeetingLocationView.as_view(), name="choose_location"),
     path("event/create/timeslots/<int:event_id>/", ProposeTimeslotsView.as_view(), name="propose_timeslots"),
     path("event/edit/<int:pk>/" , EditEventView.as_view(), name="edit_event"),
     path("event/edit/timeslots/<int:pk>/", EditTimeslotsView.as_view(), name="edit_timeslots"),

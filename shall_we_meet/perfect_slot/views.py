@@ -1,10 +1,8 @@
 import json
-
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from django.contrib import messages
-from django.contrib.gis.geos import Point
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -12,10 +10,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, FormView, UpdateView, DeleteView
+from django.views.generic.edit import FormView, UpdateView, DeleteView
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, \
-    EditEventForm, CustomDatetimePicker
+    EditEventForm, CustomDatetimePicker, ChooseMeetingLocationForm
 
 
 def homepage(request):
@@ -117,7 +115,6 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 
 ## EVENT ADMINISTRATION ##
 
-
 class CreateEventView(LoginRequiredMixin, View):
     def get(self, request):
         form = CreateEventForm(excluding_owner=request.user)
@@ -129,17 +126,51 @@ class CreateEventView(LoginRequiredMixin, View):
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-            location = form.cleaned_data["location"]
             approx_duration = form.cleaned_data["approx_duration"]
             participants = form.cleaned_data["participants"]
-            event = Event.objects.create(title=title, description=description, location=location,
+            event = Event.objects.create(title=title, description=description,
                                          approx_duration=approx_duration, owner=request.user)
             for participant in participants:
                 event.participants.add(participant)
-            return redirect("propose_timeslots", event.id)
+            return redirect("choose_location", event.id)
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
 
+# class CreateEventView(LoginRequiredMixin, View):
+#     def get(self, request):
+#         form = CreateEventForm(excluding_owner=request.user)
+#         ctx = {"form": form}
+#         return render(request, "create_event_tmp.html", ctx)
+#
+#     def post(self, request):
+#         form = CreateEventForm(request.POST, excluding_owner=request.user)
+#         if form.is_valid():
+#             title = form.cleaned_data["title"]
+#             description = form.cleaned_data["description"]
+#             location = form.cleaned_data["location"]
+#             approx_duration = form.cleaned_data["approx_duration"]
+#             participants = form.cleaned_data["participants"]
+#             event = Event.objects.create(title=title, description=description, location=location,
+#                                          approx_duration=approx_duration, owner=request.user)
+#             for participant in participants:
+#                 event.participants.add(participant)
+#             return redirect("propose_timeslots", event.id)
+#         ctx = {"form": form}
+#         return render(request, "create_event_tmp.html", ctx)
+class ChooseMeetingLocationView(LoginRequiredMixin, View):
+
+    def get(self, request, event_id):
+        event = Event.objects.get(pk=event_id)
+        if event.owner != request.user:
+            raise PermissionDenied
+        form = ChooseMeetingLocationForm()
+        participants_coordinates = [ [participant.geographical_coordinates.coords[1],participant.geographical_coordinates.coords[0]] for participant in event.participants.all()]
+        participants_coordinates.append([event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
+        ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
+        return render(request, "choose_meeting_location_tmp.html", ctx)
+
+
+        # return redirect("propose_timeslots", event.id)
 
 class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
@@ -147,7 +178,6 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         if event.owner != request.user:
             raise PermissionDenied
         timeslots_nr = event.event_datetimeslot.count()
-        print(timeslots_nr)
         form = CustomDatetimePicker(instance=event)
         ctx = {"form": form, "event": event, "timeslots_nr": timeslots_nr}
         return render(request, "propose_time_slots_tmp.html", ctx)
@@ -191,7 +221,6 @@ class GenericEventView(View):
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
         highest = max(summary_votes, key=lambda item: item[0])
-        print(participants_that_voted)
         winning = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
         participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()

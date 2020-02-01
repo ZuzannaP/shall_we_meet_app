@@ -16,7 +16,6 @@ class CustomUser(AbstractUser):
 class Event(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
-    location = models.CharField(max_length=256) # do usunięcia ,jak będzie druga aplikacja
     creation_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     approx_duration = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
@@ -25,13 +24,8 @@ class Event(models.Model):
     is_in_progress = models.BooleanField(default=True)
     is_upcoming = models.BooleanField(default=False)
     is_archive = models.BooleanField(default=False)
-
-    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny (polygonfield?)
-    # common_geographical_coordinates = models.PointField(blank=True, null=True)
-
-    # # to trzeba zmienić z pointfield na obiekt przechowujący cały obszar geograficzny
-    # proposed_location = models.PointField(blank=True, null=True)
-    # final_location = models.PointField(blank=True, null=True)
+    meeting_geographical_coordinates = models.PointField(null=True)
+    meeting_address = models.CharField(max_length=256, null=True)
 
     def __str__(self):
         return self.title

@@ -54,12 +54,17 @@ class CreateEventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ["title", "description", "location", "approx_duration", "participants"]
+        fields = ["title", "description", "approx_duration", "participants"]
         # TODO: na razie jest to CheckboxSelectMultiple, ale co jak będzie więcej użytkowników?
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
 
+class ChooseMeetingLocationForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ["meeting_address", "meeting_geographical_coordinates"]
+        widgets = {'meeting_geographical_coordinates': forms.HiddenInput()}
 
 class EditEventForm(forms.ModelForm):
     def __init__(self, *args, excluding_owner, **kwargs):
@@ -71,7 +76,7 @@ class EditEventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['title', "description", 'location', 'approx_duration', 'participants']
+        fields = ['title', "description", 'approx_duration', 'participants']
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
