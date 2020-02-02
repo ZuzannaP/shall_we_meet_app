@@ -1,6 +1,32 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
+{% block additional_links_scripts_top %}
+    <!-- Leaf css :) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin=""/>
+    <!-- Leaf js -->
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+
+    <link rel="stylesheet" href="/static/css/MarkerCluster.css"/>
+    <link rel="stylesheet" href="/static/css/MarkerCluster.Default.css"/>
+    <script src="/static/js/leaflet.markercluster.js"></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
+            integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
+            crossorigin=""></script>
+    <!-- Load Esri Leaflet Geocoder from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.3.2/dist/esri-leaflet-geocoder.css"
+          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
+          crossorigin="">
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.2/dist/esri-leaflet-geocoder.js"
+            integrity="sha512-8twnXcrOGP3WfMvjB0jS5pNigFuIWj4ALwWEgxhZ+mxvjF5/FBPVd5uAxqT8dd2kUmTVK9+yQJ4CmTmSg/sXAQ=="
+            crossorigin=""></script>
+{% endblock %}
 
 {% block mytitle %}<h1>Meeting: {{ event.title }}</h1>{% endblock %}
 
@@ -9,8 +35,8 @@
     {% if event.owner == request.user %}
         <div class="float-right">
             {% if not chosen_slot %}
-            <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
-             {% endif %}
+                <a type="button" class="btn btn-info myButton" href="{% url "edit_event" event.pk %}">Edit</a>
+            {% endif %}
             <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br></br>
         </div>
     {% endif %}
@@ -35,14 +61,6 @@
             <td>{{ event.description }}</td>
         </tr>
         <tr>
-            <th scope="row">Location:</th>
-            <td>{{ event.location }}</td>
-        </tr>
-        <tr>
-            <th scope="row">Duration:</th>
-            <td>{{ event.approx_duration }} hours</td>
-        </tr>
-        <tr>
             <th scope="row">Organizer:</th>
             <td>{{ event.owner }}</td>
         </tr>
@@ -65,9 +83,11 @@
                         <a type="button" class="btn btn-info myButton" href="{% url "vote_for_timeslots" event.pk %}">Click
                             here to vote
                             for time slots</a>
-                    {% else %}
+                    {% elif event_votes.items %}
                         <a type="button" class="btn btn-info myButton" href="{% url "complete_event" event.pk %}">Choose
                             final time slot</a>
+                     {% elif not event_votes.items %}
+                        <a type="button" class="btn btn-info myButton" href="{% url "propose_timeslots" event.pk %}">Set up time slots</a>
                     {% endif %}
                 </td>
             </tr>
@@ -88,18 +108,33 @@
         {% else %}
             <tr>
                 <th scope="row">Date and time:</th>
-                <td>{{ chosen_slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ chosen_slot.date_time_to|date:'d.m.Y H:i (D)'}}</td>
+                <td>{{ chosen_slot.date_time_from|date:'d.m.Y H:i (D)'}} -
+                    {{ chosen_slot.date_time_to|date:'d.m.Y H:i (D)'}}</td>
             </tr>
         {% endif %}
-
         <tr>
-            <th scope="row">Created on:</th>
-            <td>{{ event.creation_time }}</td>
+            <th scope="row">Location:</th>
+            <td>{{ event.meeting_address }}</td>
         </tr>
+        {% if event.location_comments %}
+            <tr>
+                <th scope="row">Additional info:</th>
+                <td>{{ event.location_comments }}</td>
+            </tr>
+        {% endif %}
+        {% if event.meeting_address %}
+            <tr>
+            <th scope="row">Map:</th>
+            <td><div id="mapid"></div>
+            </td>
+        </tr>
+        {% endif %}
         </tbody>
     </table>
+{% endblock %}
 
-
+{% block additional_links_scripts_bottom %}
+    {% include 'maps_display_location_tmp.html' %}
 {% endblock %}
 
 </div>

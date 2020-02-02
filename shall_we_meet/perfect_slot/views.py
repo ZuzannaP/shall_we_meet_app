@@ -126,10 +126,8 @@ class CreateEventView(LoginRequiredMixin, View):
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-            approx_duration = form.cleaned_data["approx_duration"]
             participants = form.cleaned_data["participants"]
-            event = Event.objects.create(title=title, description=description,
-                                         approx_duration=approx_duration, owner=request.user)
+            event = Event.objects.create(title=title, description=description, owner=request.user)
             for participant in participants:
                 event.participants.add(participant)
             return redirect("choose_location", event.id)
@@ -215,28 +213,35 @@ class GenericEventView(View):
             score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
-        highest = max(summary_votes, key=lambda item: item[0])
-        winning = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
+        if summary_votes:
+            highest = max(summary_votes, key=lambda item: item[0])
+            winnings = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
+        else:
+            winnings = None
         participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
-        ctx = self.get_context(request, event, event_votes, winning, participants_pct, chosen_slot)
+        if event.meeting_geographical_coordinates:
+            geographical_coordinates = json.dumps([event.meeting_geographical_coordinates.coords[1], event.meeting_geographical_coordinates.coords[0]])
+        else:
+            geographical_coordinates = json.dumps(None)
+        ctx = self.get_context(request, event, event_votes, winnings, participants_pct, chosen_slot, geographical_coordinates)
         return render(request, self.template_name, ctx)
 
 
 class EventView(LoginRequiredMixin, GenericEventView):
     template_name = "view_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot, geographical_coordinates):
         return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
-                "chosen_slot": chosen_slot}
+                "chosen_slot": chosen_slot, "geographical_coordinates":geographical_coordinates}
 
 
 class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventView):
     template_name = "complete_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot):
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot, geographical_coordinates):
         return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
-                "chosen_slot": chosen_slot}
+                "chosen_slot": chosen_slot, "geographical_coordinates":geographical_coordinates}
 
     def post(self, request, event_id):
         event = Event.objects.get(pk=event_id)
@@ -322,7 +327,6 @@ class EditTimeslotsView(LoginRequiredMixin, ListView):
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event": event})
 
 
-# todo chyba do usunięcia, bo nie chcę jednak dawać możliwości edycji timeslots, jak już ktoś zagłosował - można zmienić tylko jak nikt nie zagłosował!
 class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
     model = DateTimeSlot
     form_class = CustomDatetimePicker
