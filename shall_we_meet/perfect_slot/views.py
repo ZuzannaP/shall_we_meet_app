@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
@@ -138,7 +138,7 @@ class CreateEventView(LoginRequiredMixin, View):
 class ChooseMeetingLocationView(LoginRequiredMixin, View):
 
     def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         if event.owner != request.user:
             raise PermissionDenied
         form = ChooseMeetingLocationForm()
@@ -148,7 +148,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         return render(request, "choose_meeting_location_tmp.html", ctx)
 
     def post(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         form = ChooseMeetingLocationForm(request.POST)
         if form.is_valid():
             meeting_address = form.cleaned_data["meeting_address"]
@@ -168,7 +168,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
 
 class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         if event.owner != request.user:
             raise PermissionDenied
         timeslots_nr = event.event_datetimeslot.count()
@@ -181,7 +181,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
         if form.is_valid():
             date_time_from = form.cleaned_data["date_time_from"]
             date_time_to = form.cleaned_data["date_time_to"]
-            event = Event.objects.get(pk=event_id)
+            event = get_object_or_404(Event, pk=event_id)
             datetimeslot = DateTimeSlot.objects.create(date_time_from=date_time_from, date_time_to=date_time_to,
                                                        event=event)
             event_participants = event.participants.all()
@@ -196,7 +196,7 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
 
 class GenericEventView(View):
     def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         if self.template_name == "complete_event_tmp.html":
             if event.owner != request.user:
                 raise PermissionDenied
@@ -244,7 +244,7 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
                 "chosen_slot": chosen_slot, "geographical_coordinates":geographical_coordinates}
 
     def post(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         selected_choice = request.POST.get("chosen_slot")
         chosen_slot = DateTimeSlot.objects.get(pk=selected_choice)
         all_slots = event.event_datetimeslot.all()
@@ -283,7 +283,7 @@ class EditEventView(LoginRequiredMixin, UpdateView):
 class EditMeetingLocationView(LoginRequiredMixin, View):
 
     def get(self, request, pk):
-        event = Event.objects.get(pk=pk)
+        event = get_object_or_404(Event, pk=pk)
         if event.owner != request.user:
             raise PermissionDenied
         form = EditMeetingLocationForm(instance=event)
@@ -293,7 +293,7 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
         return render(request, "edit_meeting_location_tmp.html", ctx)
 
     def post(self, request, pk):
-        event = Event.objects.get(pk=pk)
+        event = get_object_or_404(Event, pk=pk)
         form = EditMeetingLocationForm(request.POST)
         if form.is_valid():
             meeting_address = form.cleaned_data["meeting_address"]
@@ -312,14 +312,14 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
 
 class EditTimeslotsView(LoginRequiredMixin, ListView):
     def get(self, request, pk):
-        event = Event.objects.get(pk=pk)
+        event = get_object_or_404(Event, pk=pk)
         if event.owner != request.user:
             raise PermissionDenied
         timeslots = event.event_datetimeslot.all()
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event": event})
 
     def post(self, request, pk):
-        event = Event.objects.get(pk=pk)
+        event = get_object_or_404(Event, pk=pk)
         timeslots = event.event_datetimeslot.all()
         timeslot_id = request.POST.get("timeslot_pk")
         timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
@@ -347,13 +347,13 @@ class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
 
 class DeleteEventView(LoginRequiredMixin, View):
     def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         if event.owner != request.user:
             raise PermissionDenied
         return render(request, "delete_event_tmp.html", {"event": event})
 
     def post(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         try:
             event.delete()
             messages.success(request, 'Event has been succesfully deleted')
@@ -409,7 +409,7 @@ class AsGuestArchiveView(LoginRequiredMixin, ListView):
 
 class VoteForTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         timeslots = event.event_datetimeslot.all()
         vote_list = {}
         if request.user in event.participants.all():
@@ -424,7 +424,7 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
 
 class VoteView(LoginRequiredMixin, SuccessMessageMixin, View):
     def get(self, request, timeslot_id, vote):
-        timeslot = DateTimeSlot.objects.get(pk=timeslot_id)
+        timeslot = get_object_or_404(DateTimeSlot, pk=timeslot_id)
         thevote = 2 if vote == "yes" else (1 if vote == "no" else 3)
         event = timeslot.event
         participantslotvote = ParticipantSlotVote.objects.filter(participant=request.user, slot=timeslot)[0]

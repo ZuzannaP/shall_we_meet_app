@@ -1,5 +1,6 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block mytitle %} <h1>Step 3 - Propose time slots</h1> {% endblock %}
 
@@ -21,7 +22,10 @@
             </br></br><a href="{% url "event_view" event.id %}" class="btn btn-info myButton">Finish</a>
         {% endif %}
     </form>
-
-
 {% endblock %}
 
+{% block icon %}
+           <div class="container-fluid col-md-2">
+                <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
+           </div>
+{% endblock %}

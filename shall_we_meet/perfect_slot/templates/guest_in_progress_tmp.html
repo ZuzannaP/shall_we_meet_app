@@ -6,7 +6,7 @@
 {% block mytitle %} <h1>Meetings in progress I have been invited to</h1> {% endblock %}
 
 {% block event %}
-    <div class="container col-md-10">
+    <div class="container col-md-12">
         <ul class="list-group>">
             {% for event, value in event_votes.items %}
                 <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
@@ -21,5 +21,6 @@
                 <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
             {% endfor %}
         </ul>
+          <img src="{% static "img/setting.png" %}" alt="Setting_icon" class="img-fluid float-right" width="30%">
     </div>
 {% endblock %}

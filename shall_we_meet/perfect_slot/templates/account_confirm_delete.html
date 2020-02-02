@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
 
@@ -27,7 +28,9 @@
                 <input type="submit" value="Yes" class="btn btn-info myButton"/> </input>
             </form>
         </div>
-        <div class="container-fluid col-md-2"></div>
+        <div class="container-fluid col-md-2">
+            <img src="{% static "img/setting.png" %}" alt="Settings_icon" width="100%">
+        </div>
 
     </div>
 {% endblock %}

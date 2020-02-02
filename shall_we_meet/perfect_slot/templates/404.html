@@ -2,9 +2,10 @@
 {% load static %}
 
 {% block content %}
-       <div class="container col-md-5">
+       <div class="container col-md-8">
 <h1>Error 404</h1>
 <h1>Page not found. </br>To go back to homepage click <a href="{% url "homepage" %}">here.</a></h1>
-           <p><img src="{% static "img/remove.png" %}" alt="Sleeping_icon" width="20%"></p>
-       </div>
+          <img src="{% static "img/search.png" %}" alt="Search_icon"   class="img-fluid float-right" width="50%">
+ </div>
+
 {% endblock %}

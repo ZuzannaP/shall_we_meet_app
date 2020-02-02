@@ -7,16 +7,18 @@
     <div class="d-flex">
 
         <div class="list-group list-group-flush col-md-4 justify-content">
-               <li class="list-group-item  ">Navigation</li>
+            <li class="list-group-item  ">Navigation</li>
             <a href="{% url 'homepage' %}"
                class="list-group-item list-group-item-dark list-group-item-action ">Homepage</a>
             <a href="{% url 'edit_personal_info' %}"
                class="list-group-item list-group-item-dark list-group-item-action ">Edit profile</a>
-             <a href="{% url 'password_change' %}"
+            <a href="{% url 'password_change' %}"
                class="list-group-item list-group-item-dark list-group-item-action ">Change password</a>
-            <a href="{% url 'delete_account' %}" class="list-group-item list-group-item-dark list-group-item-action">Delete your account</a>
+            <a href="{% url 'delete_account' %}" class="list-group-item list-group-item-dark list-group-item-action">Delete
+                your account</a>
         </div>
-
-<p><img src="{% static "img/setting.png" %}" alt="Settings_icon" width="40%"></p>
+        <div class="container-fluid col-md-8">
+            <img src="{% static "img/setting.png" %}" alt="Settings_icon" class="img-fluid">
+        </div>
     </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 
 {% block additional_links_scripts_top %}
@@ -33,7 +34,7 @@
 {% block mytitle %} <h1>Step 2 - Choose meeting location</h1> {% endblock %}
 
 {% block event %}
-<div class="container-fluid col-md-8">
+<div class="container-fluid col-md-12">
 
     <h2>Below you see the area where all your guests and you reside.</br>
     It might help with choosing the most suitable place to meet for all.
@@ -48,6 +49,12 @@
     </form>
 
 </div>
+{% endblock %}
+
+{% block icon %}
+           <div class="container-fluid col-md-2">
+                <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
+           </div>
 {% endblock %}
 
 {# for future: if I had context in the template below and I would like to pass it here,#}

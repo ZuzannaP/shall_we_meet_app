@@ -4,21 +4,23 @@
 
 
 
+{% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
 
-    {% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
+
+{% block event %}
+    <ul class="list-group>">
+        {% for event in events %}
+            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                {{ event.title }}: {{ event.location }}
+                <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
+            </a>
+            {% empty %}
+            <p>No meetings in here.</p>
+            </br> </br> </br>
+            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
+        {% endfor %}
+    </ul>
+        <img src="{% static "img/setting.png" %}" alt="Setting_icon" class="img-fluid float-right" width="30%">
+{% endblock %}
 
 
-              {% block event %}
-                    <ul class="list-group>">
-                        {% for event in events %}
-                            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                                {{ event.title }}: {{ event.location }}
-                                   <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
-                            </a>
-                            {% empty %}
-                            <p>No meetings in here.</p>
-                            </br> </br> </br>
-                            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
-                        {% endfor %}
-                    </ul>
-                {% endblock %}

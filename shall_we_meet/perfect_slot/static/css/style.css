@@ -33,7 +33,7 @@ footer{
 
 #right-footer{
     float: right;
-    color: rgba(227, 227, 227, 0.93);
+    color: #e4ddb5;
     font-size: 70%;
     padding-top: 0.3%;
 }
@@ -86,18 +86,19 @@ a.nav-item.nav-link {
 }
 
 /* NAV LEFT */
-#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li,
+
+#sidebar-wrapper > div > li,
 body > section > div:nth-child(2) > div > li{
     background-color: #008B84;
     color: #fffcff;
 }
 
-
-#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a,
+#sidebar-wrapper > div > a,
 body > section > div:nth-child(2) > div > a{
     background-color: #E2E8F7;
     color: #4F4350;
 }
+
 
 /*------------------------------------------*/
 /*BADGE PILLS*/
@@ -223,7 +224,4 @@ tr {
 /* MY MAPS */
 
 #mapid { height: 300px; }
-
-
-
 
