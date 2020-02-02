@@ -3,6 +3,7 @@ backcall==0.1.0
 decorator==4.4.1
 Django==3.0.1
 django-crispy-forms==1.8.1
+django-tempus-dominus==5.1.2.13
 ipython==7.11.0
 ipython-genutils==0.2.0
 jedi==0.15.2
@@ -21,4 +22,3 @@ six==1.13.0
 sqlparse==0.3.0
 traitlets==4.3.3
 wcwidth==0.1.7
-
