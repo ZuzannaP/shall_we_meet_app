@@ -22,6 +22,7 @@
 
 </head>
 <body>
+<header>
      <nav class="navbar navbar-expand-lg navbar-dark navbar-right">
         <a class="navbar-brand" id="shall_we_meet_logo" href="{% url "homepage" %}">
             SHALL WE MEET?
@@ -49,8 +50,8 @@
             </ul>
       </div>
     </nav>
-
-
+</header>
+  <section class="main-content">
 
 <div class="d-flex">
     <div class="container-fluid col-md-3"></div>
@@ -68,7 +69,7 @@
 </div>
         {% block content %} {% endblock %}
 
-</body>
+
 
    {% block additional_links_scripts_bottom %} {% endblock %}
 
@@ -77,4 +78,15 @@
 <!-- Icons made by <a href="https://www.flaticon.com/authors/pixelmeetup" title="Pixelmeetup">Pixelmeetup</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a> -->
 <!-- </footer> -->
 
+
+</section>
+<footer id="sticky-footer" class="py-1">
+<div class="container-fluid col-md-12">
+  <small>SHALL WE MEET?     Copyright &copy; Zuzanna Pietruszyńska </small>
+  <small id="right-footer">  Icons made by Pixelmeetup from  www.flaticon.com</small>
+</div>
+</footer>
+
+
+</body>
 </html>

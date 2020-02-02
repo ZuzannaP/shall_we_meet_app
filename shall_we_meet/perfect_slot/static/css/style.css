@@ -1,3 +1,44 @@
+/*PAGE STRUCTURE */
+
+
+html{
+    height: 100%;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #fffcff;
+    font-family: 'Nunito Sans', sans-serif;
+    color: #4F4350;
+}
+
+header{
+   flex: 0 0 auto;
+}
+
+.main-content{
+   flex: 1 0 auto;
+}
+
+footer{
+    flex: 0 0 auto;
+    background-color: #883896 !important;
+    color: white;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 2%;
+}
+
+#right-footer{
+    float: right;
+    color: rgba(227, 227, 227, 0.93);
+    font-size: 70%;
+    padding-top: 0.3%;
+}
+
+
 /*NAVBAR TOP*/
 
 .navbar {
@@ -30,7 +71,6 @@
 
 a.nav-item.nav-link {
     margin-right: 15px;
-
 }
 
 .nav_button {
@@ -46,13 +86,15 @@ a.nav-item.nav-link {
 }
 
 /* NAV LEFT */
-#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li {
+#sidebar-wrapper > div > li, body > div > div.list-group.list-group-flush > li,
+body > section > div:nth-child(2) > div > li{
     background-color: #008B84;
     color: #fffcff;
 }
 
 
-#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a {
+#sidebar-wrapper > div > a, body > div > div.list-group.list-group-flush > a,
+body > section > div:nth-child(2) > div > a{
     background-color: #E2E8F7;
     color: #4F4350;
 }
@@ -78,11 +120,6 @@ h2 {
     font-size: large;
 }
 
-body {
-    background: #fffcff;
-    font-family: 'Nunito Sans', sans-serif;
-    color: #4F4350;
-}
 
 .container-fluid {
     padding: 0 40px 0 40px;
@@ -93,7 +130,6 @@ body {
     background-color: #008B84;
     color: #ffffff;
 }
-
 
 
 #youSure {
@@ -184,6 +220,10 @@ tr {
     margin-left: 3%;
 }
 /*------------------------------------------*/
-/* my maps */
+/* MY MAPS */
 
 #mapid { height: 300px; }
+
+
+
+
