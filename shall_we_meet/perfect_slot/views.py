@@ -1,8 +1,9 @@
 import json
+
+from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
-from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
@@ -11,9 +12,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.edit import FormView, UpdateView, DeleteView
-from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
+
 from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, CreateEventForm, \
     EditEventForm, CustomDatetimePicker, ChooseMeetingLocationForm, EditMeetingLocationForm
+from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 
 
 def homepage(request):
@@ -163,7 +165,6 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         messages.error(request, "Please remember to put a pin on the map!")
         ctx = {"form": form}
         return render(request, "choose_meeting_location_tmp.html", ctx)
-
 
 
 class ProposeTimeslotsView(LoginRequiredMixin, View):

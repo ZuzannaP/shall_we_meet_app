@@ -1,7 +1,4 @@
-import json
-from django.utils.html import escapejs
-from django.utils.safestring import mark_safe
-from .models import Event, ParticipantSlotVote, CustomUser
+from .models import Event, ParticipantSlotVote
 
 
 def navbar_input(request):
@@ -18,9 +15,10 @@ def navbar_input(request):
                     guest_pending_actions += 1
                     break
         guest_upcoming_events = Event.objects.filter(participants=request.user).filter(is_upcoming=True)
-        ctx = {"owner_pending_actions": owner_pending_actions, "owner_upcoming_events": owner_upcoming_events, \
+        ctx = {"owner_pending_actions": owner_pending_actions, "owner_upcoming_events": owner_upcoming_events,
                "guest_pending_actions": guest_pending_actions, "guest_upcoming_events": guest_upcoming_events}
         return ctx
     else:
-        ctx = {"owner_pending_actions": "n/a", "owner_upcoming_events":"n/a", "guest_pending_actions": "n/a", "guest_upcoming_events":"n/a"}
+        ctx = {"owner_pending_actions": "n/a", "owner_upcoming_events": "n/a", "guest_pending_actions": "n/a",
+               "guest_upcoming_events": "n/a"}
         return ctx

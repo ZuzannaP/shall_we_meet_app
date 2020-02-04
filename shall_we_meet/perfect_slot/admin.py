@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm
@@ -11,6 +10,7 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ['email', 'username',]
 
+# NIEEEEEEEEEEEEEEEEEEE
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('street', 'house_nr', 'zip_code', 'city')}),
     )

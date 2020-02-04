@@ -1,10 +1,9 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
-from django.db.models import CASCADE
 from django.contrib.gis.db import models
+from django.db.models import CASCADE
 
-#  X is longitude, Y is latitude.
+""" Keep in mind that in Leaflet X is longitude, Y is latitude."""
+
 
 class CustomUser(AbstractUser):
     geographical_coordinates = models.PointField()
@@ -26,7 +25,6 @@ class Event(models.Model):
     meeting_geographical_coordinates = models.PointField(null=True)
     meeting_address = models.CharField(max_length=256, null=True)
     location_comments = models.TextField(null=True, blank=True)
-
 
     def __str__(self):
         return self.title
