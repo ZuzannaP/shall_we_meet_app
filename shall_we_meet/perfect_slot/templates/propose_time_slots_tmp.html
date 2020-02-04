@@ -5,15 +5,12 @@
 {% block mytitle %} <h1>Step 3 - Propose time slots</h1> {% endblock %}
 
 {% block event %}
-
     {% if timeslots_nr %}
         <h2>Add another slot</h2></br>
     {% endif %}
-
     <h2>Choose at least 2 times slots for the meeting.<br>
-    The more you choose, the biggest choice your guests will have.
+    The more you choose, the bigger choice your guests will have.
     <h2></br>
-
     <form method="post">
         {% csrf_token %}
         {{ form | crispy }}
@@ -25,7 +22,7 @@
 {% endblock %}
 
 {% block icon %}
-           <div class="container-fluid col-md-2">
-                <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
-           </div>
+    <div class="container-fluid col-md-2">
+        <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
+    </div>
 {% endblock %}

@@ -11,11 +11,10 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
-
+   <!-- Marker cluster -->
     <link rel="stylesheet" href="/static/css/MarkerCluster.css"/>
     <link rel="stylesheet" href="/static/css/MarkerCluster.Default.css"/>
     <script src="/static/js/leaflet.markercluster.js"></script>
-
     <!-- Load Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
             integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
@@ -31,8 +30,6 @@
 
 {% block content %}
     <div class="d-flex">
-
-
         <div class="list-group list-group-flush col-md-3">
             <li class="list-group-item  ">Navigation</li>
             <a href="{% url 'homepage' %}"
@@ -42,28 +39,24 @@
             <a href="{% url 'delete_account' %}"
                class="list-group-item list-group-item-dark list-group-item-action">Delete your account</a>
         </div>
-
-
         <div class="container-fluid col-md-5">
             <h1>Edit your personal information</h1>
-
             <form method="post">
                 {% csrf_token %}
-                {{ form | crispy }}
-                </br></br><p class="message-box">1) Use magnifying glass icon on the left side of map to search for your new residency address</br>2) Click exact point on the map</p>
-                <div id="mapid"></div></br>
+                {{ form|crispy }}
+                </br></br><p class="message-box">1) Use magnifying glass icon on the left side of map to search for your
+                new residency address</br>2) Click exact point on the map</p>
+                <div id="mapid"></div>
+                </br>
                 <button type="submit" class="btn btn-info myButton">Submit</button>
             </form>
         </div>
-         <div class="container-fluid col-md-2">
-            <img src="{% static "img/setting.png" %}" alt="Settings_icon" width="100%">
+        <div class="container-fluid col-md-2">
+            <img src="{% static "img/setting.png" %}" alt="Settings_icon" width="100%" class="img-fluid">
         </div>
     </div>
 {% endblock %}
 
-
-{# for future: if I had context in the template below and I would like to pass it here,#}
-{#I would need to add a phraze with: {% include 'mytemplate.html' with nameofmycontext = nameofmycontext %} .#}
 {% block additional_links_scripts_bottom %}
     {% include 'maps_change_one_tmp.html' %}
 {% endblock %}

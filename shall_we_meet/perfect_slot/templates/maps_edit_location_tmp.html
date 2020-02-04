@@ -1,13 +1,14 @@
 <script>
-
-
     var mymap = L.map('mapid').setView([52.232079, 21.006311], 8);
 
-    {#L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=9f79bff8a5e4496c87bb5f2dc0faff40', {#}
-    {#    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://thunderforest.com/">Thunderforest</a>',#}
-    {#    maxZoom: 18,#}
-    {#}).addTo(mymap);#}
-
+    {#Thunderforest - alternative API#}
+{#    L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=9f79bff8a5e4496c87bb5f2dc0faff40', {#}
+{#        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://thunderforest.com/">Thunderforest</a>',#}
+{#        maxZoom: 18,#}
+{#    }).addTo(mymap);#}
+{##}
+{#    #}
+    {#Open street map - first API of choice#}
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
@@ -48,12 +49,9 @@
         }
     }
 
-
 show_meeting_address()
 
-
     {#showing polygon on the map #}
-
     function show_polygon(coordinates_array) {
         var polygon = L.polygon(coordinates_array, {color: 'purple', fillOpacity: 0.1, weight: 2}).addTo(mymap);
         // zoom the map to the polygon
@@ -63,7 +61,6 @@ show_meeting_address()
     if (participants_coordinates){
             show_polygon(participants_coordinates);
     }
-
 
     {#adding marker to map#}
     var marker;
@@ -84,6 +81,4 @@ show_meeting_address()
                 document.getElementById('id_meeting_address').value = results;
             });
         });
-
-
 </script>

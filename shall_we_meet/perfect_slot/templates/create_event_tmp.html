@@ -2,23 +2,21 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-
-
 {% block mytitle %} <h1>Step 1- Creating meeting</h1> {% endblock %}
 
 {% block event %}
- <div class="container-fluid col-md-12">
-    <form method="post">
-        {% csrf_token %}
-        {{ form | crispy }}
-        <button type="submit" class="btn btn-info myButton">Next step</button>
-    </form>
- </div>
+    <div class="container-fluid col-md-12">
+        <form method="post">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-info myButton">Next step</button>
+        </form>
+    </div>
 {% endblock %}
 
 {% block icon %}
-           <div class="container-fluid col-md-2">
-                <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
-           </div>
+    <div class="container-fluid col-md-2">
+        <img src="{% static "img/profile.png" %}" alt="Profile_icon" class="img-fluid">
+    </div>
 {% endblock %}
 

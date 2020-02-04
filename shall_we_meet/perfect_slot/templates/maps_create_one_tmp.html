@@ -1,54 +1,50 @@
 <script>
+    var mymap = L.map('mapid').setView([52.232079, 21.006311], 9);
 
+    {#Thunderforest - alternative API#}
+{#    L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=9f79bff8a5e4496c87bb5f2dc0faff40', {#}
+{#        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://thunderforest.com/">Thunderforest</a>',#}
+{#        maxZoom: 18,#}
+{#    }).addTo(mymap);#}
+{##}
 
-var mymap = L.map('mapid').setView([52.232079, 21.006311], 9);
+    {#Open street map - first API of choice#}
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+    }).addTo(mymap);
 
-{#L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=9f79bff8a5e4496c87bb5f2dc0faff40', {#}
-{#    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://thunderforest.com/">Thunderforest</a>',#}
-{#    maxZoom: 18,#}
-{#}).addTo(mymap);#}
+    L.control.scale().addTo(mymap);
 
-L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
-}).addTo(mymap);
+    var markersLayer = L.markerClusterGroup();
 
+    var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
 
-L.control.scale().addTo(mymap);
+    L.esri.Geocoding.geosearch({
+        providers: [
+            arcgisOnline,
+            L.esri.Geocoding.mapServiceProvider({
+                label: 'States and Counties',
+                url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer',
+                layers: [2, 3],
+                searchFields: ['NAME', 'STATE_NAME']
+            })
+        ]
+    }).addTo(mymap);
 
-var markersLayer = L.markerClusterGroup();
+    mymap.addLayer(markersLayer);
 
-var arcgisOnline = L.esri.Geocoding.arcgisOnlineProvider();
-
-L.esri.Geocoding.geosearch({
-providers: [
-  arcgisOnline,
-  L.esri.Geocoding.mapServiceProvider({
-    label: 'States and Counties',
-    url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Census/MapServer',
-    layers: [2, 3],
-    searchFields: ['NAME', 'STATE_NAME']
-  })
-]
-}).addTo(mymap);
-
-mymap.addLayer(markersLayer);
-
-{#adding marker to map#}
-var marker;
-mymap.on('click',
-    function(addingMarker){
-    console.log(addingMarker.latlng)
-        var coordinates_lat = addingMarker.latlng["lat"];
-        var coordinates_lng = addingMarker.latlng["lng"];
-        document.getElementById('id_geographical_coordinates').value = `Point(${coordinates_lng}  ${coordinates_lat})`;
-       if (marker) { // check
-           mymap.removeLayer(marker); // remove
-       }
-
-    marker = new L.marker(addingMarker.latlng, {draggable: true}).addTo(mymap);
-
-    });
-
-
+    {#adding marker to map#}
+    var marker;
+    mymap.on('click',
+        function (addingMarker) {
+            console.log(addingMarker.latlng)
+            var coordinates_lat = addingMarker.latlng["lat"];
+            var coordinates_lng = addingMarker.latlng["lng"];
+            document.getElementById('id_geographical_coordinates').value = `Point(${coordinates_lng}  ${coordinates_lat})`;
+            if (marker) { // check
+                mymap.removeLayer(marker); // remove
+            }
+            marker = new L.marker(addingMarker.latlng, {draggable: true}).addTo(mymap);
+        });
 </script>

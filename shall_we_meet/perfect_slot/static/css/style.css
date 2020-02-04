@@ -1,5 +1,4 @@
-/*PAGE STRUCTURE */
-
+/*PAGE STRUCTURE*/
 
 html{
     height: 100%;
@@ -38,7 +37,7 @@ footer{
     padding-top: 0.3%;
 }
 
-
+/*------------------------------------------*/
 /*NAVBAR TOP*/
 
 .navbar {
@@ -85,7 +84,8 @@ a.nav-item.nav-link {
     font-size: x-large;
 }
 
-/* NAV LEFT */
+/*------------------------------------------*/
+/* NAVBAR LEFT */
 
 #sidebar-wrapper > div > li,
 body > section > div:nth-child(2) > div > li{

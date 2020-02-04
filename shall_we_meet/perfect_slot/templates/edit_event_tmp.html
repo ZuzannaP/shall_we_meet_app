@@ -1,16 +1,15 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
-
 {% block mytitle %} <h1>Step 1 - Edit event</h1> {% endblock %}
 
 {% block event %}
-<div class="container-fluid col-md-8">
-    <form method="post">
-        {% csrf_token %}
-        {{ form | crispy }}
-        <button type="submit" class="btn btn-info myButton">Next step</button>
-    </form>
-</div>
+    <div class="container-fluid col-md-8">
+        <form method="post">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-info myButton">Next step</button>
+        </form>
+    </div>
 {% endblock %}
 

@@ -2,7 +2,6 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-
 {% block additional_links_scripts_top %}
     <!-- Leaf css :) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
@@ -12,11 +11,10 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
-
+    <!-- Marker cluster -->
     <link rel="stylesheet" href="/static/css/MarkerCluster.css"/>
     <link rel="stylesheet" href="/static/css/MarkerCluster.Default.css"/>
     <script src="/static/js/leaflet.markercluster.js"></script>
-
     <!-- Load Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
             integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
@@ -30,22 +28,21 @@
             crossorigin=""></script>
 {% endblock %}
 
-
 {% block content %}
     <div class="container-fluid col-md-5">
         <h1>Sign up</h1>
         <form method="post">
             {% csrf_token %}
             {{ form | crispy }}
-            </br></br><p class="message-box">1) Use magnifying glass icon on the left side of map to search for your residency address</br>2) Click exact point on the map</p>
-            <div id="mapid"></div></br>
+            </br></br><p class="message-box">1) Use magnifying glass icon on the left side of map to search for your
+            residency address</br>2) Click exact point on the map</p>
+            <div id="mapid"></div>
+            </br>
             <button type="submit" class="btn btn-info myButton">Submit</button>
         </form>
     </div>
 {% endblock %}
 
-{# for future: if I had context in the template below and I would like to pass it here,#}
-{#I would need to add a phraze with: {% include 'mytemplate.html' with nameofmycontext = nameofmycontext %} .#}
 {% block additional_links_scripts_bottom %}
     {% include 'maps_create_one_tmp.html' %}
 {% endblock %}

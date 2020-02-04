@@ -10,11 +10,10 @@
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
-
+   <!-- Marker cluster -->
     <link rel="stylesheet" href="/static/css/MarkerCluster.css"/>
     <link rel="stylesheet" href="/static/css/MarkerCluster.Default.css"/>
     <script src="/static/js/leaflet.markercluster.js"></script>
-
     <!-- Load Esri Leaflet from CDN -->
     <script src="https://unpkg.com/esri-leaflet@2.3.2/dist/esri-leaflet.js"
             integrity="sha512-6LVib9wGnqVKIClCduEwsCub7iauLXpwrd5njR2J507m3A2a4HXJDLMiSZzjcksag3UluIfuW1KzuWVI5n/cuQ=="
@@ -31,7 +30,6 @@
 {% block mytitle %}<h1>Meeting: {{ event.title }}</h1>{% endblock %}
 
 {% block event %}
-
     {% if event.owner == request.user %}
         <div class="float-right">
             {% if not chosen_slot %}
@@ -40,7 +38,6 @@
             <a type="button" class="btn btn-info myButton" href="{% url "delete_event" event.pk %}">Delete</a></br></br>
         </div>
     {% endif %}
-
     <table class="table table-striped table-sm">
         <tbody>
         <tr>
@@ -74,7 +71,6 @@
                 <td>{{ forloop.counter }}. {{ participant }}</td>
             </tr>
         {% endfor %}
-
         {% if not chosen_slot %}
             <tr>
                 <th scope="row">Proposed time slots:</th>
@@ -86,8 +82,9 @@
                     {% elif event_votes.items %}
                         <a type="button" class="btn btn-info myButton" href="{% url "complete_event" event.pk %}">Choose
                             final time slot</a>
-                     {% elif not event_votes.items %}
-                        <a type="button" class="btn btn-info myButton" href="{% url "propose_timeslots" event.pk %}">Set up time slots</a>
+                    {% elif not event_votes.items %}
+                        <a type="button" class="btn btn-info myButton" href="{% url "propose_timeslots" event.pk %}">Set
+                            up time slots</a>
                     {% endif %}
                 </td>
             </tr>
@@ -98,7 +95,7 @@
                             <span class="badge badge-dark badge-pill float-right">CURRENTLY WINNING</span>
                         {% endif %}
                     </th>
-                    <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)'}} - {{ slot.date_time_to|date:'d.m.Y H:i (D)'}}
+                    <td>{{ slot.date_time_from|date:'d.m.Y H:i (D)' }} - {{ slot.date_time_to|date:'d.m.Y H:i (D)' }}
                         <span class="badge badge-dark  vote-badge float-right">If need be: {{ slot_values.if_need_be }}</span>
                         <span class="badge badge-dark  vote-badge float-right">No: {{ slot_values.no }}</span>
                         <span class="badge badge-dark  vote-badge float-right">Yes: {{ slot_values.yes }} </span>
@@ -108,8 +105,8 @@
         {% else %}
             <tr>
                 <th scope="row">Date and time:</th>
-                <td>{{ chosen_slot.date_time_from|date:'d.m.Y H:i (D)'}} -
-                    {{ chosen_slot.date_time_to|date:'d.m.Y H:i (D)'}}</td>
+                <td>{{ chosen_slot.date_time_from|date:'d.m.Y H:i (D)' }} -
+                    {{ chosen_slot.date_time_to|date:'d.m.Y H:i (D)' }}</td>
             </tr>
         {% endif %}
         <tr>
@@ -124,10 +121,11 @@
         {% endif %}
         {% if event.meeting_address %}
             <tr>
-            <th scope="row">Map:</th>
-            <td><div id="mapid"></div>
-            </td>
-        </tr>
+                <th scope="row">Map:</th>
+                <td>
+                    <div id="mapid"></div>
+                </td>
+            </tr>
         {% endif %}
         </tbody>
     </table>
@@ -136,5 +134,4 @@
 {% block additional_links_scripts_bottom %}
     {% include 'maps_display_location_tmp.html' %}
 {% endblock %}
-
 </div>

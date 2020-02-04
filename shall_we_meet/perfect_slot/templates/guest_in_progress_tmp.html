@@ -2,7 +2,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
 {% block mytitle %} <h1>Meetings in progress I have been invited to</h1> {% endblock %}
 
 {% block event %}
@@ -15,12 +14,14 @@
                         <span class="badge badge-dark badge-pill">Vote for time slots!</span>
                     {% endif %}
                 </a>
-                {% empty %}
+            {% empty %}
                 <p>No meetings in here.</p>
                 </br> </br> </br>
-                <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
+                <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%" class="img-fluid"></p>
             {% endfor %}
         </ul>
-          <img src="{% static "img/setting.png" %}" alt="Setting_icon" class="img-fluid float-right" width="30%">
+        {% if event_votes.items %}
+            </br> </br><img src="{% static "img/jigsaw.png" %}" alt="Profile_icon" width="20%" class="img-fluid">
+        {% endif %}
     </div>
 {% endblock %}

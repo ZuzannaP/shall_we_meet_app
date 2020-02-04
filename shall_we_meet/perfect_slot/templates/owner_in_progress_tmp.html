@@ -2,10 +2,7 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
-
 {% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
-
 
 {% block event %}
     <ul class="list-group>">
@@ -14,13 +11,15 @@
                 {{ event.title }}: {{ event.location }}
                 <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
             </a>
-            {% empty %}
+        {% empty %}
             <p>No meetings in here.</p>
             </br> </br> </br>
             <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
         {% endfor %}
     </ul>
-        <img src="{% static "img/setting.png" %}" alt="Setting_icon" class="img-fluid float-right" width="30%">
+    {% if events %}
+        </br> </br><img src="{% static "img/jigsaw.png" %}" alt="Profile_icon" width="20%" class="img-fluid">
+    {% endif %}
 {% endblock %}
 
 

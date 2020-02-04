@@ -1,18 +1,16 @@
 {% extends 'homepage.html' %}
 {% load crispy_forms_tags %}
 
-
 {% block mytitle %} <h1>Vote for time slots</h1> {% endblock %}
 
 {% block event %}
-
     <table class="table table-striped table-sm">
-      <tbody>
-            <tr>
-                <th class="table_header">Your decision</th>
-                <th class="table_header">Timeslots</th>
-                <th class="table_header">Choice</th>
-            </tr>
+        <tbody>
+        <tr>
+            <th class="table_header">Your decision</th>
+            <th class="table_header">Timeslots</th>
+            <th class="table_header">Choice</th>
+        </tr>
         {% for timeslot, value in vote_list.items %}
             <tr>
                 <th scope="row">
@@ -26,8 +24,8 @@
                         <span class="badge badge-dark badge-pill">Vote!</span>
                     {% endif %}</th>
                 <td>
-                    {{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }} - {{ timeslot.date_time_to|date:'d.m.Y H:i (D)'}}
-
+                    {{ timeslot.date_time_from|date:'d.m.Y H:i (D)' }}
+                    - {{ timeslot.date_time_to|date:'d.m.Y H:i (D)' }}
                 </td>
                 <td>
                     <a type="button" class="btn btn-info myButton btn-sm"
@@ -42,9 +40,8 @@
         {% endfor %}
         </tbody>
     </table>
-    <div><a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Finish</a></div>
-
-
-
+    <div>
+        <a type="button" class="btn btn-info myButton" href="{% url "event_view" event.pk %}">Finish</a>
+    </div>
 {% endblock %}
 

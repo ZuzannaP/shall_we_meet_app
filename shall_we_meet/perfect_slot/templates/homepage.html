@@ -3,79 +3,95 @@
 {% block content %}
 
     {% if not request.user.is_authenticated %}
-        <div class="container col-md-5">
-            </br></br><h1><i><b>Shall we meet?</b></i> is a web application that helps to finally figure out perfect
-            time and place for
-            all friends to meet. </h1>
-            <p>Create account right now, so that you can easily create meetings for groups of friends. </br>App will
-                help you all to figure out most convinient time, date and location!</p>
+        <div class="d-flex align-items-center">
+            <div class="container col-md-2">
+                <img src="{% static "img/garland.png" %}" alt="garland_icon" width=70% class="img-fluid float-left">
+                <img src="{% static "img/hot-tea.png" %}" alt="hot-tea_icon" width=70% class="img-fluid float-left">
+            </div>
+            <div class="container col-md-6 ">
+                <h1><i><b>Shall we meet?</b></i> is a web application that helps to finally figure out perfect
+                    time and place for
+                    all friends to meet. </h1>
+                <p>Create account right now, so that you can easily create meetings for groups of friends. </br>App will
+                    help you all to figure out most convinient time, date and location!</p>
+            </div>
+            <div class="container col-md-2">
+                <img src="{% static "img/curtain.png" %}" alt="curtain_icon" width=70% class="img-fluid float-right">
+                <img src="{% static "img/balloon.png" %}" alt="balloon_icon" width=70% class="img-fluid float-right">
+            </div>
         </div>
     {% else %}
         <!-- Page wrapper -->
         <div class="d-flex">
-        <!-- Sidebar -->
-        <div class="list-group " id="sidebar-wrapper">
-            <div class="list-group list-group-flush">
-                <li class="list-group-item  ">Meetings organized by me</li>
-                <a href="{% url "organizer_in_progress" %}"
-                   class="list-group-item list-group-item-dark list-group-item-action ">In progress
-                    {% if owner_pending_actions %}
-                        <span class="badge badge-dark badge-pill">Pending actions: {{ owner_pending_actions.count }}</span>
-                    {% endif %}</a>
-                <a href="{% url "organizer_upcoming" %}"
-                   class="list-group-item list-group-item-dark list-group-item-action">Upcoming
-                    {% if owner_upcoming_events %}
-                        ({{ owner_upcoming_events.count }})
-                    {% endif %}
-                </a>
-                <a href="{% url "organizer_is_archive" %}"
-                   class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
-                <li class="list-group-item ">Meetings I have been invited to</li>
-                <a href="{% url "guest_in_progress" %}"
-                   class="list-group-item list-group-item-dark list-group-item-action">In progress
-                    {% if guest_pending_actions %}
-                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions }}</span>
-                        </a>
-                    {% endif %}
-                <a href="{% url "guest_upcoming" %}"
-                   class="list-group-item list-group-item-dark list-group-item-action">Upcoming
-                    {% if guest_upcoming_events %}
-                        ({{ guest_upcoming_events.count }})
-                    {% endif %}
-                </a>
-                <a href="{% url "guest_is_archive" %}"
-                   class="list-group-item  list-group-item-dark list-group-item-action">Archive</a>
+            <!-- Sidebar -->
+            <div class="list-group " id="sidebar-wrapper">
+                <div class="list-group list-group-flush">
+                    <li class="list-group-item  ">Meetings organized by me</li>
+                    <a href="{% url "organizer_in_progress" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action ">In progress
+                        {% if owner_pending_actions %}
+                            <span class="badge badge-dark badge-pill">Pending actions: {{ owner_pending_actions.count }}</span>
+                        {% endif %}</a>
+                    <a href="{% url "organizer_upcoming" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action">Upcoming
+                        {% if owner_upcoming_events %}
+                            ({{ owner_upcoming_events.count }})
+                        {% endif %}
+                    </a>
+                    <a href="{% url "organizer_is_archive" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action">Archive</a>
+                    <li class="list-group-item ">Meetings I have been invited to</li>
+                    <a href="{% url "guest_in_progress" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action">In progress
+                        {% if guest_pending_actions %}
+                            <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions }}</span>
+                            </a>
+                        {% endif %}
+                    <a href="{% url "guest_upcoming" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action">Upcoming
+                        {% if guest_upcoming_events %}
+                            ({{ guest_upcoming_events.count }})
+                        {% endif %}
+                    </a>
+                    <a href="{% url "guest_is_archive" %}"
+                       class="list-group-item list-group-item-dark list-group-item-action">Archive
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- Page Content -->
-        <div class="container-fluid col-md-7">
-            {% block mytitle %} <h1>All my upcoming meetings:</h1> {% endblock %}
-            {% block event %}
-                {% if events %}
-                    <div class="container-fluid col-md-12"><img src="{% static "img/juggler.png" %}" alt="Juggler_icon"
-                                                                class="img-fluid" width="30%"></div>
-                {% endif %}
-                <ul class="list-group>">
-                    {% for event in events %}
-                        <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                            {{ event.title }}: {{ event.location }}
-                            {% if event.is_in_progress %}
-                                (In progress)
-                            {% elif event.is_upcoming %}
-                                (Upcoming)
-                            {% endif %}
-                        </a>
+            <!-- Page Content -->
+            <div class="container-fluid col-md-7">
+                {% block mytitle %} <h1>All my upcoming meetings:</h1> {% endblock %}
+                {% block event %}
+                    {% if events %}
+                        <div class="container-fluid col-md-12"><img src="{% static "img/juggler.png" %}"
+                                                                    alt="Juggler_icon"
+                                                                    class="img-fluid" width="30%">
+                        </div>
+                    {% endif %}
+                    <ul class="list-group>">
+                        {% for event in events %}
+                            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                                {{ event.title }}
+                                {% if event.is_in_progress %}
+                                    (In progress)
+                                {% elif event.is_upcoming %}
+                                    (Upcoming)
+                                {% elif event.is_archive %}
+                                    (Archived)
+                                {% endif %}
+                            </a>
                         {% empty %}
-                        <p>No meetings in here.</p>
-                        </br> </br> </br>
-                        <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="40%" class="img-fluid">
-                        </p>
-                    {% endfor %}
-                </ul>
-            {% endblock %}
-        </div>
-        {% block icon %}{% endblock %}
+                            <p>No meetings in here.</p>
+                            </br> </br> </br>
+                            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"
+                                    class="img-fluid">
+                            </p>
+                        {% endfor %}
+                    </ul>
+                {% endblock %}
+            </div>
+            {% block icon %}{% endblock %}
         </div>
     {% endif %}
 {% endblock %}
