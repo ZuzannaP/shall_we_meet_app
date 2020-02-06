@@ -23,7 +23,7 @@ from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, Edit
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('manager/', admin.site.urls),
     path("", homepage, name="homepage"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),

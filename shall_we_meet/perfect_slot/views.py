@@ -138,7 +138,6 @@ class CreateEventView(LoginRequiredMixin, View):
 
 
 class ChooseMeetingLocationView(LoginRequiredMixin, View):
-
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
         if event.owner != request.user:
@@ -282,7 +281,6 @@ class EditEventView(LoginRequiredMixin, UpdateView):
 
 
 class EditMeetingLocationView(LoginRequiredMixin, View):
-
     def get(self, request, pk):
         event = get_object_or_404(Event, pk=pk)
         if event.owner != request.user:

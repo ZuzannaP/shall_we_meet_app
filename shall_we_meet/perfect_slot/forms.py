@@ -20,7 +20,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    # UserChangeForm wywołuje hasło, dlatego trzeba to nadpisać ustawiając "None"
+    # UserChangeForm wants to change password as default as well, that's why it has to be overridden using "None"
     password = None
 
     class Meta:

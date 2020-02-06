@@ -9,7 +9,7 @@
         <ul class="list-group>">
             {% for event, value in event_votes.items %}
                 <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                    {{ event.title }}: {{ event.location }}
+                    {{ event.title }} (In progress)
                     {% if value == "missing" %}
                         <span class="badge badge-dark badge-pill">Vote for time slots!</span>
                     {% endif %}

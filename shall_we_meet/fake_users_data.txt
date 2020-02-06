@@ -3,3 +3,4 @@ superuser: zuzanna zaqxswcde
 users:  ala morawiecki
         ela Alleluja
         alina p123
+        michał_m

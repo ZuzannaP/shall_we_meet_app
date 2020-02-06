@@ -8,11 +8,10 @@ from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     model = CustomUser
-    list_display = ['email', 'username',]
+    list_display = ['username', 'is_active',]
 
-# NIEEEEEEEEEEEEEEEEEEE
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('street', 'house_nr', 'zip_code', 'city')}),
+        (None, {'fields': (['geographical_coordinates'])}),
     )
 
 
