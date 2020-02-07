@@ -1,4 +1,6 @@
 import json
+import math
+from functools import reduce
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
@@ -145,6 +147,9 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         form = ChooseMeetingLocationForm()
         participants_coordinates = [ [participant.geographical_coordinates.coords[1],participant.geographical_coordinates.coords[0]] for participant in event.participants.all()]
         participants_coordinates.append([event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
+        center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates , (0, 0))
+        center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "choose_meeting_location_tmp.html", ctx)
 
