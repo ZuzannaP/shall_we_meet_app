@@ -1,7 +1,15 @@
 # shall_we_meet_app
 Web app that helps to finally figure out perfect time and place for all friends to meet.
 
-## Before you start
+## Features
+
+## How to get it up and running
+
+### Before you start
+
+Create virtualenv
+
+If you don't have the below installed, install them:
 
 [Install PostgreSQL and create a user](https://www.postgresql.org/download/)
 
@@ -10,7 +18,7 @@ Web app that helps to finally figure out perfect time and place for all friends 
 [Install QGIS](https://www.qgis.org/en/site/forusers/alldownloads.html)
 
 
-## Getting Started
+### Getting Started
 
 Install dependencies to your virtualenv, using requirements.txt
 
@@ -18,7 +26,7 @@ Install dependencies to your virtualenv, using requirements.txt
 pip install -r requirements.txt
 ```
 
-Create new database in PostgreSQL.
+Create new database in PostgreSQL
 
 Create new .py file in shall_we_meet/shall_we_meet folder and name it local_settings.py
 
@@ -40,7 +48,7 @@ DATABASES = {
 ```
 Fill in missing parameteres with your secret key and your database credentials.
 
-### Add PostGIS extention to PostgreSQL
+#### Add PostGIS extention to PostgreSQL
 
 Open psql
 ```
@@ -61,7 +69,7 @@ CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;
 Exit from psql
 
 
-### Installing
+#### Installing
 
 While in directory:
 
