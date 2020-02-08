@@ -149,6 +149,12 @@ h2 {
     color: #ffffff;
 }
 
+#meetingsHeader {
+    background-color: #F8CB80;
+    color: #4F4350;
+}
+
+
 tr {
     text-align: left;
 }

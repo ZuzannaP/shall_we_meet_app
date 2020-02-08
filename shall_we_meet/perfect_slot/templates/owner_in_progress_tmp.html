@@ -2,23 +2,24 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block mytitle %} <h1>Meetings I have not finished organizing yet</h1> {% endblock %}
+{% block mytitle %} <h1>Meetings in voting mode (in progress)</h1> {% endblock %}
 
 {% block event %}
-    <ul class="list-group>">
-        {% for event in events %}
-            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                {{ event.title }}: {{ event.location }}
-                <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
-            </a>
-        {% empty %}
-            <p>No meetings in here.</p>
-            </br> </br> </br>
-            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
-        {% endfor %}
-    </ul>
-    {% if events %}
+    {% if events_in_progress %}
+        <ul class="list-group>">
+            <a class="list-group-item" id="meetingsHeader">In progress</a>
+            {% for event in events_in_progress %}
+                <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                    {{ event.title }}
+                    <span class="badge badge-dark badge-pill" id="in-progress-badge">Creation not finished yet</span>
+                </a>
+           {% endfor %}
+        </ul>
         </br> </br><img src="{% static "img/jigsaw.png" %}" alt="Profile_icon" width="20%" class="img-fluid">
+    {% else %}
+        <p class="list-group-item" id="meetingsHeader">No meetings in here.</p>
+        </br> </br> </br>
+        <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"></p>
     {% endif %}
 {% endblock %}
 

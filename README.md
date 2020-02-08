@@ -103,7 +103,7 @@ python3 manage.py runserver
 * [Bootstrap4](https://getbootstrap.com/) - open source toolkit for developing with HTML, CSS, and JS.
 * [PostgreSQL](https://www.postgresql.org/) -  open source object-relational database system
 * [PostGIS](https://postgis.net/) - spatial database extender for PostgreSQL object-relational database.
-* [Leaflet](https://leafletjs.com/) - leading open-source JavaScript library for mobile-friendly interactive maps
+* [Leaflet 1.6](https://leafletjs.com/) - leading open-source JavaScript library for mobile-friendly interactive maps
 
 ## Author
 

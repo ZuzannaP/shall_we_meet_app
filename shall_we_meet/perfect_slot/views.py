@@ -33,8 +33,10 @@ def verify_ownership(self, request, event):
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
-        ctx["events"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
-            Q(is_in_progress=True) | Q(is_upcoming=True)).distinct()
+        ctx["events_upcoming"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
+      is_upcoming=True).distinct()
+        ctx["events_in_progress"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
+            is_in_progress=True).distinct()
         return render(request, "homepage.html", ctx)
     else:
         ctx["events"] = "n/a"
@@ -386,20 +388,20 @@ class DeleteEventView(LoginRequiredMixin, View):
 
 class OrganizerInProgressView(LoginRequiredMixin, View):
     def get(self, request):
-        events = Event.objects.filter(owner=self.request.user).filter(is_in_progress=True)
-        return render(request, "owner_in_progress_tmp.html", {"events": events})
+        events_in_progress = Event.objects.filter(owner=self.request.user).filter(is_in_progress=True)
+        return render(request, "owner_in_progress_tmp.html", {"events_in_progress": events_in_progress})
 
 
 class OrganizerUpcomingView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.filter(owner=self.request.user).filter(is_upcoming=True)
-        return render(request, "owner_upcoming_tmp.html", {"events": events})
+        events_upcoming = Event.objects.filter(owner=self.request.user).filter(is_upcoming=True)
+        return render(request, "owner_upcoming_tmp.html", {"events_upcoming": events_upcoming})
 
 
 class OrganizerArchiveView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.filter(owner=self.request.user).filter(is_archive=True)
-        return render(request, "owner_archive_tmp.html", {"events": events})
+        events_archive = Event.objects.filter(owner=self.request.user).filter(is_archive=True)
+        return render(request, "owner_archive_tmp.html", {"events_archive": events_archive})
 
 
 class AsGuestInProgressView(LoginRequiredMixin, View):
@@ -418,14 +420,14 @@ class AsGuestInProgressView(LoginRequiredMixin, View):
 
 class AsGuestUpcomingView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.filter(participants=request.user).filter(is_upcoming=True)
-        return render(request, "guest_upcoming_tmp.html", {"events": events})
+        events_upcoming = Event.objects.filter(participants=request.user).filter(is_upcoming=True)
+        return render(request, "guest_upcoming_tmp.html", {"events_upcoming": events_upcoming})
 
 
 class AsGuestArchiveView(LoginRequiredMixin, ListView):
     def get(self, request):
-        events = Event.objects.filter(participants=request.user).filter(is_archive=True)
-        return render(request, "guest_archive_tmp.html", {"events": events})
+        events_archive = Event.objects.filter(participants=request.user).filter(is_archive=True)
+        return render(request, "guest_archive_tmp.html", {"events_archive": events_archive})
 
 
 class VoteForTimeslotsView(LoginRequiredMixin, View):

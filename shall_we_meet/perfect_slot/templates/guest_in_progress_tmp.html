@@ -6,22 +6,23 @@
 
 {% block event %}
     <div class="container col-md-12">
-        <ul class="list-group>">
-            {% for event, value in event_votes.items %}
-                <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                    {{ event.title }} (In progress)
+        {% if event_votes.items %}
+            <ul class="list-group>">
+                <a class="list-group-item" id="meetingsHeader">In progress</a>
+                {% for event, value in event_votes.items %}
+                    <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                    {{ event.title }} (by: {{ event.owner }})
                     {% if value == "missing" %}
                         <span class="badge badge-dark badge-pill">Vote for time slots!</span>
                     {% endif %}
-                </a>
-            {% empty %}
-                <p>No meetings in here.</p>
-                </br> </br> </br>
-                <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%" class="img-fluid"></p>
-            {% endfor %}
-        </ul>
-        {% if event_votes.items %}
-            </br> </br><img src="{% static "img/jigsaw.png" %}" alt="Profile_icon" width="20%" class="img-fluid">
+                    </a>
+                {% endfor %}
+            </ul>
+           </br> </br><img src="{% static "img/jigsaw.png" %}" alt="Profile_icon" width="20%" class="img-fluid">
+        {% else %}
+            <p class="list-group-item" id="meetingsHeader">No meetings in here.</p>
+            </br> </br> </br>
+            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%" class="img-fluid"></p>
         {% endif %}
     </div>
 {% endblock %}

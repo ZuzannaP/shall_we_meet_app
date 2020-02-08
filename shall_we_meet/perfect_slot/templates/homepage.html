@@ -23,75 +23,103 @@
     {% else %}
         <!-- Page wrapper -->
         <div class="d-flex">
-            <!-- Sidebar -->
-            <div class="list-group " id="sidebar-wrapper">
-                <div class="list-group list-group-flush">
-                    <li class="list-group-item  ">Meetings organized by me</li>
-                    <a href="{% url "organizer_in_progress" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action ">In progress
-                        {% if owner_pending_actions %}
-                            <span class="badge badge-dark badge-pill">Pending actions: {{ owner_pending_actions.count }}</span>
-                        {% endif %}</a>
-                    <a href="{% url "organizer_upcoming" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action">Upcoming
-                        {% if owner_upcoming_events %}
-                            ({{ owner_upcoming_events.count }})
-                        {% endif %}
-                    </a>
-                    <a href="{% url "organizer_is_archive" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action">Archive</a>
-                    <li class="list-group-item ">Meetings I have been invited to</li>
-                    <a href="{% url "guest_in_progress" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action">In progress
-                        {% if guest_pending_actions %}
-                            <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions }}</span>
-                            </a>
-                        {% endif %}
-                    <a href="{% url "guest_upcoming" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action">Upcoming
-                        {% if guest_upcoming_events %}
-                            ({{ guest_upcoming_events.count }})
-                        {% endif %}
-                    </a>
-                    <a href="{% url "guest_is_archive" %}"
-                       class="list-group-item list-group-item-dark list-group-item-action">Archive
-                    </a>
-                </div>
+        <!-- Sidebar -->
+        <div class="list-group " id="sidebar-wrapper">
+            <div class="list-group list-group-flush">
+                <li class="list-group-item  ">Meetings organized by me</li>
+                <a href="{% url "organizer_in_progress" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action ">In progress
+                    {% if owner_pending_actions %}
+                        <span class="badge badge-dark badge-pill">Pending actions: {{ owner_pending_actions.count }}</span>
+                    {% endif %}</a>
+                <a href="{% url "organizer_upcoming" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action">Upcoming
+                    {% if owner_upcoming_events %}
+                        ({{ owner_upcoming_events.count }})
+                    {% endif %}
+                </a>
+                <a href="{% url "organizer_is_archive" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action">Archive</a>
+                <li class="list-group-item ">Meetings I have been invited to</li>
+                <a href="{% url "guest_in_progress" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action">In progress
+                    {% if guest_pending_actions %}
+                        <span class="badge badge-dark badge-pill">Pending votes: {{ guest_pending_actions }}</span>
+                        </a>
+                    {% endif %}
+                <a href="{% url "guest_upcoming" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action">Upcoming
+                    {% if guest_upcoming_events %}
+                        ({{ guest_upcoming_events.count }})
+                    {% endif %}
+                </a>
+                <a href="{% url "guest_is_archive" %}"
+                   class="list-group-item list-group-item-dark list-group-item-action">Archive
+                </a>
+            </div>
+        </div>
+
+        <!-- Page Content -->
+        <div class="container-fluid col-md-7">
+        {% block mytitle %} <h1>All my meetings:</h1> {% endblock %}
+
+        {% block event %}
+        {% if events_upcoming or events_in_progress %}
+            <div class="container-fluid col-md-12"><img src="{% static "img/juggler.png" %}"
+                                                        alt="Juggler_icon"
+                                                        class="img-fluid" width="30%">
             </div>
 
-            <!-- Page Content -->
-            <div class="container-fluid col-md-7">
-                {% block mytitle %} <h1>All my meetings:</h1> {% endblock %}
-                {% block event %}
-                    {% if events %}
-                        <div class="container-fluid col-md-12"><img src="{% static "img/juggler.png" %}"
-                                                                    alt="Juggler_icon"
-                                                                    class="img-fluid" width="30%">
-                        </div>
-                    {% endif %}
-                    <ul class="list-group>">
-                        {% for event in events %}
-                            <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
-                                {{ event.title }}
-                                {% if event.is_in_progress %}
-                                    (In progress)
-                                {% elif event.is_upcoming %}
-                                    (Upcoming)
-                                {% elif event.is_archive %}
-                                    (Archived)
-                                {% endif %}
-                            </a>
-                        {% empty %}
-                            <p>No meetings in here.</p>
-                            </br> </br> </br>
-                            <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"
-                                    class="img-fluid">
-                            </p>
-                        {% endfor %}
-                    </ul>
-                {% endblock %}
+            {% if events_upcoming %}
+                <ul class="list-group>">
+                    <a class="list-group-item" id="meetingsHeader">
+                        Upcoming meetings</a>
+                    {% for event in events_upcoming %}
+                        <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                            {{ event.title }} (by: {{ event.owner }})
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if events_in_progress %}
+                <ul class="list-group>">
+                    <a class="list-group-item" id="meetingsHeader">
+                        Meetings in draft mode (in progress) </a>
+                    {% for event in events_in_progress %}
+                        <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                            {{ event.title }} (by: {{ event.owner }})
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        {% elif events_archive %}
+               <div class="container-fluid col-md-12"><img src="{% static "img/box.png" %}"
+                                                        alt="Juggler_icon"
+                                                        class="img-fluid" width="30%">
             </div>
-            {% block icon %}{% endblock %}
-        </div>
+            <ul class="list-group>">
+                <a class="list-group-item" id="meetingsHeader">
+                    Archived</a>
+                {% for event in events_archive %}
+                    <a class="list-group-item" id="myMeetings" href="{% url "event_view" event.id %}">
+                        {{ event.title }} (by: {{ event.owner }})
+                    </a>
+                {% endfor %}
+            </ul>
+
+    {% else %}
+        <p class="list-group-item" id="meetingsHeader">No meetings in here.</p>
+        </br> </br> </br>
+        <p><img src="{% static "img/sleeping.png" %}" alt="Sleeping_icon" width="20%"
+                class="img-fluid">
+        </p>
     {% endif %}
+
+{% endblock %}
+</div>
+{% block icon %}{% endblock %}
+</div>
+{% endif %}
 {% endblock %}
