@@ -1,6 +1,15 @@
 # shall_we_meet_app
 Web app that helps to finally figure out perfect time and place for all friends to meet.
 
+## Before you start
+
+[Install PostgreSQL and create a user](https://www.postgresql.org/download/)
+
+[Install PostGIS](https://postgis.net/install/)
+
+[Install QGIS](https://www.qgis.org/en/site/forusers/alldownloads.html)
+
+
 ## Getting Started
 
 Install dependencies to your virtualenv, using requirements.txt
@@ -31,15 +40,26 @@ DATABASES = {
 ```
 Fill in missing parameteres with your secret key and your database credentials.
 
+### Add PostGIS extention to PostgreSQL
 
-
-### Prerequisites
-
-What things you need to install the software and how to install them
+Open psql
+```
+sudo -u postgres psql
+```
+Connect to your PostgreSQL database
 
 ```
-Give examples
+postgres=# \c DATABASE_NAME
 ```
+
+Run the following
+
+```
+CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;
+```
+
+Exit from psql
+
 
 ### Installing
 
