@@ -145,9 +145,12 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         if event.owner != request.user:
             raise PermissionDenied
         form = ChooseMeetingLocationForm()
-        participants_coordinates = [ [participant.geographical_coordinates.coords[1],participant.geographical_coordinates.coords[0]] for participant in event.participants.all()]
-        participants_coordinates.append([event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
-        center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates , (0, 0))
+        participants_coordinates = [[participant.geographical_coordinates.coords[1],
+                                     participant.geographical_coordinates.coords[0]]
+                                    for participant in event.participants.all()]
+        participants_coordinates.append([event.owner.geographical_coordinates.coords[1],
+                                         event.owner.geographical_coordinates.coords[0]])
+        center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
         center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
@@ -193,7 +196,8 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
             for participant in event_participants:
                 datetimeslot.participants.add(participant)
             messages.success(request,
-                             f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to {date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
+                             f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to '
+                             f'{date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
             return redirect("propose_timeslots", event_id)
         ctx = {"form": form}
         return render(request, "propose_time_slots_tmp.html", ctx)
@@ -226,27 +230,31 @@ class GenericEventView(View):
         participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
         if event.meeting_geographical_coordinates:
-            geographical_coordinates = json.dumps([event.meeting_geographical_coordinates.coords[1], event.meeting_geographical_coordinates.coords[0]])
+            geographical_coordinates = json.dumps([event.meeting_geographical_coordinates.coords[1],
+                                                   event.meeting_geographical_coordinates.coords[0]])
         else:
             geographical_coordinates = json.dumps(None)
-        ctx = self.get_context(request, event, event_votes, winnings, participants_pct, chosen_slot, geographical_coordinates)
+        ctx = self.get_context(request, event, event_votes, winnings, participants_pct, chosen_slot,
+                               geographical_coordinates)
         return render(request, self.template_name, ctx)
 
 
 class EventView(LoginRequiredMixin, GenericEventView):
     template_name = "view_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot, geographical_coordinates):
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot,
+                    geographical_coordinates):
         return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
-                "chosen_slot": chosen_slot, "geographical_coordinates":geographical_coordinates}
+                "chosen_slot": chosen_slot, "geographical_coordinates": geographical_coordinates}
 
 
 class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventView):
     template_name = "complete_event_tmp.html"
 
-    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot, geographical_coordinates):
+    def get_context(self, request, event, event_votes, winning, participants_pct, chosen_slot,
+                    geographical_coordinates):
         return {"event": event, "event_votes": event_votes, "winning": winning, "participants_pct": participants_pct,
-                "chosen_slot": chosen_slot, "geographical_coordinates":geographical_coordinates}
+                "chosen_slot": chosen_slot, "geographical_coordinates": geographical_coordinates}
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
@@ -291,8 +299,11 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
         if event.owner != request.user:
             raise PermissionDenied
         form = EditMeetingLocationForm(instance=event)
-        participants_coordinates = [ [participant.geographical_coordinates.coords[1], participant.geographical_coordinates.coords[0]] for participant in event.participants.all()]
-        participants_coordinates.append([event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
+        participants_coordinates = [
+            [participant.geographical_coordinates.coords[1], participant.geographical_coordinates.coords[0]] for
+            participant in event.participants.all()]
+        participants_coordinates.append(
+            [event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "edit_meeting_location_tmp.html", ctx)
 
