@@ -4,8 +4,6 @@ decorator==4.4.1
 Django==3.0.1
 django-crispy-forms==1.8.1
 django-tempus-dominus==5.1.2.13
-ipython==7.11.0
-ipython-genutils==0.2.0
 jedi==0.15.2
 parso==0.5.2
 pexpect==4.7.0
