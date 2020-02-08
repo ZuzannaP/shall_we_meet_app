@@ -3,7 +3,35 @@ Web app that helps to finally figure out perfect time and place for all friends 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Install dependencies to your virtualenv, using requirements.txt
+
+```
+pip install -r requirements.txt
+```
+
+Create new database in PostgreSQL.
+
+Create new .py file in shall_we_meet/shall_we_meet folder and name it local_settings.py
+
+Paste there the below:
+
+```
+SECRET_KEY = ''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': '',
+        'HOST': '',
+        'PASSWORD': '',
+        'USER': '',
+    }
+}
+
+```
+Fill in missing parameteres with your secret key and your database credentials.
+
+
 
 ### Prerequisites
 
@@ -15,55 +43,28 @@ Give examples
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+While in directory:
 
 ```
-Give the example
+shall_we_meet/perfect_slot
 ```
 
-And repeat
+Run migrations:
 
 ```
-until finished
+python3 manage.py migrate
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+Run server
 
 ```
-Give an example
+python3 manage.py runserver
 ```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+* [Django](https://www.djangoproject.com/)  - Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.
+* Bootstrap4
+* PostgreSQL - Used to generate relational databases
 
 ## Versioning
 
