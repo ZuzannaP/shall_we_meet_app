@@ -20,6 +20,16 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 
 
+###  static function ###
+
+
+def verify_ownership(self, request, event):
+    if event.owner != request.user:
+        raise PermissionDenied
+
+### HOMEPAGE ###
+
+
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
@@ -29,7 +39,6 @@ def homepage(request):
     else:
         ctx["events"] = "n/a"
         return render(request, "homepage.html", ctx)
-
 
 ### USER ADMINISTRATION ###
 
@@ -72,7 +81,6 @@ class AccountSettingsView(View):
 
 
 class SignUpView(View):
-
     def get(self, request):
         form = CustomUserCreationForm()
         ctx = {"form": form}
@@ -119,6 +127,7 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
 
 ## EVENT ADMINISTRATION ##
 
+
 class CreateEventView(LoginRequiredMixin, View):
     def get(self, request):
         form = CreateEventForm(excluding_owner=request.user)
@@ -142,8 +151,7 @@ class CreateEventView(LoginRequiredMixin, View):
 class ChooseMeetingLocationView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
-        if event.owner != request.user:
-            raise PermissionDenied
+        verify_ownership(self, request, event)
         form = ChooseMeetingLocationForm()
         participants_coordinates = [[participant.geographical_coordinates.coords[1],
                                      participant.geographical_coordinates.coords[0]]
@@ -177,8 +185,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
 class ProposeTimeslotsView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
-        if event.owner != request.user:
-            raise PermissionDenied
+        verify_ownership(self, request, event)
         timeslots_nr = event.event_datetimeslot.count()
         form = CustomDatetimePicker(instance=event)
         ctx = {"form": form, "event": event, "timeslots_nr": timeslots_nr}
@@ -207,8 +214,7 @@ class GenericEventView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
         if self.template_name == "complete_event_tmp.html":
-            if event.owner != request.user:
-                raise PermissionDenied
+            verify_ownership(self, request, event)
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
@@ -296,14 +302,16 @@ class EditEventView(LoginRequiredMixin, UpdateView):
 class EditMeetingLocationView(LoginRequiredMixin, View):
     def get(self, request, pk):
         event = get_object_or_404(Event, pk=pk)
-        if event.owner != request.user:
-            raise PermissionDenied
+        verify_ownership(self, request, event)
         form = EditMeetingLocationForm(instance=event)
         participants_coordinates = [
             [participant.geographical_coordinates.coords[1], participant.geographical_coordinates.coords[0]] for
             participant in event.participants.all()]
         participants_coordinates.append(
             [event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
+        center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
+        center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "edit_meeting_location_tmp.html", ctx)
 
@@ -328,8 +336,7 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
 class EditTimeslotsView(LoginRequiredMixin, ListView):
     def get(self, request, pk):
         event = get_object_or_404(Event, pk=pk)
-        if event.owner != request.user:
-            raise PermissionDenied
+        verify_ownership(self, request, event)
         timeslots = event.event_datetimeslot.all()
         return render(request, "edit_time_slots_tmp.html", {"timeslots": timeslots, "event": event})
 
@@ -363,8 +370,7 @@ class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
 class DeleteEventView(LoginRequiredMixin, View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
-        if event.owner != request.user:
-            raise PermissionDenied
+        verify_ownership(self, request, event)
         return render(request, "delete_event_tmp.html", {"event": event})
 
     def post(self, request, event_id):
