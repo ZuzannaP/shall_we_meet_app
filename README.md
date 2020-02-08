@@ -62,9 +62,11 @@ python3 manage.py runserver
 
 ## Built With
 
-* [Django](https://www.djangoproject.com/)  - Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design.
-* Bootstrap4
-* PostgreSQL - Used to generate relational databases
+* [Django](https://www.djangoproject.com/)  - high-level Python Web framework that encourages rapid development and clean, pragmatic design.
+* [Bootstrap4](https://getbootstrap.com/) - open source toolkit for developing with HTML, CSS, and JS.
+* [PostgreSQL](https://www.postgresql.org/) -  open source object-relational database system
+* [PostGIS](https://postgis.net/) - spatial database extender for PostgreSQL object-relational database.
+* [Leaflet](https://leafletjs.com/) - leading open-source JavaScript library for mobile-friendly interactive maps
 
 ## Versioning
 
