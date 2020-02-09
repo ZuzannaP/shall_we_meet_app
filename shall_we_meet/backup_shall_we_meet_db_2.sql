@@ -911,7 +911,6 @@ COPY public.perfect_slot_event_participants (id, event_id, customuser_id) FROM s
 12	2	11
 \.
 
-
 --
 -- Data for Name: perfect_slot_participantslotvote; Type: TABLE DATA; Schema: public; Owner: postgres
 --
