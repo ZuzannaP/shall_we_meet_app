@@ -4,7 +4,7 @@ Web app that helps to finally figure out perfect time and place for all friends 
 ## Main features
 
 * create an event and invite your friends
-* find a meeting spot convinient to all guests (there's a map that shows the area where every guest resides)
+* find a meeting spot convenient to all guests (there's a map that shows the area where every guest resides)
 * propose a few dates and times to meet (your guests will vote and you will see which date and time got the most votes and which one is a bad idea) 
 * see all your upcoming meetings, archived meetings and meetings in progress
 * were you invited to a meeting? meeting details contain a map, so you won't be lost :)
