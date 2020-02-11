@@ -27,9 +27,9 @@ urlpatterns = [
     path("", homepage, name="homepage"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path('account/settings', AccountSettingsView.as_view(), name='account_settings'),
-    path('account/create', SignUpView.as_view(), name='signup'),
-    path('account/edit', EditPersonalInfoView.as_view(), name="edit_personal_info"),
+    path('account/settings/', AccountSettingsView.as_view(), name='account_settings'),
+    path('account/create/', SignUpView.as_view(), name='signup'),
+    path('account/edit/', EditPersonalInfoView.as_view(), name="edit_personal_info"),
     path('account/delete/', DeleteAccountView.as_view(), name="delete_account"),
     path('password/change/', CustomPasswordChangeView.as_view(),  name='password_change'),
     path('password/change_done/', CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
@@ -42,15 +42,15 @@ urlpatterns = [
     path("event/edit/timeslot/<int:pk>/", EditOneTimeslotView.as_view(), name="edit_one_timeslot"),
     path("event/delete/<int:event_id>/", DeleteEventView.as_view(), name="delete_event"),
     path("event/view/<int:event_id>/", EventView.as_view(), name="event_view"),
-    path("event/organizer/in_progress", OrganizerInProgressView.as_view(), name="organizer_in_progress"),
-    path("event/organizer/upcoming", OrganizerUpcomingView.as_view(), name="organizer_upcoming"),
-    path("event/organizer/archive", OrganizerArchiveView.as_view(), name="organizer_is_archive"),
-    path("event/guest/in_progres", AsGuestInProgressView.as_view(), name="guest_in_progress"),
-    path("event/guest/upcoming", AsGuestUpcomingView.as_view(), name="guest_upcoming"),
-    path("event/guest/archive", AsGuestArchiveView.as_view(), name="guest_is_archive"),
-    path("event/vote/timeslots/<int:event_id>", VoteForTimeslotsView.as_view(), name="vote_for_timeslots"),
+    path("event/organizer/in_progress/", OrganizerInProgressView.as_view(), name="organizer_in_progress"),
+    path("event/organizer/upcoming/", OrganizerUpcomingView.as_view(), name="organizer_upcoming"),
+    path("event/organizer/archive/", OrganizerArchiveView.as_view(), name="organizer_is_archive"),
+    path("event/guest/in_progress/", AsGuestInProgressView.as_view(), name="guest_in_progress"),
+    path("event/guest/upcoming/", AsGuestUpcomingView.as_view(), name="guest_upcoming"),
+    path("event/guest/archive/", AsGuestArchiveView.as_view(), name="guest_is_archive"),
+    path("event/vote/timeslots/<int:event_id>/", VoteForTimeslotsView.as_view(), name="vote_for_timeslots"),
     path("event/vote/<int:timeslot_id>/<str:vote>/", VoteView.as_view(), name="vote"),
-    path("event/complete/<int:event_id>", CompleteEventView.as_view(), name="complete_event")
+    path("event/complete/<int:event_id>/", CompleteEventView.as_view(), name="complete_event")
 
 ]
 
