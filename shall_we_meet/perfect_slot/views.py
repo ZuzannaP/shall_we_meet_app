@@ -215,7 +215,10 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
 class GenericEventView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
-        verify_ownership(self, request, event)
+        if self.template_name == "complete_event_tmp.html":
+            verify_ownership(self, request, event)
+        elif request.user not in event.participants.all() and request.user != event.owner:
+            raise PermissionDenied
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
