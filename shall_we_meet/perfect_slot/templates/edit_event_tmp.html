@@ -4,7 +4,7 @@
 {% block mytitle %} <h1>Step 1 - Edit event</h1> {% endblock %}
 
 {% block event %}
-    <div class="container-fluid col-md-8">
+    <div class="container-fluid col-md-10">
         <form method="post">
             {% csrf_token %}
             {{ form | crispy }}

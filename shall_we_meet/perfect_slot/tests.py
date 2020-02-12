@@ -35,7 +35,7 @@ class FormsTestClass(TestCase):
     #     print("setUp: Run once for every test method to setup clean data.")
     #     pass
 
-    def mock(self):
+    def test_mock(self):
         u = 4
         self.assertEqual(u, 1)
         print("do stuff4")
@@ -46,7 +46,7 @@ class ModelTestClass(TestCase):
         self.test_event = Event.objects.create(title="My event", description="Great event")
         print("do stuff5")
 
-    def my(self):
+    def test_my(self):
         e = Event.objects.get(pk=1)
         self.assertEqual(e.title, "My event")
         print("do stuff6")
