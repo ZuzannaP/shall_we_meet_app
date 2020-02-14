@@ -8,7 +8,7 @@ Web app that helps to finally figure out perfect time and place for all friends 
 
 <p align="center">
 <img align="center" src="shall_we_meet/perfect_slot/static/img/choose_meeting_location_view.png" alt="app screen"
-	title="shall_we_meet_app choosing location screen" width="600"/>
+	title="shall_we_meet_app choosing location screen" width="750"/>
 </p>
 
 3. Your guests vote for each time slot
@@ -16,7 +16,7 @@ Web app that helps to finally figure out perfect time and place for all friends 
 
 <p align="center">
 <img src="shall_we_meet/perfect_slot/static/img/organizers_detailed_event_view.png" alt="app screen"
-	title="shall_we_meet_app choosing time slot screen" width="600" align="center"/>
+	title="shall_we_meet_app choosing time slot screen" width="750" align="center"/>
 </p>
 
 5. You finalize the meeting by choosing winning time slot
