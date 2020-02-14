@@ -1,13 +1,18 @@
 # shall_we_meet_app
 Web app that helps to finally figure out perfect time and place for all friends to meet.
 
-## Main features
+## How does it work?
 
-* create an event and invite your friends
-* find a meeting spot convenient to all guests (there's a map that shows the area where every guest resides)
-* propose a few dates and times to meet (your guests will vote and you will see which date and time got the most votes and which one is a bad idea) 
-* see all your upcoming meetings, archived meetings and meetings in progress
-* were you invited to a meeting? meeting details contain a map, so you won't be lost :)
+1. You create event, invite guests and propose a few time slots for the meeting
+
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+2. App shows you the area where all your guests reside, so that you can find a meeting spot convenient to all
+3. Your guests vote for each time slot
+4. When most of them voted, you see the results and which time slot is preferred amongst your guests
+5. You finalize the meeting by choosing winning time slot
+6. Your guests see meeting details plus a map with location, so they won't be lost :)
 
 ## How to get it up and running
 
