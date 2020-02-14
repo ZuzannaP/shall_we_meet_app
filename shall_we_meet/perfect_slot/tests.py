@@ -7,6 +7,121 @@ from perfect_slot.forms import CustomUserChangeForm, ChooseMeetingLocationForm, 
 from perfect_slot.models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 
 
+class ViewsUserTestClass(TestCase):
+    def setUp(self):
+        self.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
+                                                        password="pantesterpantester", email="pan@wp.pl",
+                                                        geographical_coordinates="Point(12 12)")
+
+    def test_login(self):
+        c = Client()
+        response = c.login(username="pan_tester", password="pantesterpantester")
+        self.assertTrue(response)
+
+    def test_access_for_logged_in(self):
+        c = Client()
+        c.login(username="pan_tester", password="pantesterpantester")
+        response = c.get(reverse("guest_in_progress"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_restrictions_for_logged_out(self):
+        """ logged-out user can not access urls restricted for logged-in users """
+        c = Client()
+        c.logout()
+        response = c.get(reverse("guest_in_progress"))
+        self.assertRedirects(response, "/login/?next=/event/guest/in_progress/")
+
+
+class ViewsAppLogicTestClass(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
+                                               password="pantesterpantester", email="pan@wp.pl",
+                                               geographical_coordinates="Point(12 12)")
+        cls.test_participant = CustomUser.objects.create_user(first_name="Pan2", last_name="Tester2", username="pan_tester2",
+                                               password="pantester2pantester2", email="pan2@wp.pl",
+                                               geographical_coordinates="Point(12 12)")
+        cls.test_event = Event.objects.create(title="My event", description="Great event", owner=cls.test_user)
+        cls.test_event.participants.add(cls.test_participant)
+        cls.test_datetimeslot = DateTimeSlot.objects.create(date_time_from="2021-03-18 17:30:00+01",
+                                            date_time_to="2021-03-18 20:00:00+01", event=cls.test_event)
+        cls.test_participantslotvote = ParticipantSlotVote.objects.create(participant=cls.test_participant,
+                                                                          slot=cls.test_datetimeslot, vote=1)
+        cls.client = Client()
+
+    def test_create_event_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('create_event'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create_event_tmp.html')
+
+    def test_choose_meeting_location_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('choose_location', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'choose_meeting_location_tmp.html')
+
+    def test_propose_timeslots_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('propose_timeslots', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'propose_time_slots_tmp.html')
+
+    def test_event_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('event_view', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'view_event_tmp.html')
+
+    def test_complete_event_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('complete_event', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'complete_event_tmp.html')
+
+    def test_edit_event_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('edit_event', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_event_tmp.html')
+
+    def test_edit_meeting_location_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('edit_location', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_meeting_location_tmp.html')
+
+    def test_edit_timeslots_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('edit_timeslots', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_time_slots_tmp.html')
+
+    def test_edit_one_timeslot_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('edit_one_timeslot', args=(self.test_datetimeslot.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_one_time_slot_tmp.html')
+
+    def test_delete_event_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester", password="pantesterpantester")
+        response = self.client.get(reverse('delete_event', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'delete_event_tmp.html')
+
+    def test_vote_for_timeslots_view_uses_correct_template_and_has_desired_location(self):
+        self.client.login(username="pan_tester2", password="pantester2pantester2")
+        response = self.client.get(reverse('vote_for_timeslots', args=(self.test_event.pk,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'vote_for_timeslots_tmp.html')
+
+    def test_vote_view_has_desired_location(self):
+        self.client.login(username="pan_tester2", password="pantester2pantester2")
+        response = self.client.get(reverse('vote', args=(self.test_datetimeslot.pk, self.test_participantslotvote.pk,)))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('vote_for_timeslots', args=(self.test_participantslotvote.pk,)))
+
+
 class ModelTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -33,31 +148,6 @@ class ModelTestClass(TestCase):
     def test_participant_slot_vote(self):
         self.assertTrue(isinstance(self.p, ParticipantSlotVote))
         self.assertEqual(self.p.__str__(), f"{self.p.participant}-{self.p.slot}: {self.p.vote}")
-
-
-class ViewsTestClass(TestCase):
-    def setUp(self):
-        self.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                                        password="pantesterpantester", email="pan@wp.pl",
-                                                        geographical_coordinates="Point(12 12)")
-
-    def test_login(self):
-        c = Client()
-        response = c.login(username="pan_tester", password="pantesterpantester")
-        self.assertTrue(response)
-
-    def test_access_for_logged_in(self):
-        c = Client()
-        c.login(username="pan_tester", password="pantesterpantester")
-        response = c.get(reverse("guest_in_progress"))
-        self.assertEqual(response.status_code, 200)
-
-    def test_restrictions_for_logged_out(self):
-        """ logged out user can not access urls restricted for logged in users """
-        c = Client()
-        c.logout()
-        response = c.get(reverse("guest_in_progress"))
-        self.assertRedirects(response, "/login/?next=/event/guest/in_progress/")
 
 
 class FormsTestClass(TestCase):

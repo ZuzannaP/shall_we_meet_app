@@ -161,7 +161,10 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         participants_coordinates.append([event.owner.geographical_coordinates.coords[1],
                                          event.owner.geographical_coordinates.coords[0]])
         center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
-        center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        try:
+            center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        except ZeroDivisionError:
+            print("Can't divide by 0")
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "choose_meeting_location_tmp.html", ctx)
@@ -229,7 +232,10 @@ class GenericEventView(View):
                           "if_need_be": slot.participants_votes.filter(vote=3).count()}
             participants_that_voted.update(
                 list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
-            score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
+            try:
+                score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
+            except ZeroDivisionError:
+                print("Can't divide by 0")
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
         if summary_votes:
@@ -237,7 +243,10 @@ class GenericEventView(View):
             winnings = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
         else:
             winnings = None
-        participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
+        try:
+            participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
+        except ZeroDivisionError:
+            print("Can't divide by 0")
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
         if event.meeting_geographical_coordinates:
             geographical_coordinates = json.dumps([event.meeting_geographical_coordinates.coords[1],
@@ -314,7 +323,10 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
         participants_coordinates.append(
             [event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
         center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
-        center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        try:
+            center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
+        except ZeroDivisionError:
+            print("Can't divide by 0")
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "edit_meeting_location_tmp.html", ctx)
