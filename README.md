@@ -4,13 +4,13 @@ Web app that helps to finally figure out perfect time and place for all friends 
 ## How does it work?
 
 1. You create event, invite guests and propose a few time slots for the meeting
-
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
-
 2. App shows you the area where all your guests reside, so that you can find a meeting spot convenient to all
+![alt text](shall_we_meet/perfect_slot/static/img/choose_meeting_location_view.png
+ "Photo finding location")
 3. Your guests vote for each time slot
 4. When most of them voted, you see the results and which time slot is preferred amongst your guests
+![alt text](shall_we_meet/perfect_slot/static/img/organizers_detailed_event_view.png
+ "Photo finding location")
 5. You finalize the meeting by choosing winning time slot
 6. Your guests see meeting details plus a map with location, so they won't be lost :)
 
