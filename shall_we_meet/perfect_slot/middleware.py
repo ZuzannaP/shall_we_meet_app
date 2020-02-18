@@ -3,7 +3,7 @@ from .models import Event
 
 
 def archiving_middleware(get_response):
-    """Catches events that are no longer in the future but are a thing of the past Changes their status to is_archive"""
+    """Catches events that become overdue - changes their status to is_archive"""
 
     def middleware(request):
         Event.objects.filter(is_upcoming=True,

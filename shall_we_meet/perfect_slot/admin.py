@@ -8,7 +8,7 @@ from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     model = CustomUser
-    list_display = ['username', 'is_active',]
+    list_display = ['username', 'is_active', ]
 
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': (['geographical_coordinates'])}),

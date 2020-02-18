@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 try:
-    from shall_we_meet.local_settings import SECRET_KEY
+    from .local_settings import SECRET_KEY
 except ModuleNotFoundError:
     print("Brak konfiguracji SECRET_KEY w pliku local_settings.py!")
     print("Uzupełnij dane i spróbuj ponownie!")
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
 ]
 
-########## my custom user ##############
+# my custom user
 AUTH_USER_MODEL = 'perfect_slot.CustomUser'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'shall_we_meet.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 try:
-    from shall_we_meet.local_settings import DATABASES
+    from .local_settings import DATABASES
 except ModuleNotFoundError:
     print("Brak konfiguracji bazy danych w pliku local_settings.py!")
     print("Uzupełnij dane i spróbuj ponownie!")

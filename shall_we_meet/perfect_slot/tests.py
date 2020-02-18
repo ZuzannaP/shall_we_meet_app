@@ -36,15 +36,17 @@ class ViewsAppLogicTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                               password="pantesterpantester", email="pan@wp.pl",
-                                               geographical_coordinates="Point(12 12)")
-        cls.test_participant = CustomUser.objects.create_user(first_name="Pan2", last_name="Tester2", username="pan_tester2",
-                                               password="pantester2pantester2", email="pan2@wp.pl",
-                                               geographical_coordinates="Point(12 12)")
+                                                       password="pantesterpantester", email="pan@wp.pl",
+                                                       geographical_coordinates="Point(12 12)")
+        cls.test_participant = CustomUser.objects.create_user(first_name="Pan2", last_name="Tester2",
+                                                              username="pan_tester2", password="pantester2pantester2",
+                                                              email="pan2@wp.pl",
+                                                              geographical_coordinates="Point(12 12)")
         cls.test_event = Event.objects.create(title="My event", description="Great event", owner=cls.test_user)
         cls.test_event.participants.add(cls.test_participant)
         cls.test_datetimeslot = DateTimeSlot.objects.create(date_time_from="2021-03-18 17:30:00+01",
-                                            date_time_to="2021-03-18 20:00:00+01", event=cls.test_event)
+                                                            date_time_to="2021-03-18 20:00:00+01",
+                                                            event=cls.test_event)
         cls.test_participantslotvote = ParticipantSlotVote.objects.create(participant=cls.test_participant,
                                                                           slot=cls.test_datetimeslot, vote=1)
         cls.client = Client()

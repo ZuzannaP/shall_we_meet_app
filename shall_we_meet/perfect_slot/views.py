@@ -20,21 +20,21 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 
 
-###  static function ###
+# static function
 
 
 def verify_ownership(self, request, event):
     if event.owner != request.user:
         raise PermissionDenied
 
-### HOMEPAGE ###
+# HOMEPAGE
 
 
 def homepage(request):
     ctx = {}
     if request.user.is_authenticated:
         ctx["events_upcoming"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
-      is_upcoming=True).distinct()
+                                                      is_upcoming=True).distinct()
         ctx["events_in_progress"] = Event.objects.filter(Q(owner=request.user) | Q(participants=request.user)).filter(
             is_in_progress=True).distinct()
         return render(request, "homepage.html", ctx)
@@ -42,7 +42,7 @@ def homepage(request):
         ctx["events"] = "n/a"
         return render(request, "homepage.html", ctx)
 
-### USER ADMINISTRATION ###
+# USER ADMINISTRATION
 
 
 class LoginView(FormView):
@@ -127,7 +127,7 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = 'password_change_done.html'
 
 
-## EVENT ADMINISTRATION ##
+# EVENT ADMINISTRATION
 
 
 class CreateEventView(LoginRequiredMixin, View):
@@ -396,7 +396,7 @@ class DeleteEventView(LoginRequiredMixin, View):
             messages.success(request, 'Event has been succesfully deleted')
             return render(request, "homepage.html")
         except Exception as e:
-            messages.ERROR(request, "There was a problem while deleting. Try again.")
+            messages.ERROR(request, "There was a problem while deleting. Try again.", e)
             return render(request, "delete_event_tmp.html", {"event": event})
 
 
