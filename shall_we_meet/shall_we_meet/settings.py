@@ -22,8 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
     from .local_settings import SECRET_KEY
 except ModuleNotFoundError:
-    print("Brak konfiguracji SECRET_KEY w pliku local_settings.py!")
-    print("Uzupełnij dane i spróbuj ponownie!")
+    print("Database not configured in file local_settings.py!")
+    print("Fill out this data and try again!")
     exit(0)
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -89,8 +89,8 @@ WSGI_APPLICATION = 'shall_we_meet.wsgi.application'
 try:
     from .local_settings import DATABASES
 except ModuleNotFoundError:
-    print("Brak konfiguracji bazy danych w pliku local_settings.py!")
-    print("Uzupełnij dane i spróbuj ponownie!")
+    print("Database not configured in file local_settings.py!")
+    print("Fill out this data and try again!")
     exit(0)
 
 # Password validation
