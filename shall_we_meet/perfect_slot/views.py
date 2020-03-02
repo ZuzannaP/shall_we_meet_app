@@ -20,14 +20,9 @@ from .forms import LoginForm, CustomUserCreationForm, CustomUserChangeForm, Crea
 from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 
 
-# static function
-
-
 def verify_ownership(self, request, event):
     if event.owner != request.user:
         raise PermissionDenied
-
-# HOMEPAGE
 
 
 def homepage(request):
@@ -41,8 +36,6 @@ def homepage(request):
     else:
         ctx["events"] = "n/a"
         return render(request, "homepage.html", ctx)
-
-# USER ADMINISTRATION
 
 
 class LoginView(FormView):
@@ -127,9 +120,6 @@ class CustomPasswordChangeDoneView(LoginRequiredMixin, PasswordChangeDoneView):
     template_name = 'password_change_done.html'
 
 
-# EVENT ADMINISTRATION
-
-
 class CreateEventView(LoginRequiredMixin, View):
     def get(self, request):
         form = CreateEventForm(excluding_owner=request.user)
@@ -143,8 +133,10 @@ class CreateEventView(LoginRequiredMixin, View):
             description = form.cleaned_data["description"]
             participants = form.cleaned_data["participants"]
             event = Event.objects.create(title=title, description=description, owner=request.user)
+
             for participant in participants:
                 event.participants.add(participant)
+
             return redirect("choose_location", event.id)
         ctx = {"form": form}
         return render(request, "create_event_tmp.html", ctx)
@@ -161,10 +153,12 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         participants_coordinates.append([event.owner.geographical_coordinates.coords[1],
                                          event.owner.geographical_coordinates.coords[0]])
         center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
+
         try:
             center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
         except ZeroDivisionError:
             print("Can't divide by 0")
+
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "choose_meeting_location_tmp.html", ctx)
@@ -172,6 +166,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
     def post(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
         form = ChooseMeetingLocationForm(request.POST)
+
         if form.is_valid():
             meeting_address = form.cleaned_data["meeting_address"]
             meeting_geographical_coordinates = form.cleaned_data["meeting_geographical_coordinates"]
@@ -182,6 +177,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
             event.save()
             messages.success(request, "Location saved!")
             return redirect("propose_timeslots", event.id)
+
         messages.error(request, "Please remember to put a pin on the map!")
         ctx = {"form": form}
         return render(request, "choose_meeting_location_tmp.html", ctx)
@@ -205,8 +201,10 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
             datetimeslot = DateTimeSlot.objects.create(date_time_from=date_time_from, date_time_to=date_time_to,
                                                        event=event)
             event_participants = event.participants.all()
+
             for participant in event_participants:
                 datetimeslot.participants.add(participant)
+
             messages.success(request,
                              f'Timeslot from {date_time_from.strftime("%d.%m.%Y at %H:%M:%S")} to '
                              f'{date_time_to.strftime("%d.%m.%Y at %H:%M:%S")} has been added!')
@@ -218,41 +216,51 @@ class ProposeTimeslotsView(LoginRequiredMixin, View):
 class GenericEventView(View):
     def get(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
+
         if self.template_name == "complete_event_tmp.html":
             verify_ownership(self, request, event)
         elif request.user not in event.participants.all() and request.user != event.owner:
             raise PermissionDenied
+
         participants_nr = event.participants.count()
         event_votes = {}
         summary_votes = []
         participants_that_voted = set()
+
         for slot in event.event_datetimeslot.iterator():
             slot_votes = {"no": slot.participants_votes.filter(vote=1).count(),
                           "yes": slot.participants_votes.filter(vote=2).count(),
                           "if_need_be": slot.participants_votes.filter(vote=3).count()}
             participants_that_voted.update(
                 list(slot.participants_votes.values_list("participant", flat=True).exclude(vote=-2)))
+
             try:
                 score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             except ZeroDivisionError:
                 print("Can't divide by 0")
+
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
+
         if summary_votes:
             highest = max(summary_votes, key=lambda item: item[0])
             winnings = [vote[1] for vote in summary_votes if vote[0] == highest[0] and highest[0] > 0]
         else:
             winnings = None
+
         try:
             participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         except ZeroDivisionError:
             print("Can't divide by 0")
+
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
+
         if event.meeting_geographical_coordinates:
             geographical_coordinates = json.dumps([event.meeting_geographical_coordinates.coords[1],
                                                    event.meeting_geographical_coordinates.coords[0]])
         else:
             geographical_coordinates = json.dumps(None)
+
         ctx = self.get_context(request, event, event_votes, winnings, participants_pct, chosen_slot,
                                geographical_coordinates)
         return render(request, self.template_name, ctx)
@@ -280,9 +288,11 @@ class CompleteEventView(LoginRequiredMixin, SuccessMessageMixin, GenericEventVie
         selected_choice = request.POST.get("chosen_slot")
         chosen_slot = DateTimeSlot.objects.get(pk=selected_choice)
         all_slots = event.event_datetimeslot.all()
+
         for slot in all_slots:
             slot.winning = False
             slot.save()
+
         chosen_slot.winning = True
         chosen_slot.save()
         event.is_in_progress = False
@@ -298,8 +308,10 @@ class EditEventView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, **kwargs):
         event_object = super().get_object(**kwargs)
+
         if event_object.owner != self.request.user:
             raise PermissionDenied
+
         return event_object
 
     def get_form_kwargs(self):
@@ -323,10 +335,12 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
         participants_coordinates.append(
             [event.owner.geographical_coordinates.coords[1], event.owner.geographical_coordinates.coords[0]])
         center = reduce(lambda a, b: (a[0] + b[0], a[1] + b[1]), participants_coordinates, (0, 0))
+
         try:
             center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
         except ZeroDivisionError:
             print("Can't divide by 0")
+
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
         return render(request, "edit_meeting_location_tmp.html", ctx)
@@ -334,6 +348,7 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
     def post(self, request, pk):
         event = get_object_or_404(Event, pk=pk)
         form = EditMeetingLocationForm(request.POST)
+
         if form.is_valid():
             meeting_address = form.cleaned_data["meeting_address"]
             meeting_geographical_coordinates = form.cleaned_data["meeting_geographical_coordinates"]
@@ -344,6 +359,7 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
             event.save()
             messages.success(request, "Location changed!")
             return redirect("edit_timeslots", event.id)
+
         messages.error(request, "Please remember to put a pin on the map!")
         ctx = {"form": form}
         return render(request, "edit_meeting_location_tmp.html", ctx)
@@ -372,8 +388,10 @@ class EditOneTimeslotView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, **kwargs):
         event_object = super().get_object(**kwargs)
+
         if event_object.event.owner != self.request.user:
             raise PermissionDenied
+
         return event_object
 
     def get_success_url(self):
@@ -391,6 +409,7 @@ class DeleteEventView(LoginRequiredMixin, View):
 
     def post(self, request, event_id):
         event = get_object_or_404(Event, pk=event_id)
+
         try:
             event.delete()
             messages.success(request, 'Event has been succesfully deleted')
@@ -422,13 +441,16 @@ class AsGuestInProgressView(LoginRequiredMixin, View):
     def get(self, request):
         events = Event.objects.filter(participants=request.user).filter(is_in_progress=True)
         event_votes = {}
+
         for event in events:
             timeslots = event.event_datetimeslot.all()
             event_votes[event] = "ok"
+
             for slot in timeslots:
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]
                 if my_vote.vote == -2:
                     event_votes[event] = "missing"
+
         return render(request, "guest_in_progress_tmp.html", {"event_votes": event_votes})
 
 
@@ -449,6 +471,7 @@ class VoteForTimeslotsView(LoginRequiredMixin, View):
         event = get_object_or_404(Event, pk=event_id)
         timeslots = event.event_datetimeslot.all()
         vote_list = {}
+
         if request.user in event.participants.all():
             for slot in timeslots:
                 my_vote = ParticipantSlotVote.objects.filter(participant=request.user).filter(slot=slot)[0]

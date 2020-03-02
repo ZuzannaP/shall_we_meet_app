@@ -22,8 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 try:
     from .local_settings import SECRET_KEY
 except ModuleNotFoundError:
-    print("Database not configured in file local_settings.py!")
-    print("Fill out this data and try again!")
+    print("Database not configured in file local_settings.py! \
+          Fill out this data and try again!")
     exit(0)
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'perfect_slot.CustomUser'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-##########################################
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -89,8 +89,8 @@ WSGI_APPLICATION = 'shall_we_meet.wsgi.application'
 try:
     from .local_settings import DATABASES
 except ModuleNotFoundError:
-    print("Database not configured in file local_settings.py!")
-    print("Fill out this data and try again!")
+    print("Database not configured in file local_settings.py! \
+          Fill out this data and try again!")
     exit(0)
 
 # Password validation
@@ -129,11 +129,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# added the below
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 
-# added the below for messages to work with Bootstrap4
+# added the below for Django messages to work with Bootstrap 4
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',

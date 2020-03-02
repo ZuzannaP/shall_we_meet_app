@@ -11,8 +11,8 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'geographical_coordinates')
         widgets = {'geographical_coordinates': forms.HiddenInput()}
 
-    # added this part to make the on default not required fields in Django User model be required
     def __init__(self, *args, **kwargs):
+        """makes not required fields in Django User model required """
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['first_name'].required = True
@@ -20,7 +20,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
-    # UserChangeForm wants to change password as default as well, that's why it has to be overridden using "None"
+    # UserChangeForm wants to change password as default, therefore it has to be overridden using "None"
     password = None
 
     class Meta:
@@ -28,8 +28,8 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ['first_name', 'last_name', 'email', 'geographical_coordinates']
         widgets = {'geographical_coordinates': forms.HiddenInput()}
 
-    # added this part to make the on default not required fields in Django User model be required
     def __init__(self, *args, **kwargs):
+        """makes not required fields in Django User model required """
         super(CustomUserChangeForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['first_name'].required = True
@@ -43,8 +43,8 @@ class LoginForm(forms.Form):
 
 class CreateEventForm(forms.ModelForm):
     def __init__(self, *args, excluding_owner, **kwargs):
-        """overriding default method , which allows to exclude current user from queryset
-        For it to work you have to add in views form = CreateEventForm(excluding_owner=request.user)"""
+        """overriding default method which allows to exclude current user from queryset
+        For it to work you have to add in views 'form = CreateEventForm(excluding_owner=request.user)' """
         super(CreateEventForm, self).__init__(*args, **kwargs)
         self.fields['participants'].queryset = self.fields['participants'].queryset.exclude(id=excluding_owner.pk)
 

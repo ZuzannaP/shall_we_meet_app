@@ -119,7 +119,8 @@ class ViewsAppLogicTestClass(TestCase):
 
     def test_vote_view_has_desired_location(self):
         self.client.login(username="pan_tester2", password="pantester2pantester2")
-        response = self.client.get(reverse('vote', args=(self.test_datetimeslot.pk, self.test_participantslotvote.pk,)))
+        response = self.client.get(reverse('vote',
+                                           args=(self.test_datetimeslot.pk, self.test_participantslotvote.pk,)))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('vote_for_timeslots', args=(self.test_participantslotvote.pk,)))
 

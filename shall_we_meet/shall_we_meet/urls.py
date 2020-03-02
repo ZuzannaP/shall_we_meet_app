@@ -13,13 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from perfect_slot.views import homepage, LoginView, LogoutView, SignUpView, EditPersonalInfoView, DeleteAccountView, \
     CustomPasswordChangeView, CustomPasswordChangeDoneView, CreateEventView, ChooseMeetingLocationView,\
     AccountSettingsView, EventView, OrganizerInProgressView, OrganizerUpcomingView, OrganizerArchiveView, \
     ProposeTimeslotsView, EditEventView, EditMeetingLocationView, DeleteEventView, EditOneTimeslotView, \
-    EditTimeslotsView,AsGuestInProgressView, AsGuestUpcomingView, AsGuestArchiveView, VoteForTimeslotsView, VoteView,\
+    EditTimeslotsView, AsGuestInProgressView, AsGuestUpcomingView, AsGuestArchiveView, VoteForTimeslotsView, VoteView,\
     CompleteEventView
 
 
@@ -52,5 +53,4 @@ urlpatterns = [
     path("event/vote/timeslots/<int:event_id>/", VoteForTimeslotsView.as_view(), name="vote_for_timeslots"),
     path("event/vote/<int:timeslot_id>/<str:vote>/", VoteView.as_view(), name="vote"),
     path("event/complete/<int:event_id>/", CompleteEventView.as_view(), name="complete_event")
-
 ]

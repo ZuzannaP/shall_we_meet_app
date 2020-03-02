@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.gis.db import models
 from django.db.models import CASCADE
 
-""" Keep in mind that in Leaflet X is longitude, Y is latitude."""
-
 
 class CustomUser(AbstractUser):
     geographical_coordinates = models.PointField()
@@ -44,7 +42,8 @@ class DateTimeSlot(models.Model):
 class ParticipantSlotVote(models.Model):
     participant = models.ForeignKey(CustomUser, on_delete=CASCADE, related_name='his_slots_votes')
     slot = models.ForeignKey(DateTimeSlot, on_delete=CASCADE, related_name='participants_votes')
-    vote = models.SmallIntegerField(default=-2, choices=[(-2, "Did not vote"), (1, "No"), (3, "If need be"), (2, "Yes")])
+    vote = models.SmallIntegerField(default=-2,
+                                    choices=[(-2, "Did not vote"), (1, "No"), (3, "If need be"), (2, "Yes")])
 
     def __str__(self):
         return f"{self.participant}-{self.slot}: {self.vote}"
