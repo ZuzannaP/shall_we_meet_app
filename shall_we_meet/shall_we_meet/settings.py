@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+
 import os
+import logging
+
 
 from django.contrib.messages import constants as messages
 
@@ -19,10 +22,26 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
+
+logger = logging.getLogger(__name__)
+
 try:
     from .local_settings import SECRET_KEY
 except ModuleNotFoundError:
-    print("Database not configured in file local_settings.py! \
+    logger.warning("Secret key not configured in file local_settings.py! \
           Fill out this data and try again!")
     exit(0)
 
@@ -89,7 +108,7 @@ WSGI_APPLICATION = 'shall_we_meet.wsgi.application'
 try:
     from .local_settings import DATABASES
 except ModuleNotFoundError:
-    print("Database not configured in file local_settings.py! \
+    logger.warning("Database not configured in file local_settings.py! \
           Fill out this data and try again!")
     exit(0)
 
@@ -140,3 +159,4 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+

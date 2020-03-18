@@ -2,6 +2,8 @@ import json
 import math
 from functools import reduce
 
+import logging
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -23,6 +25,9 @@ from .models import CustomUser, Event, DateTimeSlot, ParticipantSlotVote
 def verify_ownership(self, request, event):
     if event.owner != request.user:
         raise PermissionDenied
+
+
+logger = logging.getLogger(__name__)
 
 
 def homepage(request):
@@ -157,7 +162,7 @@ class ChooseMeetingLocationView(LoginRequiredMixin, View):
         try:
             center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
         except ZeroDivisionError:
-            print("Can't divide by 0")
+            logger.warning("Can't divide by 0!")
 
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
@@ -237,7 +242,7 @@ class GenericEventView(View):
             try:
                 score = (((slot_votes["yes"] * 1) + (slot_votes["if_need_be"] * 0.5)) / participants_nr) * 100
             except ZeroDivisionError:
-                print("Can't divide by 0")
+                logger.warning("Can't divide by 0!")
 
             summary_votes.append((score, slot,))
             event_votes[slot] = slot_votes
@@ -251,7 +256,7 @@ class GenericEventView(View):
         try:
             participants_pct = int((len(participants_that_voted) / participants_nr) * 100)
         except ZeroDivisionError:
-            print("Can't divide by 0")
+            logger.warning("Can't divide by 0!")
 
         chosen_slot = event.event_datetimeslot.filter(winning=True).first()
 
@@ -339,7 +344,7 @@ class EditMeetingLocationView(LoginRequiredMixin, View):
         try:
             center = (center[0] / len(participants_coordinates), (center[1] / len(participants_coordinates)))
         except ZeroDivisionError:
-            print("Can't divide by 0")
+            logger.warning("Can't divide by 0!")
 
         participants_coordinates.sort(key=lambda a: math.atan2(a[1] - center[1], a[0] - center[0]))
         ctx = {"form": form, "participants_coordinates": json.dumps(participants_coordinates)}
