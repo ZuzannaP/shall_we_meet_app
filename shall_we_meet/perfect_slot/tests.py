@@ -10,7 +10,7 @@ from perfect_slot.models import CustomUser, Event, DateTimeSlot, ParticipantSlot
 class ViewsUserTestClass(TestCase):
     def setUp(self):
         self.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                                        password="pantesterpantester", email="pan@wp.pl",
+                                                        password="pantesterpantester", email="pan@example.com",
                                                         geographical_coordinates="Point(12 12)")
 
     def test_login(self):
@@ -36,11 +36,11 @@ class ViewsAppLogicTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_user = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                                       password="pantesterpantester", email="pan@wp.pl",
+                                                       password="pantesterpantester", email="pan@example.com",
                                                        geographical_coordinates="Point(12 12)")
         cls.test_participant = CustomUser.objects.create_user(first_name="Pan2", last_name="Tester2",
                                                               username="pan_tester2", password="pantester2pantester2",
-                                                              email="pan2@wp.pl",
+                                                              email="pan2@example.com",
                                                               geographical_coordinates="Point(12 12)")
         cls.test_event = Event.objects.create(title="My event", description="Great event", owner=cls.test_user)
         cls.test_event.participants.add(cls.test_participant)
@@ -129,7 +129,7 @@ class ModelTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.c = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                               password="pantesterpantester", email="pan@wp.pl",
+                                               password="pantesterpantester", email="pan@example.com",
                                                geographical_coordinates="Point(12 12)")
         cls.e = Event.objects.create(title="My event", description="Great event", owner=cls.c)
         cls.d = DateTimeSlot.objects.create(date_time_from="2021-03-18 17:30:00+01",
@@ -157,7 +157,7 @@ class FormsTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.c = CustomUser.objects.create_user(first_name="Pan", last_name="Tester", username="pan_tester",
-                                               password="pantesterpantester", email="pan@wp.pl",
+                                               password="pantesterpantester", email="pan@example.com",
                                                geographical_coordinates="Point(12 12)")
         cls.e = Event.objects.create(title="My event", description="Great event", owner=cls.c)
         cls.d = DateTimeSlot.objects.create(date_time_from="2021-03-18 17:30:00+01",
@@ -166,7 +166,7 @@ class FormsTestClass(TestCase):
 
     def test_valid_custom_user_change_form(self):
         self.c = CustomUser.objects.create_user(first_name="Pan1", last_name="Tester1", username="pan_tester1",
-                                                password="pantester1pantester1", email="pan1@wp.pl",
+                                                password="pantester1pantester1", email="pan1@example.com",
                                                 geographical_coordinates="Point(12 12)")
         data = {'first_name': self.c.first_name, 'last_name': self.c.last_name, 'email': self.c.email,
                 'geographical_coordinates': self.c.geographical_coordinates}
@@ -207,7 +207,7 @@ class FormsTestClass(TestCase):
         self.test_participant = CustomUser.objects.create_user(first_name="PanPat", last_name="Participant",
                                                                username="pan_participant",
                                                                password="pan_participantpan_participant",
-                                                               email="participant@wp.pl",
+                                                               email="participant@example.com",
                                                                geographical_coordinates="Point(14 14)")
         self.e.participants.add(self.test_participant)
         form = EditEventForm(excluding_owner=self.c)
