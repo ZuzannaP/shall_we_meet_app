@@ -51,7 +51,6 @@ class CreateEventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["title", "description", "participants"]
-        # TODO: consider changing in the future CheckboxSelectMultiple for some other widget
         widgets = {
             'participants': forms.CheckboxSelectMultiple,
         }
