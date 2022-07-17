@@ -2,7 +2,7 @@ asgiref==3.3.4
 astroid==2.5.7
 backcall==0.2.0
 decorator==5.0.9
-Django==3.2.5
+Django==3.2.14
 django-crispy-forms==1.11.2
 django-tempus-dominus==5.1.2.14
 entrypoints==0.3
