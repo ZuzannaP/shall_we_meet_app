@@ -25,7 +25,7 @@ pylint==2.8.3
 pytz==2021.1
 self==2020.12.3
 six==1.16.0
-sqlparse==0.4.2
+sqlparse==0.4.4
 traitlets==5.0.5
 typed-ast==1.4.3
 wcwidth==0.2.5
